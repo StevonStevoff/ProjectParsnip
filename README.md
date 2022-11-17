@@ -11,4 +11,5 @@ Team Roles for First Iteration:
 Team Lead: Sean Nelson \
 Dev Lead: Steven Taylor \
 Test Lead: ??? \
-Daily Manager: Farnaaz Ghazaani
+Daily Manager: Farnaaz Ghazaani \
+Wiki Manager: ???
