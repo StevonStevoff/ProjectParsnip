@@ -3,13 +3,19 @@
 Group Project for University of Leeds MEng Computer Science
 
 Team members:
-Sean Nelson, Steven Taylor, Farnaaz Ghazaani, Shubham Tundale, Jaymeson Heller
+Sean Nelson, Steven Taylor, Farnaaz Ghazaani, Shubham Tundale, Jaymeson Heller, Omar Hashish
 
 
 Team Roles for First Iteration:
 
 Team Lead: Sean Nelson \
 Dev Lead: Steven Taylor \
-Test Lead: ??? \
+Test Lead: Stuart Dingwell \
 Daily Manager: Farnaaz Ghazaani \
-Wiki Manager: ???
+Wiki Manager: Aimee Boyle
+
+Backend/API: Steven & Stuart
+Frontend: Stuart & Omar & Jaymeson & Aimee Boyle
+Device Aimee & Sean
+Farn helping with everything in first stint
+
