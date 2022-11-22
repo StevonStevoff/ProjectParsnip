@@ -16,6 +16,6 @@ Wiki Manager: Aimee Boyle
 
 Backend/API: Steven & Shubham & Stuart \
 Frontend: Stuart & Omar & Jaymeson & Aimee Boyle \
-Device Aimee & Sean \
+Device: Aimee & Sean \
 Farn helping with everything in first stint
 
