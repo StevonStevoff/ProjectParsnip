@@ -14,7 +14,7 @@ Test Lead: Stuart Dingwell \
 Daily Manager: Farnaaz Ghazaani \
 Wiki Manager: Aimee Boyle
 
-**Backend****/****API**: Steven/Shubham/Stuart \
+**Backend** **/** **API**: Steven/Shubham/Stuart \
 **Frontend**: Stuart/Omar/Jaymeson/Aimee \
 **Device**: Aimee/Sean/Jaymeson \
 Farn helping with everything in first stint
