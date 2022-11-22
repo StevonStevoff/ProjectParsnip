@@ -15,7 +15,7 @@ Daily Manager: Farnaaz Ghazaani \
 Wiki Manager: Aimee Boyle
 
 Backend/API: Steven & Shubham & Stuart \
-Frontend: Stuart & Omar & Jaymeson & Aimee Boyle \
-Device: Aimee & Sean \
+Frontend: Stuart & Omar & Jaymeson & Aimee \
+Device: Aimee & Sean & Jaymeson \
 Farn helping with everything in first stint
 
