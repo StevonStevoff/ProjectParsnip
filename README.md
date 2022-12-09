@@ -3,8 +3,8 @@
 Group Project for University of Leeds MEng Computer Science
 
 ### Team members:
-Sean Nelson, Steven Taylor, Farnaaz Ghazaani, Shubham Tundale, Jaymeson Heller, Omar Hashish, Aimee Boyle, Stuart Dingwell
 
+Sean Nelson, Steven Taylor, Farnaaz Ghazaani, Shubham Tundale, Jaymeson Heller, Omar Hashish, Aimee Boyle, Stuart Dingwell
 
 ### Team Roles for First Iteration:
 
@@ -18,4 +18,3 @@ Sean Nelson, Steven Taylor, Farnaaz Ghazaani, Shubham Tundale, Jaymeson Heller, 
 **Frontend**: Stuart/Omar/Jaymeson/Aimee \
 **Device**: Aimee/Sean/Jaymeson \
 Farn helping with everything in first stint
-
