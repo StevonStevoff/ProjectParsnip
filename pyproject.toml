@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "projectparsnip"
+version = "0.1.0"
+description = ""
+authors = [
+    "Steven Taylor <sc18sst@leeds.ac.uk>",
+    "Sean Nelson <ll17s2n@leeds.ac.uk>",
+    "Farnaaz Ghazaani <sc18fg@leeds.ac.uk>",
+    "Stuart Dingwell <sc19sjjd@leeds.ac.uk>",
+    "Jaymeson Heller <sc19jh@leeds.ac.uk>",
+    "Shubham Tandale <sc19st@leeds.ac.uk>",
+    "Aimee Boyle <sc18a3b@leeds.ac.uk>",
+    "Omar Hashish <sc19orss@leeds.ac.uk>"
+    ]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.88.0"
+SQLAlchemy = "^1.4.44"
+uvicorn = "^0.20.0"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
