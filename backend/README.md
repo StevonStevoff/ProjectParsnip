@@ -77,3 +77,5 @@ In order to enable these hooks for your commits, run this command:
 ```
 $ poetry run pre-commit install
 ```
+
+If one of the automattic formatting hooks (such as black or prettier) fails, just commit a second time so that the changes made by the formatters will be picked up
