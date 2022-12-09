@@ -5,7 +5,7 @@ repos:
     hooks:
       - id: check-merge-conflict
       - id: pretty-format-json
-        args: [ --autofix ]
+        args: [--autofix]
 
   # Poetry - Dependency management
   - repo: https://github.com/python-poetry/poetry
@@ -20,21 +20,21 @@ repos:
     hooks:
       - id: black
         language_version: python3.10
-        args: [ backend/ ]
+        args: [backend/]
 
   # flake8 - linting python
   - repo: https://github.com/pycqa/flake8
     rev: 5.0.4
     hooks:
       - id: flake8
-        args: [ backend/ ]
+        args: [backend/]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
       - id: isort
         name: isort (python)
-        args: [ backend/ ]
+        args: [backend/]
 
   # prettier - formatting JS, CSS, JSON, Markdown, ...
   - repo: https://github.com/pre-commit/mirrors-prettier
