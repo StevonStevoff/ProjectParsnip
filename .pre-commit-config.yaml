@@ -34,7 +34,7 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
-        args: [backend/]
+        args: ["--profile", "black", backend/]
 
   # prettier - formatting JS, CSS, JSON, Markdown, ...
   - repo: https://github.com/pre-commit/mirrors-prettier

@@ -48,6 +48,12 @@ or you can open a shell inside of the poetry environment using this command:
 $ poetry shell
 ```
 
+If you are adding a new dependency to the project, you can either add it manually in the `pyproject.toml` file, or add it using the following command:
+
+```
+$ poetry add <dependency>
+```
+
 # Code Formatting
 
 For this project we are using Black to automatically format our python code.
