@@ -4,40 +4,44 @@ repos:
     rev: v2.3.0
     hooks:
       - id: check-merge-conflict
-      - id: pretty-format-json
-        args: [--autofix]
-
-  # Poetry - Dependency management
-  - repo: https://github.com/python-poetry/poetry
-    rev: "1.2.2"
-    hooks:
-      - id: poetry-check
-      - id: poetry-lock
-
-    # black - formatting python
-  - repo: https://github.com/psf/black
-    rev: 22.3.0
-    hooks:
-      - id: black
-        language_version: python3.10
-        args: [backend/]
-
-  # flake8 - linting python
-  - repo: https://github.com/pycqa/flake8
-    rev: 5.0.4
-    hooks:
-      - id: flake8
-        args: [backend/]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
-    hooks:
-      - id: isort
-        name: isort (python)
-        args: ["--profile", "black", backend/]
 
   # prettier - formatting JS, CSS, JSON, Markdown, ...
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
     hooks:
       - id: prettier
+
+  - repo: local
+    hooks:
+      # Poetry - Dependency Management
+      - id: poetry-check
+        name: poetry-check
+        language: system
+        entry: bash -c 'cd backend && exec poetry check'
+        files: ^backend/
+      - id: poetry-lock
+        name: poetry-lock
+        language: system
+        entry: bash -c 'cd backend && exec poetry check'
+        files: ^backend/
+
+      # Black - formatting Python
+      - id: black
+        name: black
+        language: system
+        entry: bash -c 'cd backend && exec poetry run black .'
+        files: ^backend/
+
+      # flake8 - linting python
+      - id: flake8
+        name: flake8
+        language: system
+        entry: bash -c 'cd backend && exec poetry run flake8 .'
+        files: ^backend/
+
+      # isort - reorder imports
+      - id: isort
+        name: isort
+        language: system
+        entry: bash -c 'cd backend && exec poetry run isort . --profile black'
+        files: ^backend/

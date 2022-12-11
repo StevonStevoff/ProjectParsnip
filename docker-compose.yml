@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  parsnip-backend:
+    container_name: parsnip-backend
+    build: ./backend
+    ports:
+      - "8000:8000"
+# parsnip-frontend:

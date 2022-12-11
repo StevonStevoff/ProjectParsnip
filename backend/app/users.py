@@ -1,7 +1,6 @@
 import uuid
 from typing import Optional
 
-from app.database import User, get_user_db
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import (
@@ -10,6 +9,8 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
+
+from app.database import User, get_user_db
 
 SECRET = "SECRET"
 
@@ -44,9 +45,7 @@ def get_jwt_strategy() -> JWTStrategy:
 
 
 auth_backend = AuthenticationBackend(
-    name="jwt",
-    transport=bearer_transport,
-    get_strategy=get_jwt_strategy,
+    name="jwt", transport=bearer_transport, get_strategy=get_jwt_strategy
 )
 
 fastapi_users = FastAPIUsers[User, uuid.UUID](get_user_manager, [auth_backend])

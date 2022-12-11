@@ -1,8 +1,9 @@
+from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.database import User, create_db_and_tables
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, current_active_user, fastapi_users
-from fastapi import Depends, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -15,14 +16,10 @@ app.include_router(
     tags=["auth"],
 )
 app.include_router(
-    fastapi_users.get_reset_password_router(),
-    prefix="/auth",
-    tags=["auth"],
+    fastapi_users.get_reset_password_router(), prefix="/auth", tags=["auth"]
 )
 app.include_router(
-    fastapi_users.get_verify_router(UserRead),
-    prefix="/auth",
-    tags=["auth"],
+    fastapi_users.get_verify_router(UserRead), prefix="/auth", tags=["auth"]
 )
 app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
