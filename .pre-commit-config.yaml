@@ -23,6 +23,7 @@ repos:
         name: poetry-lock
         language: system
         entry: bash -c 'cd backend && exec poetry check'
+        require_serial: true
         files: ^backend/
 
       # Black - formatting Python
@@ -30,6 +31,7 @@ repos:
         name: black
         language: system
         entry: bash -c 'cd backend && exec poetry run black .'
+        require_serial: true
         files: ^backend/
 
       # flake8 - linting python
@@ -37,6 +39,7 @@ repos:
         name: flake8
         language: system
         entry: bash -c 'cd backend && exec poetry run flake8 .'
+        require_serial: true
         files: ^backend/
 
       # isort - reorder imports
@@ -44,4 +47,5 @@ repos:
         name: isort
         language: system
         entry: bash -c 'cd backend && exec poetry run isort . --profile black'
+        require_serial: true
         files: ^backend/
