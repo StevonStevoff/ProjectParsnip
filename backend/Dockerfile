@@ -19,9 +19,9 @@ FROM python-base AS builder-base
 RUN buildDeps="build-essential" \
     && apt-get update \
     && apt-get install --no-install-recommends -y \
-        curl \
-        vim \
-        netcat \
+    curl \
+    vim \
+    netcat \
     && apt-get install -y --no-install-recommends $buildDeps \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,7 +33,7 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=${POETRY_HOME} pyt
     chmod a+x /opt/poetry/bin/poetry
 
 WORKDIR $PYSETUP_PATH
-COPY /poetry.lock /pyproject.toml ./
+COPY /pyproject.toml ./
 RUN poetry install --only main
 
 # 'development' stage installs all dev deps and can be used to develop code.
