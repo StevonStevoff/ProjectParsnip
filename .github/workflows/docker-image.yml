@@ -22,4 +22,4 @@ jobs:
     - name: Run pytest inside of Backend Docker image
       working-directory: ./backend
       run: |
-        docker run -it parsnip-backend:${{github.run_id}} pytest
+        docker run parsnip-backend:${{github.run_id}} pytest
