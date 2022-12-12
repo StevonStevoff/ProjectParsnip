@@ -17,9 +17,9 @@ jobs:
     - name: Build the Backend Docker image
       working-directory: ./backend
       run: |
-        docker build . --file Dockerfile --tag parsnip-backend:$(date +%s)
+        docker build . --file Dockerfile --tag parsnip-backend:${{github.run_id}}
       
     - name: Run pytest inside of Backend Docker image
       working-directory: ./backend
       run: |
-        docker run -it parsnip-backend:$(date +%s) pytest
+        docker run -it parsnip-backend:${{github.run_id}} pytest
