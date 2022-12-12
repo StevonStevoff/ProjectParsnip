@@ -49,3 +49,11 @@ repos:
         entry: bash -c 'cd backend && exec poetry run isort . --profile black'
         require_serial: true
         files: ^backend/
+
+      # pytest - run unit tests
+      - id: pytest
+        name: pytest
+        language: system
+        entry: bash -c 'cd backend && exec poetry run pytest'
+        require_serial: true
+        files: ^backend/
