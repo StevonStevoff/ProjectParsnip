@@ -2,24 +2,22 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Backend Docker image
-      working-directory: ./backend
-      run: |
-        docker build . --file Dockerfile --tag parsnip-backend:${{github.run_id}}
-      
-    - name: Run pytest inside of Backend Docker image
-      working-directory: ./backend
-      run: |
-        docker run parsnip-backend:${{github.run_id}} pytest
+      - uses: actions/checkout@v3
+      - name: Build the Backend Docker image
+        working-directory: ./backend
+        run: |
+          docker build . --file Dockerfile --tag parsnip-backend:${{github.run_id}}
+
+      - name: Run pytest inside of Backend Docker image
+        working-directory: ./backend
+        run: |
+          docker run parsnip-backend:${{github.run_id}} pytest

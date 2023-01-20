@@ -5,7 +5,12 @@ from app.database import User, create_db_and_tables
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, current_active_user, fastapi_users
 
-app = FastAPI()
+description = """
+ProjectParsnip API services the frontend project available at _(url to frontend)_
+ and interfaces with the hardware devices
+"""
+
+app = FastAPI(title="ProjectParsnip", description=description, version="0.0.1")
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
@@ -46,7 +51,7 @@ async def root():
 
 @app.get("/authenticated-route")
 async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}
+    return {"message": f"Hello {user.username}!"}
 
 
 @app.on_event("startup")
