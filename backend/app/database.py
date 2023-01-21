@@ -1,3 +1,4 @@
+import os
 from typing import AsyncGenerator
 
 from fastapi import Depends
@@ -7,7 +8,15 @@ from sqlalchemy.orm import sessionmaker
 
 from app.models import Base, User
 
-DATABASE_URL = "sqlite+aiosqlite:///./sql_app.db"
+PWD = os.path.abspath(os.curdir)
+WORK_PATH = PWD.rsplit("ProjectParsnip", 1)[0]
+
+slashes = "///"
+if os.name != "nt":
+    # nt means system is windows
+    # windows needs one less slash for sqlalchemy
+    slashes += "/"
+DATABASE_URL = f"sqlite+aiosqlite:{slashes}{WORK_PATH}ProjectParsnip/backend/sql_app.db"
 
 engine = create_async_engine(DATABASE_URL)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
