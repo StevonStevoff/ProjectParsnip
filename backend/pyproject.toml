@@ -24,14 +24,16 @@ aiosqlite = "^0.17.0"
 httpx = "^0.23.1"
 pydantic = "^1.10.4"
 sqlalchemy = { extras = ["asyncio"], version = "^1.4.46" }
-pytest-asyncio = "^0.20.3"
 asgi-lifespan = "^2.0.0"
+dependency = "^0.0.3"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0.0"
 black = "^22.3.0"
 isort = "^5.10.1"
 pytest = "^7.2.0"
+pytest-asyncio = "^0.20.3"
+pytest-order = "^1.0.1"
 coverage = "^6.5.0"
 
 [build-system]

@@ -1,18 +1,30 @@
 import asyncio
+import os
 
 import pytest
 import pytest_asyncio
 from asgi_lifespan import LifespanManager
 from fastapi_users.db import SQLAlchemyUserDatabase
+from fastapi_users.password import PasswordHelper
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.api import app as api_app
+from app.api import app
 from app.database import get_user_db
 from app.models import Base, User
 
-SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
+PWD = os.path.abspath(os.curdir)
+WORK_PATH = PWD.rsplit("ProjectParsnip", 1)[0]
+
+slashes = "///"
+if os.name != "nt":
+    # nt means system is windows
+    # windows needs one less slash for sqlalchemy
+    slashes += "/"
+SQLALCHEMY_DATABASE_URL = (
+    f"sqlite+aiosqlite:{slashes}{WORK_PATH}ProjectParsnip/backend/app/tests/test.db"
+)
 
 engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
@@ -28,6 +40,17 @@ def event_loop():
     return loop
 
 
+async def get_db():
+    testing_async_session = sessionmaker(
+        engine, autocommit=False, class_=AsyncSession, autoflush=False
+    )
+    session = testing_async_session()
+    try:
+        yield session
+    finally:
+        await session.close()
+
+
 async def override_get_db():
     testing_async_session = sessionmaker(
         engine, autocommit=False, class_=AsyncSession, autoflush=False
@@ -39,12 +62,32 @@ async def override_get_db():
         await session.close()
 
 
+# superusers can only be created directly in the database
+# without an already existing superuser
+async def create_superuser():
+    async for db in get_db():
+        hashed_password = PasswordHelper().hash("password")
+        test_superuser = User(
+            id=1,
+            email="superuser@test.com",
+            username="TestSuperuser",
+            hashed_password=hashed_password,
+            is_active=True,
+            is_superuser=True,
+        )
+        db.add(test_superuser)
+        await db.commit()
+        break
+
+
 @pytest_asyncio.fixture(scope="session")
-async def testing_async_session():
+async def create_test_database():
 
     # create database
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    await create_superuser()
 
     # run the tests
     yield
@@ -55,9 +98,7 @@ async def testing_async_session():
 
 
 @pytest_asyncio.fixture(scope="session")
-async def client(testing_async_session):
-    app = api_app
-
+async def client(create_test_database):
     app.dependency_overrides[get_user_db] = override_get_db
 
     async with LifespanManager(app):
