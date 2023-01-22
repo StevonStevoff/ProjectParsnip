@@ -1,0 +1,9 @@
+aiosqlite==0.18.0
+fastapi==0.88.0
+fastapi-users==10.2.1
+fastapi-users-db-sqlalchemy==4.0.3
+SQLAlchemy==1.4.45
+SQLAlchemy-Ext==0.2
+sqlalchemy-orm==1.2.3
+uvicorn==0.20.0
+

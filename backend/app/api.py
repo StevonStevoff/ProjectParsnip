@@ -28,7 +28,7 @@ app.include_router(
 )
 
 
-origins = ["http://localhost:3000", "localhost:3000"]
+origins = ["http://localhost:3000", "localhost:3000", "http://localhost:19006"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +41,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello react native"}
 
 
 @app.get("/authenticated-route")
