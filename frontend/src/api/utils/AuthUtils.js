@@ -1,45 +1,42 @@
-import { API } from "../API";
 import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
+import API from '../API';
 
-export const AuthUtils = {
-  isUserAuthenticated: async function () {
-    if(Device.brand != null ){ //checks the device isn't a mobile
-      if(await SecureStore.getItemAsync('token')){
-        return true; 
-      }
-    }else{
-      if (window.localStorage.getItem("token") !== null) {
+const AuthUtils = {
+  async isUserAuthenticated() {
+    if (Device.brand != null) { // checks the device isn't a mobile
+      if (await SecureStore.getItemAsync('token')) {
         return true;
       }
+    } else if (window.localStorage.getItem('token') !== null) {
+      return true;
     }
-    return false
+    return false;
   },
 
-  setUserToken: async function(token){
-    if(Device.brand != null){
-      SecureStore.setItemAsync('token', token) !== null
-    }else{
-      window.localStorage.setItem("token", token);
+  async setUserToken(token) {
+    if (Device.brand != null) {
+      SecureStore.setItemAsync('token', token);
+    } else {
+      window.localStorage.setItem('token', token);
     }
   },
 
-  login: async function (navigation, email, password) {
-    return await API.loginUser({ email: email, password: password })
+  async login(navigation, email, password) {
+    return API.loginUser({ email, password })
       .then((response) => {
         this.setUserToken(response.data.access_token);
-        navigation.navigate("Navigation");
-        return "Successful Login"
+        navigation.navigate('Navigation');
+        return 'Successful Login';
       })
       .catch((error) => {
         this.handleAuthenticationError(error.response.data.detail);
         return this.errorMessage;
       });
-
   },
 
-  registerUser: async function (navigation, email, password) {
-    return await API.registerUser({ email: email, password: password })
+  async registerUser(navigation, email, password) {
+    return API.registerUser({ email, password })
       .then(() => {
         this.login(navigation, email, password);
       })
@@ -49,33 +46,33 @@ export const AuthUtils = {
       });
   },
 
-  logout: function (navigation) {
+  logout(navigation) {
     API.logout();
-    navigation.navigate("LoginScreen");
+    navigation.navigate('LoginScreen');
   },
 
-  handleAuthenticationError: function (error) {
+  handleAuthenticationError(error) {
     switch (error) {
-      case "LOGIN_BAD_CREDENTIALS":
-        this.errorMessage = "Login Credentails Incorrect";
-        console.log(this.errorMessage);
+      case 'LOGIN_BAD_CREDENTIALS':
+        this.errorMessage = 'Login Credentails Incorrect';
         break;
-      case "LOGIN_USER_NOT_VERIFIED":
-        this.errorMessage = "User not verified";
+      case 'LOGIN_USER_NOT_VERIFIED':
+        this.errorMessage = 'User not verified';
         break;
-      case "REGISTER_USER_ALREADY_EXISTS":
-        this.errorMessage = "User already exists";
+      case 'REGISTER_USER_ALREADY_EXISTS':
+        this.errorMessage = 'User already exists';
         break;
-      case "REGISTER_INVALID_PASSWORD":
-        this.errorMessage =
-          "Invalid password. Password should be at least 3 characters";
+      case 'REGISTER_INVALID_PASSWORD':
+        this.errorMessage = 'Invalid password. Password should be at least 3 characters';
         break;
       default:
-        this.errorMessage = "";
+        this.errorMessage = '';
     }
   },
 
-  getErrorMessage: function () {
+  getErrorMessage() {
     return this.errorMessage;
   },
 };
+
+export default AuthUtils;

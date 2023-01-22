@@ -1,9 +1,10 @@
-import { API } from "../API";
+import API from '../API';
 
-export const PlantUtils = {
-    getAuthenticatedUser: async function(){
-        let response = await API.getAuthenticatedUser()
-        console.log(response.data.message);
-        return response.data.message;
-    }
-}
+const PlantUtils = {
+  async getAuthenticatedUser() {
+    const response = await API.getAuthenticatedUser();
+    return response.data.message;
+  },
+};
+
+export default PlantUtils;

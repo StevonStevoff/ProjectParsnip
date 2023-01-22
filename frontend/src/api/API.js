@@ -1,68 +1,72 @@
-import { api } from "./config/axiosConfigs";
-import { defineCancelApiObject } from "./config/axiosUtils";
-import qs from "qs";
+/* eslint-disable no-use-before-define */
+import qs from 'qs';
+import api from './config/axiosConfigs';
+import defineCancelApiObject from './config/axiosUtils';
 
-export const API = {
-  get: async function (cancel = false) {
+const API = {
+  async get(cancel = false) {
     const response = await api.request({
-      url: `/`,
-      method: "GET",
-      signal: cancel
-        ? cancelApiObject[this.get.name].handleRequestCancellation().signal
+      url: '/',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
 
     return response.data;
   },
-  registerUser: async function ({ email, password }, cancel = false) {
+  async registerUser({ email, password }, cancel = false) {
     const response = await api.request({
-      url: "/auth/register",
-      method: "POST",
+      url: '/auth/register',
+      method: 'POST',
       data: {
-        email: email,
-        password: password,
+        email,
+        password,
       },
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      signal: cancel
-        ? cancelApiObject[this.getPaginated.name].handleRequestCancellation()
-            .signal
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
     return response;
   },
 
-  loginUser: async function ({ email, password }, cancel = false) {
+  async loginUser({ email, password }, cancel = false) {
     const response = await api.request({
-      url: "/auth/jwt/login",
-      method: "POST",
+      url: '/auth/jwt/login',
+      method: 'POST',
       data: qs
         .stringify({
           username: email,
-          password: password,
+          password,
         })
-        .replace(/%40/, "@"),
+        .replace(/%40/, '@'),
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded',
+        signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+          : undefined,
       },
     });
-    api.defaults.headers.common["Authorization"] = 'Bearer ' + response.data.access_token;
+    api.defaults.headers.common.Authorization = `Bearer ${response.data.access_token}`;
     return response;
   },
-  logout: async function (cancel = false){
+  async logout(cancel = false) {
     const response = await api.request({
-      url: "/auth/jwt/logout",
-      method: "POST"
-    })
+      url: '/auth/jwt/logout',
+      method: 'POST',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
     return response;
   },
 
-  getAuthenticatedUser: async function (cancel = false) {
+  async getAuthenticatedUser(cancel = false) {
     const response = await api.request({
-        url: "/authenticated-route",
-        method: "GET",
-      })
+      url: '/authenticated-route',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
 
     return response;
   },
@@ -70,3 +74,5 @@ export const API = {
 
 // defining the cancel API object for ProductAPI
 const cancelApiObject = defineCancelApiObject(API);
+
+export default API;

@@ -1,8 +1,8 @@
-import { Text, View } from 'react-native'
-import React from 'react'
-import { useTheme } from "@react-navigation/native"; 
+import { Text, View } from 'react-native';
+import React from 'react';
+import { useTheme } from '@react-navigation/native';
 
-export function DevicesScreen() {
+function DevicesScreen() {
   const { colors } = useTheme();
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -10,3 +10,5 @@ export function DevicesScreen() {
     </View>
   );
 }
+
+export default DevicesScreen;
