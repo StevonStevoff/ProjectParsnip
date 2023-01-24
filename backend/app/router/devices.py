@@ -114,6 +114,14 @@ async def register_device(
     device = Device(**device_create.dict())
     device.owner = user
     device.users.append(user)
+
+    if device_create.sensor_ids:
+        await update_device_sensors(device, device_create.sensor_ids, session)
+
+    if device_create.user_ids:
+        device_create.user_ids.append(user.id)
+        await update_device_users(device, device_create.user_ids, session)
+
     session.add(device)
     await session.commit()
 

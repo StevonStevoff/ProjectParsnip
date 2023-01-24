@@ -36,7 +36,8 @@ class DeviceRead(DeviceBase):
 
 
 class DeviceCreate(DeviceBase):
-    pass
+    sensor_ids: Optional[list[int]]
+    user_ids: Optional[list[int]]
 
 
 class DeviceUpdate(DeviceBase):
