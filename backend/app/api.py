@@ -2,7 +2,8 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import User, create_db_and_tables
-from app.schemas import UserCreate, UserRead, UserUpdate
+from app.router import devices, users
+from app.schemas import UserCreate, UserRead
 from app.users import auth_backend, current_active_user, fastapi_users
 
 description = """
@@ -12,6 +13,7 @@ ProjectParsnip API services the frontend project available at _(url to frontend)
 
 app = FastAPI(title="ProjectParsnip", description=description, version="0.0.1")
 
+# === FastAPI Users Routes ===
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
 )
@@ -26,12 +28,10 @@ app.include_router(
 app.include_router(
     fastapi_users.get_verify_router(UserRead), prefix="/auth", tags=["auth"]
 )
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
-)
 
+# === Project Parsnip Routes ===
+app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(devices.router, prefix="/devices", tags=["devices"])
 
 origins = ["http://localhost:3000", "localhost:3000"]
 

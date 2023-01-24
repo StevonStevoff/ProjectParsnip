@@ -20,16 +20,26 @@ UserDevice = Table(
     Column("device_id", Integer, ForeignKey("devices.id")),
 )
 
+DeviceSensors = Table(
+    "device_sensors",
+    Base.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("device_id", Integer, ForeignKey("devices.id")),
+    Column("sensor_id", Integer, ForeignKey("sensors.id")),
+)
+
 
 class User(SQLAlchemyBaseUserTable[int], Base):
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
     __tablename__ = "users"
     # email and hashed password created by fastapi_users parent class
     username = Column(String)
+    name = Column(String)
 
     plant_profiles = relationship(
         "PlantProfile", secondary=UserProfile, back_populates="user"
     )
+    owned_devices = relationship("Device", back_populates="owner")
     devices = relationship("Device", secondary=UserDevice, back_populates="users")
 
 
@@ -37,9 +47,26 @@ class Device(Base):
     __tablename__ = "devices"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    model_name = Column(String)
+    owner_id = Column(Integer, ForeignKey("users.id"))
 
+    owner = relationship("User", back_populates="owned_devices")
     users = relationship("User", secondary=UserDevice, back_populates="devices")
     plants = relationship("Plant", back_populates="device")
+    sensors = relationship("Sensor", secondary=DeviceSensors, back_populates="devices")
+
+    def __init__(self, name, model_name):
+        self.name = name
+        self.model_name = model_name
+
+
+class Sensor(Base):
+    __tablename__ = "sensors"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    description = Column(String)
+
+    devices = relationship("Device", secondary=DeviceSensors, back_populates="sensors")
 
 
 class Plant(Base):

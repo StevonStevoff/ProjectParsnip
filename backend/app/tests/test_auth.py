@@ -10,6 +10,7 @@ async def test_create_user(client):
         json={
             "email": "testuser@example.com",
             "username": "TestUsername",
+            "name": "Mr Test",
             "password": "string",
             "is_active": True,
             "is_superuser": False,
@@ -22,6 +23,7 @@ async def test_create_user(client):
     json_response = response.json()
     assert json_response["email"] == "testuser@example.com"
     assert json_response["username"] == "TestUsername"
+    assert json_response["name"] == "Mr Test"
     assert json_response["is_active"]
     assert not json_response["is_superuser"]
     assert not json_response["is_verified"]
@@ -36,6 +38,7 @@ async def test_user_already_exists(client):
         json={
             "email": "testuser@example.com",
             "username": "TestUsername",
+            "name": "Mr Test",
             "password": "string",
             "is_active": True,
             "is_superuser": False,
@@ -85,7 +88,7 @@ async def test_login_superuser_by_email(client):
     response = await client.post(
         "/auth/jwt/login",
         headers=headers,
-        data={"username": "superuser@test.com", "password": "password"},
+        data={"username": "admin@test.com", "password": "password"},
     )
 
     assert response.status_code == 200
@@ -100,7 +103,7 @@ async def test_login_superuser_by_username(client):
     response = await client.post(
         "/auth/jwt/login",
         headers=headers,
-        data={"username": "TestSuperuser", "password": "password"},
+        data={"username": "TestAdmin", "password": "password"},
     )
 
     assert response.status_code == 200

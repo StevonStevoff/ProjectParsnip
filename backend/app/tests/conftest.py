@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.api import app
-from app.database import get_user_db
+from app.database import get_async_session, get_user_db
 from app.models import Base, User
 
 PWD = os.path.abspath(os.curdir)
@@ -67,8 +67,9 @@ async def create_superuser():
         hashed_password = PasswordHelper().hash("password")
         test_superuser = User(
             id=1,
-            email="superuser@test.com",
-            username="TestSuperuser",
+            email="admin@test.com",
+            username="TestAdmin",
+            name="Mr Admin Test",
             hashed_password=hashed_password,
             is_active=True,
             is_superuser=True,
@@ -96,6 +97,7 @@ async def create_test_database():
 
 @pytest_asyncio.fixture(scope="session")
 async def client(create_test_database):
+    app.dependency_overrides[get_async_session] = get_db
     app.dependency_overrides[get_user_db] = override_get_db
 
     async with LifespanManager(app):
