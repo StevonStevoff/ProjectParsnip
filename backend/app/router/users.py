@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 
 from app.database import get_async_session
 from app.models import User
@@ -37,7 +37,8 @@ async def get_all_users(
 
     if not users:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return users
+    user_list = [UserRead.from_orm(user) for user in users]
+    return user_list
 
 
 router.include_router(
@@ -71,4 +72,4 @@ async def get_user_by_id(id: int, session: AsyncSession = Depends(get_async_sess
 
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return user
+    return UserRead.from_orm(user)

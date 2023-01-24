@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from app.database import get_async_session
@@ -39,12 +39,15 @@ async def user_can_manage_device(user: User, device: Device):
 
 @router.get(
     "/me",
+    name="devices:my_devices",
     response_model=list[DeviceRead],
     dependencies=[Depends(current_active_user)],
-    name="devices:my_devices",
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "description": "User has no devices",
         },
     },
 )
@@ -56,7 +59,11 @@ async def get_my_devices(
         select(Device).join(Device.users).filter_by(id=user.id)
     )
     devices = devices_query.scalars().all()
-    return devices
+
+    if not devices:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    device_list = [DeviceRead.from_orm(device) for device in devices]
+    return device_list
 
 
 @router.get(
@@ -69,7 +76,7 @@ async def get_my_devices(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "User has no devices",
+            "description": "User has no owned devices",
         },
     },
 )
@@ -83,10 +90,9 @@ async def get_owned_devices(
     devices = devices_query.scalars().all()
 
     if not devices:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User has no devices"
-        )
-    return devices
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    device_list = [DeviceRead.from_orm(device) for device in devices]
+    return device_list
 
 
 @router.post(
@@ -133,7 +139,7 @@ async def register_device(
     await session.refresh(device)
 
     created_device = await session.get(Device, device.id)
-    return created_device
+    return DeviceRead.from_orm(created_device)
 
 
 @router.get(
@@ -232,7 +238,7 @@ async def patch_device(
         await update_device_users(device, device_update.user_ids, session)
 
     await session.commit()
-    return device
+    return DeviceRead.from_orm(device)
 
 
 async def update_device_sensors(

@@ -11,8 +11,7 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.exceptions import UserAlreadyExists, UserNotExists
-from sqlalchemy import func
-from sqlalchemy.future import select
+from sqlalchemy import func, select
 
 from app.database import get_async_session, get_user_db
 from app.models import User

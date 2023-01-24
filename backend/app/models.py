@@ -62,7 +62,12 @@ class Device(Base):
         lazy="selectin",
     )
     plants = relationship("Plant", back_populates="device")
-    sensors = relationship("Sensor", secondary=DeviceSensors, back_populates="devices")
+    sensors = relationship(
+        "Sensor",
+        secondary=DeviceSensors,
+        back_populates="devices",
+        lazy="selectin",
+    )
 
 
 class Sensor(Base):
@@ -82,10 +87,17 @@ class Plant(Base):
     plant_profile_id = Column(Integer, ForeignKey("plant_profiles.id"))
     plant_type_id = Column(Integer, ForeignKey("plant_types.id"))
 
-    device = relationship("Device", back_populates="plants")
+    device = relationship(
+        "Device",
+        back_populates="plants",
+        lazy="selectin",
+    )
     plant_data = relationship("PlantData", back_populates="plant")
     plant_profile = relationship("PlantProfile")
-    plant_type = relationship("PlantType")
+    plant_type = relationship(
+        "PlantType",
+        lazy="selectin",
+    )
 
 
 class PlantData(Base):
@@ -95,7 +107,11 @@ class PlantData(Base):
     timestamp = Column(DateTime)
     plant_id = Column(Integer, ForeignKey("plants.id"))
 
-    plant = relationship("Plant", back_populates="plant_data")
+    plant = relationship(
+        "Plant",
+        back_populates="plant_data",
+        lazy="selectin",
+    )
 
 
 class PlantType(Base):
@@ -112,5 +128,8 @@ class PlantProfile(Base):
     description = Column(String)
     plant_type_id = Column(Integer, ForeignKey("plant_types.id"))
 
-    plant_type = relationship("PlantType")
+    plant_type = relationship(
+        "PlantType",
+        lazy="selectin",
+    )
     user = relationship("User", secondary=UserProfile, back_populates="plant_profiles")

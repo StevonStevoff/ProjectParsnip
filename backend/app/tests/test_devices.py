@@ -21,4 +21,5 @@ async def test_create_device(client, user_access_token):
     assert json_response["id"] == 1
     assert json_response["name"] == "TestDevice"
     assert json_response["model_name"] == "First Version"
-    assert json_response["owner_id"] == 2
+    assert json_response["owner"]["id"] == 2
+    assert len(json_response["users"]) == 2

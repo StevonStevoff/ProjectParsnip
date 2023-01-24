@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 
 class UserRead(schemas.BaseUser[int]):
+    id: int
     username: str
     name: str
 
@@ -22,6 +23,27 @@ class UserUpdate(schemas.BaseUserUpdate):
     name: str
 
 
+class SensorBase(BaseModel):
+    name: str
+    description: str
+
+
+class SensorRead(SensorBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+class SensorCreate(SensorBase):
+    pass
+
+
+class SensorUpdate(SensorBase):
+    name: Optional[str]
+    description: Optional[str]
+
+
 class DeviceBase(BaseModel):
     name: str
     model_name: str
@@ -29,7 +51,9 @@ class DeviceBase(BaseModel):
 
 class DeviceRead(DeviceBase):
     id: int
-    owner_id: int
+    owner: UserRead
+    users: list[UserRead]
+    sensors: list[SensorRead]
 
     class Config:
         orm_mode = True
