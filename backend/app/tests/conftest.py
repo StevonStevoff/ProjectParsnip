@@ -103,3 +103,29 @@ async def client(create_test_database):
     async with LifespanManager(app):
         async with AsyncClient(app=app, base_url="http://test") as client:
             yield client
+
+
+@pytest_asyncio.fixture(scope="session")
+async def user_access_token(client):
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    response = await client.post(
+        "/auth/jwt/login",
+        headers=headers,
+        data={"username": "TestUser", "password": "password"},
+    )
+    assert response.status_code == 200
+    json_response = response.json()
+    return json_response["access_token"]
+
+
+@pytest_asyncio.fixture(scope="session")
+async def superuser_access_token(client):
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    response = await client.post(
+        "/auth/jwt/login",
+        headers=headers,
+        data={"username": "TestAdmin", "password": "password"},
+    )
+    assert response.status_code == 200
+    json_response = response.json()
+    return json_response["access_token"]

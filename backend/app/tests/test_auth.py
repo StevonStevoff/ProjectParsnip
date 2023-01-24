@@ -9,9 +9,9 @@ async def test_create_user(client):
         "/auth/register",
         json={
             "email": "testuser@example.com",
-            "username": "TestUsername",
+            "username": "TestUser",
             "name": "Mr Test",
-            "password": "string",
+            "password": "password",
             "is_active": True,
             "is_superuser": False,
             "is_verified": False,
@@ -22,7 +22,7 @@ async def test_create_user(client):
 
     json_response = response.json()
     assert json_response["email"] == "testuser@example.com"
-    assert json_response["username"] == "TestUsername"
+    assert json_response["username"] == "TestUser"
     assert json_response["name"] == "Mr Test"
     assert json_response["is_active"]
     assert not json_response["is_superuser"]
@@ -37,9 +37,9 @@ async def test_user_already_exists(client):
         "/auth/register",
         json={
             "email": "testuser@example.com",
-            "username": "TestUsername",
+            "username": "TestUser",
             "name": "Mr Test",
-            "password": "string",
+            "password": "password",
             "is_active": True,
             "is_superuser": False,
             "is_verified": False,
@@ -58,7 +58,7 @@ async def test_login_user_by_email(client):
     response = await client.post(
         "/auth/jwt/login",
         headers=headers,
-        data={"username": "testuser@example.com", "password": "string"},
+        data={"username": "testuser@example.com", "password": "password"},
     )
 
     assert response.status_code == 200
@@ -73,7 +73,7 @@ async def test_login_user_by_username(client):
     response = await client.post(
         "/auth/jwt/login",
         headers=headers,
-        data={"username": "TestUsername", "password": "string"},
+        data={"username": "TestUser", "password": "password"},
     )
 
     assert response.status_code == 200
@@ -92,8 +92,6 @@ async def test_login_superuser_by_email(client):
     )
 
     assert response.status_code == 200
-    json_respone = response.json()
-    return json_respone["access_token"]
 
 
 @pytest.mark.asyncio(scope="session")
@@ -107,5 +105,3 @@ async def test_login_superuser_by_username(client):
     )
 
     assert response.status_code == 200
-    json_respone = response.json()
-    return json_respone["access_token"]

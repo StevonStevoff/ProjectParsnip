@@ -91,6 +91,7 @@ async def get_owned_devices(
 
 @router.post(
     "/register",
+    # response_model=DeviceRead,
     dependencies=[Depends(current_active_user)],
     name="devices:register_device",
     status_code=status.HTTP_201_CREATED,
@@ -111,19 +112,28 @@ async def register_device(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    device = Device(**device_create.dict())
-    device.owner = user
-    device.users.append(user)
+    local_user = await session.merge(user)
+    device = Device()
+    device.name = device_create.name
+    device.model_name = device_create.model_name
+    device.owner = local_user
+    device.users.append(local_user)
 
     if device_create.sensor_ids:
         await update_device_sensors(device, device_create.sensor_ids, session)
 
     if device_create.user_ids:
         device_create.user_ids.append(user.id)
+        print(device_create.user_ids)
         await update_device_users(device, device_create.user_ids, session)
 
+    print(device)
     session.add(device)
     await session.commit()
+    await session.refresh(device)
+
+    created_device = await session.get(Device, device.id)
+    return created_device
 
 
 @router.get(
@@ -255,16 +265,22 @@ async def update_device_owner(device: Device, new_owner_id: int, session: AsyncS
 async def update_device_users(
     device: Device, user_ids: list[int], session: AsyncSession
 ):
+    if device.owner.id not in user_ids:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot remove device owner from users",
+        )
+
     users_query = select(User).where(User.id.in_(user_ids))
     results = await session.execute(users_query)
     user_list = results.scalars().all()
 
-    if user_list:
-        if device.owner not in user_list:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Cannot remove device owner from users",
-            )
-        device.users = user_list
+    local_user_list = []
+    for user in user_list:
+        local_user = await session.merge(user)
+        local_user_list.append(local_user)
+
+    if local_user_list:
+        device.users = local_user_list
 
         # TODO: Check whether editing this relationship is reflected on user databsae

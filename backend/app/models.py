@@ -50,14 +50,19 @@ class Device(Base):
     model_name = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship("User", back_populates="owned_devices")
-    users = relationship("User", secondary=UserDevice, back_populates="devices")
+    owner = relationship(
+        "User",
+        back_populates="owned_devices",
+        lazy="selectin",
+    )
+    users = relationship(
+        "User",
+        secondary=UserDevice,
+        back_populates="devices",
+        lazy="selectin",
+    )
     plants = relationship("Plant", back_populates="device")
     sensors = relationship("Sensor", secondary=DeviceSensors, back_populates="devices")
-
-    def __init__(self, name, model_name):
-        self.name = name
-        self.model_name = model_name
 
 
 class Sensor(Base):
