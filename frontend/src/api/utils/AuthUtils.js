@@ -31,7 +31,7 @@ const AuthUtils = {
       })
       .catch((error) => {
         this.handleAuthenticationError(error.response.data.detail);
-        return this.errorMessage;
+        return Promise.reject(this.errorMessage);
       });
   },
 
