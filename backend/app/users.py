@@ -11,6 +11,7 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.exceptions import UserAlreadyExists, UserNotExists
+from sqlalchemy import func
 from sqlalchemy.future import select
 
 from app.database import get_async_session, get_user_db
@@ -31,7 +32,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         request: Optional[Request] = None,
     ) -> User:
         matching_users = await self.user_db.session.execute(
-            select(User).where(User.username == user_create.username)
+            select(User).where(
+                func.lower(User.username) == func.lower(user_create.username)
+            )
         )
         existing_user = matching_users.scalars().first()
 
@@ -45,7 +48,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
             user = await self.get_by_email(credentials.username)
         except UserNotExists:
             user_query = await self.user_db.session.execute(
-                select(User).where(User.username == credentials.username)
+                select(User).where(
+                    func.lower(User.username) == func.lower(credentials.username)
+                )
             )
             user = user_query.scalars().first()
 
@@ -129,3 +134,4 @@ auth_backend = AuthenticationBackend(
 fastapi_users = FastAPIUsers[User, int](get_user_manager, [auth_backend])
 
 current_active_user = fastapi_users.current_user(active=True)
+current_active_superuser = fastapi_users.current_user(active=True, superuser=True)

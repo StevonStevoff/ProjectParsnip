@@ -30,6 +30,10 @@ engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 
+testing_async_session = sessionmaker(
+    engine, autocommit=False, class_=AsyncSession, autoflush=False
+)
+
 
 @pytest.fixture(scope="session")
 def event_loop():
@@ -41,25 +45,19 @@ def event_loop():
 
 
 async def get_db():
-    testing_async_session = sessionmaker(
-        engine, autocommit=False, class_=AsyncSession, autoflush=False
-    )
-    session = testing_async_session()
-    try:
-        yield session
-    finally:
-        await session.close()
+    async with testing_async_session() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
 
 
 async def override_get_db():
-    testing_async_session = sessionmaker(
-        engine, autocommit=False, class_=AsyncSession, autoflush=False
-    )
-    session = testing_async_session()
-    try:
-        yield SQLAlchemyUserDatabase(session, User)
-    finally:
-        await session.close()
+    async with testing_async_session() as session:
+        try:
+            yield SQLAlchemyUserDatabase(session, User)
+        finally:
+            await session.close()
 
 
 # superusers can only be created directly in the database
@@ -82,7 +80,6 @@ async def create_superuser():
 
 @pytest_asyncio.fixture(scope="session")
 async def create_test_database():
-
     # create database
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
