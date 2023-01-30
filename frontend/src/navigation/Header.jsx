@@ -3,9 +3,9 @@ import {
 } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import Avatar from '../../../assets/avatar.png';
-import { DarkTheme } from '../../stylesheets/DarkTheme';
-import { LightTheme } from '../../stylesheets/LightTheme';
+import Avatar from '../../assets/avatar.png';
+import { DarkTheme } from '../stylesheets/DarkTheme';
+import { LightTheme } from '../stylesheets/LightTheme';
 
 function Header() {
   const scheme = useColorScheme();

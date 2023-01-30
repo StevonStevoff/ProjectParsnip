@@ -28,7 +28,7 @@ app.include_router(
 )
 
 
-origins = ["http://localhost:3000", "localhost:3000", "http://localhost:19006"]
+origins = ["http://localhost:3000", "localhost:3000", "http://localhost:19006", "http://localhost:19000"]
 
 app.add_middleware(
     CORSMiddleware,

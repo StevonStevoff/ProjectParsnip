@@ -6,10 +6,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from '@react-navigation/native';
 import Header from './Header';
-import PlantsStackNavigation from '../../screens/PlantsScreens/PlantsStackNavigation';
-import PlantProfileStackNavigation from '../../screens/PlantProfileScreens/PlantProfilesStackNavigation';
-import DevicesDetailsStackNavigation from '../../screens/DevicesScreens/DeviceStackNavigation';
-import NotificationsScreen from '../../screens/SettingScreens/NotificationsScreen';
+import PlantsStackNavigation from '../screens/PlantsScreens/PlantsStackNavigation';
+import PlantProfileStackNavigation from '../screens/PlantProfileScreens/PlantProfilesStackNavigation';
+import DevicesDetailsStackNavigation from '../screens/DevicesScreens/DeviceStackNavigation';
+import NotificationsScreen from '../screens/SettingScreens/NotificationsScreen';
 
 function Navigation() {
   const { colors } = useTheme();

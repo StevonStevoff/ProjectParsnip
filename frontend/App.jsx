@@ -1,5 +1,5 @@
 import React from 'react';
-import NavigationRoot from './src/components/Navigation/NavigationRoot';
+import NavigationRoot from './src/navigation/NavigationRoot';
 
 function App() {
   return (

@@ -3,12 +3,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
 import Navigation from './BottomTabNavigation';
-import ProfileScreen from '../../screens/AuthScreens/ProfileScreen';
-import { LightTheme } from '../../stylesheets/LightTheme';
-import { DarkTheme } from '../../stylesheets/DarkTheme';
-import RegistrationScreen from '../../screens/AuthScreens/RegistrationScreen';
-import LoginScreen from '../../screens/AuthScreens/LoginScreen';
-import ForgotPasswordScreen from '../../screens/AuthScreens/ForgotPasswordScreen';
+import ProfileScreen from '../screens/AuthScreens/ProfileScreen';
+import { LightTheme } from '../stylesheets/LightTheme';
+import { DarkTheme } from '../stylesheets/DarkTheme';
+import RegistrationScreen from '../screens/AuthScreens/RegistrationScreen';
+import LoginScreen from '../screens/AuthScreens/LoginScreen';
+import ForgotPasswordScreen from '../screens/AuthScreens/ForgotPasswordScreen';
 
 const Stack = createStackNavigator();
 function NavigationRoot() {
