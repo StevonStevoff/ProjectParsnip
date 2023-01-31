@@ -290,12 +290,4 @@ async def update_plant_profile_users(
     users_query = await session.execute(
         select(User).where(User.id.in_(unique_user_id_list))
     )
-    user_list = users_query.scalars().all()
-
-    local_user_list = []
-    for user in user_list:
-        local_user = await session.merge(user)
-        local_user_list.append(local_user)
-
-    if local_user_list:
-        plant_profile.users = local_user_list
+    plant_profile.users = users_query.scalars().all()

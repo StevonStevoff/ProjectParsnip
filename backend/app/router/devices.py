@@ -191,7 +191,7 @@ async def patch_device(
     device: Device = Depends(get_device_or_404),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await user_can_manage_object(user, Device, device.owner_id)
+    await user_can_manage_object(user, device.owner_id)
     if device_update.name:
         device.name = device_update.name
 
@@ -252,14 +252,4 @@ async def update_device_users(
         select(User).where(User.id.in_(unique_user_id_list))
     )
     user_list = users_query.scalars().all()
-
-    local_user_list = []
-    # check if this is necessary
-    for user in user_list:
-        local_user = await session.merge(user)
-        local_user_list.append(local_user)
-
-    if local_user_list:
-        device.users = local_user_list
-
-        # TODO: Check whether editing this relationship is reflected on user databsae
+    device.users = user_list

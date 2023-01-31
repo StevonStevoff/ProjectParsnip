@@ -11,7 +11,7 @@ async def test_create_device(client, user_access_token):
             "name": "TestDevice",
             "model_name": "First Version",
             "sensor_ids": [],
-            "user_ids": [1],
+            "user_ids": [1, 2],
         },
     )
 
