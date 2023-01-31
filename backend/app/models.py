@@ -1,5 +1,5 @@
 from fastapi_users.db import SQLAlchemyBaseUserTable
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -37,10 +37,16 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     name = Column(String)
 
     plant_profiles = relationship(
-        "PlantProfile", secondary=UserProfile, back_populates="user"
+        "PlantProfile",
+        secondary=UserProfile,
+        back_populates="users",
     )
-    owned_devices = relationship("Device", back_populates="owner")
-    devices = relationship("Device", secondary=UserDevice, back_populates="users")
+    devices = relationship(
+        "Device",
+        secondary=UserDevice,
+        back_populates="users",
+        lazy="selectin",
+    )
 
 
 class Device(Base):
@@ -50,11 +56,7 @@ class Device(Base):
     model_name = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship(
-        "User",
-        back_populates="owned_devices",
-        lazy="selectin",
-    )
+    owner = relationship("User")
     users = relationship(
         "User",
         secondary=UserDevice,
@@ -119,6 +121,9 @@ class PlantType(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     description = Column(String)
+    creator_id = Column(Integer, ForeignKey("users.id"))
+
+    creator = relationship("User")
 
 
 class PlantProfile(Base):
@@ -126,10 +131,18 @@ class PlantProfile(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     description = Column(String)
+    public = Column(Boolean)
     plant_type_id = Column(Integer, ForeignKey("plant_types.id"))
+    creator_id = Column(Integer, ForeignKey("users.id"))
 
     plant_type = relationship(
         "PlantType",
         lazy="selectin",
     )
-    user = relationship("User", secondary=UserProfile, back_populates="plant_profiles")
+    creator = relationship("User")
+    users = relationship(
+        "User",
+        secondary=UserProfile,
+        back_populates="plant_profiles",
+        lazy="selectin",
+    )

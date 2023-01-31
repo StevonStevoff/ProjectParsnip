@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.database import get_async_session
 from app.models import Device, Sensor, User
-from app.router.users import get_user_by_id
+from app.router.utils import (
+    get_object_or_404,
+    model_list_to_schema,
+    user_can_manage_object,
+)
 from app.schemas import DeviceCreate, DeviceRead, DeviceUpdate
 from app.users import current_active_superuser, current_active_user
 
@@ -15,26 +18,7 @@ router = APIRouter()
 async def get_device_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> Device:
-    device_query = (
-        select(Device)
-        .where(Device.id == id)
-        .options(
-            selectinload(Device.owner),
-            selectinload(Device.users),
-            selectinload(Device.sensors),
-        )
-    )
-    result = await session.execute(device_query)
-    device = result.scalars().first()
-
-    if device is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return device
-
-
-async def user_can_manage_device(user: User, device: Device):
-    if device.owner_id != user.id and not user.is_superuser:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+    return await get_object_or_404(id, Device, session)
 
 
 @router.get(
@@ -51,7 +35,7 @@ async def user_can_manage_device(user: User, device: Device):
         },
     },
 )
-async def get_my_devices(
+async def get_user_devices(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ):
@@ -60,10 +44,7 @@ async def get_my_devices(
     )
     devices = devices_query.scalars().all()
 
-    if not devices:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    device_list = [DeviceRead.from_orm(device) for device in devices]
-    return device_list
+    return await model_list_to_schema(devices, DeviceRead)
 
 
 @router.get(
@@ -89,24 +70,18 @@ async def get_owned_devices(
     )
     devices = devices_query.scalars().all()
 
-    if not devices:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    device_list = [DeviceRead.from_orm(device) for device in devices]
-    return device_list
+    return await model_list_to_schema(devices, DeviceRead)
 
 
 @router.post(
     "/register",
-    # response_model=DeviceRead,
-    dependencies=[Depends(current_active_user)],
+    response_model=DeviceRead,
     name="devices:register_device",
+    dependencies=[Depends(current_active_user)],
     status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",
-        },
-        status.HTTP_403_FORBIDDEN: {
-            "description": "Not a superuser or device owner.",
         },
         status.HTTP_404_NOT_FOUND: {
             "description": "The device does not exist.",
@@ -123,17 +98,12 @@ async def register_device(
     device.name = device_create.name
     device.model_name = device_create.model_name
     device.owner = local_user
-    device.users.append(local_user)
 
-    if device_create.sensor_ids:
-        await update_device_sensors(device, device_create.sensor_ids, session)
+    await update_device_sensors(device, device_create.sensor_ids, session)
 
-    if device_create.user_ids:
-        device_create.user_ids.append(user.id)
-        print(device_create.user_ids)
-        await update_device_users(device, device_create.user_ids, session)
+    device_create.user_ids.append(user.id)
+    await update_device_users(device, device_create.user_ids, session)
 
-    print(device)
     session.add(device)
     await session.commit()
     await session.refresh(device)
@@ -152,7 +122,7 @@ async def register_device(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_403_FORBIDDEN: {
-            "description": "Not a superuser.",
+            "description": "Not a superuser or device owner.",
         },
         status.HTTP_404_NOT_FOUND: {
             "description": "The device does not exist.",
@@ -186,16 +156,16 @@ async def delete_device(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await user_can_manage_device(user, device)
+    await user_can_manage_object(user, device.owner_id)
     await session.delete(device)
     await session.commit()
 
 
 @router.patch(
     "/{id}",
-    dependencies=[Depends(current_active_user)],
-    name="devices:patch_device",
     response_model=DeviceRead,
+    name="devices:patch_device",
+    dependencies=[Depends(current_active_user)],
     description=(
         "for sensor and user lists, API will only update list for sensors and users"
         " which actually exist"
@@ -221,7 +191,7 @@ async def patch_device(
     device: Device = Depends(get_device_or_404),
     session: AsyncSession = Depends(get_async_session),
 ):
-    await user_can_manage_device(user, device)
+    await user_can_manage_object(user, Device, device.owner_id)
     if device_update.name:
         device.name = device_update.name
 
@@ -254,11 +224,11 @@ async def update_device_sensors(
 
 async def update_device_owner(device: Device, new_owner_id: int, session: AsyncSession):
     try:
-        user = await get_user_by_id(new_owner_id, session)
+        user = await get_object_or_404(new_owner_id, User, session)
     except HTTPException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No user with new_owner_id found",
+            detail=f"No user with id ({new_owner_id}) found when updating device owner",
         )
 
     if device not in user.devices:
@@ -271,17 +241,20 @@ async def update_device_owner(device: Device, new_owner_id: int, session: AsyncS
 async def update_device_users(
     device: Device, user_ids: list[int], session: AsyncSession
 ):
+    unique_user_id_list = [*set(user_ids)]
     if device.owner.id not in user_ids:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Cannot remove device owner from users",
         )
 
-    users_query = select(User).where(User.id.in_(user_ids))
-    results = await session.execute(users_query)
-    user_list = results.scalars().all()
+    users_query = await session.execute(
+        select(User).where(User.id.in_(unique_user_id_list))
+    )
+    user_list = users_query.scalars().all()
 
     local_user_list = []
+    # check if this is necessary
     for user in user_list:
         local_user = await session.merge(user)
         local_user_list.append(local_user)

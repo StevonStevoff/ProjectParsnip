@@ -23,16 +23,20 @@ class UserUpdate(schemas.BaseUserUpdate):
     name: str
 
 
+class BaseRead(BaseModel):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
 class SensorBase(BaseModel):
     name: str
     description: str
 
 
-class SensorRead(SensorBase):
-    id: int
-
-    class Config:
-        orm_mode = True
+class SensorRead(BaseRead, SensorBase):
+    pass
 
 
 class SensorCreate(SensorBase):
@@ -49,19 +53,15 @@ class DeviceBase(BaseModel):
     model_name: str
 
 
-class DeviceRead(DeviceBase):
-    id: int
+class DeviceRead(BaseRead, DeviceBase):
     owner: UserRead
     users: list[UserRead]
     sensors: list[SensorRead]
 
-    class Config:
-        orm_mode = True
-
 
 class DeviceCreate(DeviceBase):
-    sensor_ids: Optional[list[int]]
-    user_ids: Optional[list[int]]
+    sensor_ids: list[int]
+    user_ids: list[int]
 
 
 class DeviceUpdate(DeviceBase):
@@ -71,38 +71,43 @@ class DeviceUpdate(DeviceBase):
     user_ids: Optional[list[int]]
 
 
-class PlantProfileBase(BaseModel):
-    name: str
-    description: str
-    plant_type_id: int
-
-
-class PlantProfileRead(PlantProfileBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-class PlantProfileCreate(PlantProfileBase):
-    pass
-
-
-class PlantProfileUpdate(PlantProfileBase):
-    pass
-
-
 class PlantTypeBase(BaseModel):
     name: str
     description: str
 
 
-class PlantTypeRead(PlantTypeBase):
-    id: int
-
-    class Config:
-        orm_mode = True
+class PlantTypeRead(BaseRead, PlantTypeBase):
+    pass
 
 
 class PlantTypeCreate(PlantTypeBase):
     pass
+
+
+class PlantTypeUpdate(PlantTypeBase):
+    name: Optional[str]
+    description: Optional[str]
+
+
+class PlantProfileBase(BaseModel):
+    name: str
+    description: str
+    public: bool
+
+
+class PlantProfileRead(BaseRead, PlantProfileBase):
+    plant_type: PlantTypeRead
+    users: list[UserRead]
+
+
+class PlantProfileCreate(PlantProfileBase):
+    plant_type_id: int
+    user_ids: list[int]
+
+
+class PlantProfileUpdate(PlantProfileBase):
+    name: Optional[str]
+    description: Optional[str]
+    public: Optional[bool]
+    plant_type_id: Optional[int]
+    user_ids: Optional[list[int]]

@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import User, create_db_and_tables
-from app.router import devices, sensors, users
+from app.router import devices, plant_profiles, plant_types, sensors, users
 from app.schemas import UserCreate, UserRead
 from app.users import auth_backend, current_active_user, fastapi_users
 
@@ -33,6 +33,10 @@ app.include_router(
 app.include_router(devices.router, prefix="/devices", tags=["devices"])
 app.include_router(sensors.router, prefix="/sensors", tags=["sensors"])
 app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(plant_types.router, prefix="/plant_types", tags=["plant_types"])
+app.include_router(
+    plant_profiles.router, prefix="/plant_profiles", tags=["plant_profiles"]
+)
 
 origins = ["http://localhost:3000", "localhost:3000"]
 

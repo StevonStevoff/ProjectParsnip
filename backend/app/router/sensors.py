@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.database import get_async_session
 from app.models import Sensor
+from app.router.utils import get_object_or_404, model_list_to_schema
 from app.schemas import SensorCreate, SensorRead, SensorUpdate
 from app.users import current_active_superuser, current_active_user
 
@@ -14,15 +14,7 @@ router = APIRouter()
 async def get_sensor_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> Sensor:
-    sensor_query = (
-        select(Sensor).where(Sensor.id == id).options(selectinload(Sensor.devices))
-    )
-    result = await session.execute(sensor_query)
-    sensor = result.scalars().first()
-
-    if sensor is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return sensor
+    return await get_object_or_404(id, Sensor, session)
 
 
 @router.get(
@@ -49,10 +41,7 @@ async def get_all_sensors(
     results = await session.execute(sensors_query)
     sensors = results.scalars().all()
 
-    if not sensors:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    sensor_list = [SensorRead.from_orm(sensor) for sensor in sensors]
-    return sensor_list
+    return await model_list_to_schema(sensors, SensorRead)
 
 
 @router.post(
