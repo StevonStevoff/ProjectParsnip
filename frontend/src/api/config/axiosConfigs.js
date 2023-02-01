@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { notification } from 'antd';
+import { Platform } from 'react-native';
+
+const androidDevUrl = 'http://10.43.204.119:8000';
 
 const api = axios.create({
-  baseURL: 'http://0.0.0.0:8000',
+  baseURL: Platform.OS === 'android' ? androidDevUrl : 'http://localhost:8000',
 });
 
 // defining a custom error handler for all APIs
