@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, status
-
-# from sqlalchemy import select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
-from app.models import Plant, User
-from app.router.utils import get_object_or_404
+from app.models import Device, Plant, PlantProfile, User
+from app.router.utils import (
+    get_object_or_404,
+    model_list_to_schema,
+    user_can_manage_object,
+)
 from app.schemas import PlantCreate, PlantRead, PlantUpdate
 from app.users import current_active_superuser, current_active_user
 
@@ -16,6 +19,22 @@ async def get_plant_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> Plant:
     return await get_object_or_404(id, Plant, session)
+
+
+async def user_can_manage_device(
+    user: User, device_id: int, session: AsyncSession = Depends(get_async_session)
+):
+    device = await get_object_or_404(device_id, Device, session)
+    await user_can_manage_object(user, device.owner_id)
+
+
+async def user_can_manage_plant_profile(
+    user: User,
+    plant_profile_id: int,
+    session: AsyncSession = Depends(get_async_session),
+):
+    plant_profile = await get_object_or_404(plant_profile_id, PlantProfile, session)
+    await user_can_manage_object(user, plant_profile.owner_id)
 
 
 @router.get(
@@ -35,7 +54,15 @@ async def get_plant_or_404(
 async def get_all_plants(
     session: AsyncSession = Depends(get_async_session), contains: str | None = None
 ):
-    pass
+    if contains:
+        plants_query = select(Plant).where(Plant.name.ilike(f"%{contains}%"))
+    else:
+        plants_query = select(Plant)
+
+    results = await session.execute(plants_query)
+    plants = results.scalars().all()
+
+    return await model_list_to_schema(plants, PlantRead)
 
 
 @router.get(
@@ -81,7 +108,21 @@ async def register_plant(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    pass
+    plant = Plant()
+    plant.name = plant_create.name
+    plant.device_id = plant_create.device_id
+    plant.plant_profile_id = plant_create.plant_profile_id
+    plant.plant_type_id = plant_create.plant_type_id
+
+    await user_can_manage_device(user, plant.device_id)
+    await user_can_manage_plant_profile(user, plant.plant_profile_id)
+
+    session.add(plant)
+    await session.commit()
+    await session.refresh(plant)
+
+    created_plant = await session.get(Plant, plant.id)
+    return PlantRead.from_orm(created_plant)
 
 
 @router.delete(
@@ -126,7 +167,7 @@ async def delete_plant(
     },
 )
 async def patch_plant(
-    plant_update=PlantUpdate,
+    plant_update: PlantUpdate,
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
 ):
