@@ -111,3 +111,28 @@ class PlantProfileUpdate(PlantProfileBase):
     public: Optional[bool]
     plant_type_id: Optional[int]
     user_ids: Optional[list[int]]
+
+
+class PlantBase(BaseModel):
+    name: str
+
+
+class PlantRead(BaseRead, PlantBase):
+    device_id = int
+    plant_profile_id = int
+    plant_type_id = int
+
+
+class PlantCreate(PlantBase):
+    device_id = int
+    plant_profile_id = int
+    plant_type_id = int
+
+
+class PlantUpdate(PlantBase):
+    name: Optional[str]
+    device_id: Optional[int]
+    # For some reason these fields cause import error for tests
+    # confused
+    # plant_profile_id = Optional[int]
+    # plant_type_id = Optional[int]
