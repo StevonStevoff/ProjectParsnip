@@ -14,7 +14,8 @@ router = APIRouter()
 async def get_user_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> User:
-    return await get_object_or_404(id, User, session)
+    detail = "The user does not exist."
+    return await get_object_or_404(id, User, session, detail)
 
 
 @router.get(
@@ -28,7 +29,7 @@ async def get_user_or_404(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No users found",
+            "description": "No users found.",
         },
     },
 )
@@ -42,7 +43,7 @@ async def get_all_users(
     results = await session.execute(users_query)
     users = results.scalars().all()
 
-    return await model_list_to_schema(users, UserRead, "No users found")
+    return await model_list_to_schema(users, UserRead, "No users found.")
 
 
 router.include_router(

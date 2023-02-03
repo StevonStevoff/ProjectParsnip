@@ -18,7 +18,8 @@ router = APIRouter()
 async def get_device_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> Device:
-    return await get_object_or_404(id, Device, session)
+    detail = "The device does not exist."
+    return await get_object_or_404(id, Device, session, detail)
 
 
 @router.get(
@@ -31,7 +32,7 @@ async def get_device_or_404(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "User has no devices",
+            "description": "User has no devices.",
         },
     },
 )
@@ -57,7 +58,7 @@ async def get_user_devices(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "User has no owned devices",
+            "description": "User has no owned devices.",
         },
     },
 )
@@ -70,7 +71,7 @@ async def get_owned_devices(
     )
     devices = devices_query.scalars().all()
 
-    return await model_list_to_schema(devices, DeviceRead, "User has no owned devices")
+    return await model_list_to_schema(devices, DeviceRead, "User has no owned devices.")
 
 
 @router.post(
@@ -172,7 +173,7 @@ async def delete_device(
     ),
     responses={
         status.HTTP_400_BAD_REQUEST: {
-            "description": "Cannot remove owner from device",
+            "description": "Cannot remove owner from device.",
         },
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",
@@ -228,7 +229,8 @@ async def update_device_owner(device: Device, new_owner_id: int, session: AsyncS
     except HTTPException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No user with id ({new_owner_id}) found when updating device owner",
+            detail=f"No user with id ({new_owner_id})"
+            "found when updating device owner.",
         )
 
     if device not in user.devices:
@@ -245,7 +247,7 @@ async def update_device_users(
     if device.owner.id not in user_ids:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cannot remove device owner from users",
+            detail="Cannot remove device owner from users.",
         )
 
     users_query = await session.execute(
