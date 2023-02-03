@@ -113,11 +113,47 @@ async def test_get_user_contains_similar(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
+async def test_get_user_contains_multiple_similar(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/users/?contains=username", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert len(json_response) == 3
+    assert json_response[0]["username"] == "username1"
+    assert json_response[1]["username"] == "username2"
+    assert json_response[2]["username"] == "username3"
+
+
+@pytest.mark.asyncio(scope="session")
 async def test_get_user_contains_different(client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/?contains=adddmin", headers=headers)
 
     assert response.status_code == 404
     json_response = response.json()
-
     assert json_response["detail"] == "No users found."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_user_id(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/users/1", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["id"] == 1
+    assert json_response["username"] == "TestAdmin"
+    assert json_response["name"] == "Mr Admin Test"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_user_id_invalid(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/users/999", headers=headers)
+
+    assert response.status_code == 404
+    json_response = response.json()
+    assert json_response["detail"] == "The user does not exist."
