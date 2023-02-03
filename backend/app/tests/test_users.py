@@ -120,4 +120,4 @@ async def test_get_user_contains_different(client, user_access_token):
     assert response.status_code == 404
     json_response = response.json()
 
-    assert json_response["detail"] == "No users found"
+    assert json_response["detail"] == "No users found."

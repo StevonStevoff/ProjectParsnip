@@ -18,7 +18,8 @@ router = APIRouter()
 async def get_plant_type_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> PlantType:
-    return await get_object_or_404(id, PlantType, session)
+    detail = "The plant type does not exist."
+    return await get_object_or_404(id, PlantType, session, detail)
 
 
 @router.get(
@@ -31,7 +32,7 @@ async def get_plant_type_or_404(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No plant types found",
+            "description": "No plant types found.",
         },
     },
 )
@@ -48,7 +49,7 @@ async def get_all_plant_types(
     plant_types = results.scalars().all()
 
     return await model_list_to_schema(
-        plant_types, PlantTypeRead, "No plant types found"
+        plant_types, PlantTypeRead, "No plant types found."
     )
 
 
@@ -62,7 +63,7 @@ async def get_all_plant_types(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "User has no created plant types",
+            "description": "User has no created plant types.",
         },
     },
 )
@@ -76,7 +77,7 @@ async def get_my_plant_types(
     plant_types = plant_types_query.scalars().all()
 
     return await model_list_to_schema(
-        plant_types, PlantTypeRead, "User has no created plant types"
+        plant_types, PlantTypeRead, "User has no created plant types."
     )
 
 

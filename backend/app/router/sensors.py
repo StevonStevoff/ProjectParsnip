@@ -14,7 +14,8 @@ router = APIRouter()
 async def get_sensor_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> Sensor:
-    return await get_object_or_404(id, Sensor, session)
+    detail = "The sensor does not exist."
+    return await get_object_or_404(id, Sensor, session, detail)
 
 
 @router.get(
@@ -27,7 +28,7 @@ async def get_sensor_or_404(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No sensors found",
+            "description": "No sensors found.",
         },
     },
 )
@@ -41,7 +42,7 @@ async def get_all_sensors(
     results = await session.execute(sensors_query)
     sensors = results.scalars().all()
 
-    return await model_list_to_schema(sensors, SensorRead, "No sensors found")
+    return await model_list_to_schema(sensors, SensorRead, "No sensors found.")
 
 
 @router.post(
@@ -81,7 +82,7 @@ async def register_sensor(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No sensors found",
+            "description": "The sensor does not exist.",
         },
     },
 )
@@ -101,7 +102,7 @@ async def get_sensor_by_id(sensor: Sensor = Depends(get_sensor_or_404)):
             "description": "Not a superuser or owner of device.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No sensors found",
+            "description": "The sensor does not exist.",
         },
     },
 )
@@ -126,7 +127,7 @@ async def delete_sensor(
             "description": "Not a superuser or owner of device.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No sensors found",
+            "description": "The sensor does not exist.",
         },
     },
 )

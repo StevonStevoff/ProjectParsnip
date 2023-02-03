@@ -18,7 +18,8 @@ router = APIRouter()
 async def get_plant_profile_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> PlantProfile:
-    return await get_object_or_404(id, PlantProfile, session)
+    detail = "The plant profile does not exist."
+    return await get_object_or_404(id, PlantProfile, session, detail)
 
 
 @router.get(
@@ -31,7 +32,7 @@ async def get_plant_profile_or_404(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No plant profiles found",
+            "description": "No plant profiles found.",
         },
     },
 )
@@ -55,7 +56,7 @@ async def get_all_plant_profiles(
     profiles = results.scalars().all()
 
     return await model_list_to_schema(
-        profiles, PlantProfileRead, "No plant profiles found"
+        profiles, PlantProfileRead, "No plant profiles found."
     )
 
 
@@ -69,7 +70,7 @@ async def get_all_plant_profiles(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "User has no created plant profiles",
+            "description": "User has no created plant profiles.",
         },
     },
 )
@@ -83,7 +84,7 @@ async def get_user_profiles(
     profiles = profiles_query.scalars().all()
 
     return await model_list_to_schema(
-        profiles, PlantProfileRead, "User has no created plant profiles"
+        profiles, PlantProfileRead, "User has no created plant profiles."
     )
 
 
@@ -97,7 +98,7 @@ async def get_user_profiles(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "User has no created plant profiles",
+            "description": "User has no created plant profiles.",
         },
     },
 )
@@ -111,7 +112,10 @@ async def get_created_profiles(
     profiles = profiles_query.scalars().all()
 
     if not profiles:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User has no created plant profiles.",
+        )
     profile_list = [PlantProfileRead.from_orm(profile) for profile in profiles]
     return profile_list
 
@@ -124,7 +128,7 @@ async def get_created_profiles(
     status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_400_BAD_REQUEST: {
-            "description": "Cannot remove creator from plant profile",
+            "description": "Cannot remove creator from plant profile.",
         },
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",
@@ -213,7 +217,7 @@ async def delete_plant_profile(
     dependencies=[Depends(current_active_user)],
     responses={
         status.HTTP_400_BAD_REQUEST: {
-            "description": "Cannot remove creator from plant profile",
+            "description": "Cannot remove creator from plant profile.",
         },
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",
@@ -275,7 +279,7 @@ async def update_profile_plant_type(
     except HTTPException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No plant type with id ({plant_type_id}) found",
+            detail=f"No plant type with id ({plant_type_id}) found.",
         )
 
     plant_profile.plant_type = plant_type
@@ -288,7 +292,7 @@ async def update_plant_profile_users(
     if plant_profile.creator.id not in unique_user_id_list:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cannot remove plant profile creator from users",
+            detail="Cannot remove plant profile creator from users.",
         )
 
     users_query = await session.execute(
