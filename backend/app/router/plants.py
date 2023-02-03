@@ -18,7 +18,8 @@ router = APIRouter()
 async def get_plant_or_404(
     id: int, session: AsyncSession = Depends(get_async_session)
 ) -> Plant:
-    return await get_object_or_404(id, Plant, session)
+    detail = "The plant does not exist."
+    return await get_object_or_404(id, Plant, session, detail)
 
 
 async def user_can_manage_device(
@@ -47,7 +48,7 @@ async def user_can_manage_plant_profile(
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No plants found",
+            "description": "No plants found.",
         },
     },
 )
@@ -62,7 +63,7 @@ async def get_all_plants(
     results = await session.execute(plants_query)
     plants = results.scalars().all()
 
-    return await model_list_to_schema(plants, PlantRead, "No plants found")
+    return await model_list_to_schema(plants, PlantRead, "No plants found.")
 
 
 @router.get(

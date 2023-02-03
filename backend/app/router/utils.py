@@ -6,12 +6,14 @@ from app.models import Base, User
 from app.schemas import BaseRead
 
 
-async def get_object_or_404(id: int, model_type: Base, session: AsyncSession):
+async def get_object_or_404(
+    id: int, model_type: Base, session: AsyncSession, detail: str
+):
     model_query = await session.execute(select(model_type).where(model_type.id == id))
     model_object = model_query.scalars().first()
 
     if model_object is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
     return model_object
 
 
