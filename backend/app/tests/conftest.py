@@ -90,7 +90,7 @@ async def create_test_database():
     # run the tests
     yield
 
-    # destory database
+    # destroy database
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
