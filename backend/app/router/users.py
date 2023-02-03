@@ -42,7 +42,7 @@ async def get_all_users(
     results = await session.execute(users_query)
     users = results.scalars().all()
 
-    return await model_list_to_schema(users, UserRead)
+    return await model_list_to_schema(users, UserRead, "No users found")
 
 
 router.include_router(

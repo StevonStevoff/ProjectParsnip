@@ -15,9 +15,9 @@ async def get_object_or_404(id: int, model_type: Base, session: AsyncSession):
     return model_object
 
 
-async def model_list_to_schema(model_list: list[Base], schema: BaseRead):
+async def model_list_to_schema(model_list: list[Base], schema: BaseRead, detail: str):
     if not model_list:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
     return [schema.from_orm(model) for model in model_list]
 
 

@@ -54,7 +54,9 @@ async def get_all_plant_profiles(
     results = await session.execute(profiles_query)
     profiles = results.scalars().all()
 
-    return await model_list_to_schema(profiles, PlantProfileRead)
+    return await model_list_to_schema(
+        profiles, PlantProfileRead, "No plant profiles found"
+    )
 
 
 @router.get(
@@ -80,7 +82,9 @@ async def get_user_profiles(
     )
     profiles = profiles_query.scalars().all()
 
-    return await model_list_to_schema(profiles, PlantProfileRead)
+    return await model_list_to_schema(
+        profiles, PlantProfileRead, "User has no created plant profiles"
+    )
 
 
 @router.get(

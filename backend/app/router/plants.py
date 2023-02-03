@@ -62,7 +62,7 @@ async def get_all_plants(
     results = await session.execute(plants_query)
     plants = results.scalars().all()
 
-    return await model_list_to_schema(plants, PlantRead)
+    return await model_list_to_schema(plants, PlantRead, "No plants found")
 
 
 @router.get(
