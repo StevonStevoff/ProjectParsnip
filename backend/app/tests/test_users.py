@@ -156,4 +156,4 @@ async def test_get_user_id_invalid(client, user_access_token):
 
     assert response.status_code == 404
     json_response = response.json()
-    assert json_response["detail"] == "Not Found"
+    assert json_response["detail"] == "The user does not exist."
