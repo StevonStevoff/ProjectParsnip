@@ -7,7 +7,7 @@ from app.tests.conftest import get_db
 
 
 async def add_users(client):
-    async for db in get_db():
+    async for session in get_db():
         hashed_pwd = PasswordHelper().hash("password")
         test_users = [None] * 3
         # id=1 and id=2 are already in use
@@ -40,8 +40,8 @@ async def add_users(client):
         )
 
         for test_user in test_users:
-            db.add(test_user)
-        await db.commit()
+            session.add(test_user)
+        await session.commit()
         break
 
 
@@ -71,8 +71,8 @@ async def test_get_all_users(client, user_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    async for db in get_db():
-        users_results = await db.execute(select(User))
+    async for session in get_db():
+        users_results = await session.execute(select(User))
         break
     users = users_results.scalars().all()
 

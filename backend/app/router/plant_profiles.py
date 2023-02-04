@@ -147,6 +147,10 @@ async def register_plant_profile(
     plant_profile.public = plant_profile_create.public
     plant_profile.creator = local_user
 
+    # All plant profiles created through API are made by users
+    # non user created profiles inserted directly through script
+    plant_profile.user_created = True
+
     await update_profile_plant_type(
         plant_profile, plant_profile_create.plant_type_id, session
     )

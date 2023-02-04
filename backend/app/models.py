@@ -121,9 +121,10 @@ class PlantType(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     description = Column(String)
+    user_created = Column(Boolean)
     creator_id = Column(Integer, ForeignKey("users.id"))
 
-    creator = relationship("User")
+    creator = relationship("User", lazy="selectin")
 
 
 class PlantProfile(Base):
@@ -132,6 +133,7 @@ class PlantProfile(Base):
     name = Column(String)
     description = Column(String)
     public = Column(Boolean)
+    user_created = Column(Boolean)
     plant_type_id = Column(Integer, ForeignKey("plant_types.id"))
     creator_id = Column(Integer, ForeignKey("users.id"))
 
@@ -139,7 +141,7 @@ class PlantProfile(Base):
         "PlantType",
         lazy="selectin",
     )
-    creator = relationship("User")
+    creator = relationship("User", lazy="selectin")
     users = relationship(
         "User",
         secondary=UserProfile,

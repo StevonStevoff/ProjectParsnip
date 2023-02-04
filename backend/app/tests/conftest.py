@@ -63,7 +63,7 @@ async def override_get_db():
 # superusers can only be created directly in the database
 # without an already existing superuser
 async def create_superuser():
-    async for db in get_db():
+    async for session in get_db():
         hashed_password = PasswordHelper().hash("password")
         test_superuser = User(
             id=1,
@@ -74,8 +74,8 @@ async def create_superuser():
             is_active=True,
             is_superuser=True,
         )
-        db.add(test_superuser)
-        await db.commit()
+        session.add(test_superuser)
+        await session.commit()
         break
 
 
