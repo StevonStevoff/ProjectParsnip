@@ -188,4 +188,5 @@ async def patch_plant_type(
         plant_type.description = plant_type_update.description
 
     await session.commit()
+    await session.refresh(plant_type)
     return PlantTypeRead.from_orm(plant_type)

@@ -7,16 +7,24 @@ from app.tests.conftest import get_db
 
 # create plant for testing here so that we are not
 # dependant on test_plant_types.py being called
+#
+# Tests simply need two plant types to exist, therefore it doesn't
+# matter if ID 1 and ID 2 are created in test_plant_types.py instead
 async def add_plant_types(client):
     async for session in get_db():
         test_plant_types = []
         test_plant_types.append(
             PlantType(
-                id=1,
                 name="Test Admin Parsnip",
                 description="This is a Test Parsnip Type, not created by a user",
                 user_created=False,
-                creator_id=1,
+            )
+        )
+        test_plant_types.append(
+            PlantType(
+                name="Test Admin Potato",
+                description="This is a Test Potato Type, not created by a user",
+                user_created=False,
             )
         )
         for test_plant_type in test_plant_types:
@@ -472,3 +480,107 @@ async def test_delete_plant_profile_nonexistent(client, superuser_access_token):
     json_response = response.json()
 
     assert json_response["detail"] == "The plant profile does not exist."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_profile_without_token(client):
+    response = await client.patch("/plant_profiles/3")
+
+    assert response.status_code == 401
+    json_response = response.json()
+
+    assert json_response["detail"] == "Unauthorized"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_profile_not_manageable(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch("/plant_profiles/1", headers=headers, json={})
+
+    assert response.status_code == 403
+    json_response = response.json()
+
+    assert json_response["detail"] == "Forbidden"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_profile_remove_self_not_manageable(
+    client, user_access_token
+):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch(
+        "/plant_profiles/1", headers=headers, json={"user_ids": [1]}
+    )
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert len(json_response["users"]) == 1
+    assert json_response["users"][0]["id"] == 1
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_profile_add_self_not_manageable(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch(
+        "/plant_profiles/1", headers=headers, json={"user_ids": [1, 2]}
+    )
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert len(json_response["users"]) == 2
+    assert json_response["users"][1]["id"] == 2
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_profile_change_users_invalid(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch(
+        "/plant_profiles/1", headers=headers, json={"user_ids": [1, 2, 3]}
+    )
+
+    assert response.status_code == 403
+    json_response = response.json()
+
+    assert json_response["detail"] == "Forbidden"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_profile(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch(
+        "/plant_profiles/3",
+        headers=headers,
+        json={
+            "name": "Edited Public Test Profile",
+            "description": "Edited User's Public Test Profile Description",
+            "public": True,
+            "plant_type_id": 2,
+            "user_ids": [1, 2],
+        },
+    )
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["name"] == "Edited Public Test Profile"
+    assert (
+        json_response["description"] == "Edited User's Public Test Profile Description"
+    )
+    assert json_response["public"]
+    assert json_response["plant_type"]["id"] == 2
+    assert len(json_response["users"]) == 2
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_profile_make_private(client, superuser_access_token):
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    response = await client.patch(
+        "/plant_profiles/3", headers=headers, json={"public": False}
+    )
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert not json_response["public"]

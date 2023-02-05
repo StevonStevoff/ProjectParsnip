@@ -228,7 +228,7 @@ async def delete_plant_profile(
 @router.patch(
     "/{id}",
     name="plant_profiles:patch_plant_profile",
-    response_model=PlantProfileRead,
+    # response_model=PlantProfileRead,
     dependencies=[Depends(current_active_user)],
     responses={
         status.HTTP_400_BAD_REQUEST: {
@@ -259,9 +259,7 @@ async def patch_plant_profile(
         if plant_profile_update.description:
             plant_profile.description = plant_profile_update.description
 
-        # THIS NEEDS SOME TESTING TO MAKE SURE IT WORKS
-        # unkown optional behaviour with boolean value
-        if plant_profile_update.public:
+        if plant_profile_update.public is not None:
             plant_profile.public = plant_profile_update.public
 
         if plant_profile_update.plant_type_id:
@@ -274,8 +272,11 @@ async def patch_plant_profile(
                 plant_profile, plant_profile_update.user_ids, session
             )
     except HTTPException:
-        # non-creator users can add themselves to public profiles
+        # non-creator users can add or remove themselves to public profiles
         if plant_profile.public and plant_profile_update.user_ids:
+            await check_removing_or_adding_self(
+                plant_profile, plant_profile_update, user.id
+            )
             await update_plant_profile_users(
                 plant_profile, plant_profile_update.user_ids, session
             )
@@ -283,7 +284,23 @@ async def patch_plant_profile(
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
     await session.commit()
+    await session.refresh(plant_profile)
     return PlantProfileRead.from_orm(plant_profile)
+
+
+async def check_removing_or_adding_self(
+    plant_profile: PlantProfile, plant_profile_update: PlantProfileUpdate, user_id
+):
+    existing_user_ids = [user.id for user in plant_profile.users]
+
+    adding_self = plant_profile_update.user_ids == existing_user_ids + [user_id]
+
+    if user_id in existing_user_ids:
+        existing_user_ids.remove(user_id)
+    removing_self = existing_user_ids == plant_profile_update.user_ids
+
+    if not (removing_self or adding_self):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
 
 async def update_profile_plant_type(
