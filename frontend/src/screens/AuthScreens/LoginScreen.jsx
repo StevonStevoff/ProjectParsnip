@@ -52,12 +52,10 @@ function LoginScreen({ navigation }) {
               .then((response) => {
                 setIsLoading(false);
                 setSubmitting(false);
-                console.log(response);
               })
               .catch((error) => {
                 setIsLoading(false);
                 setSubmitting(false);
-                console.log(error);
                 setFieldError('general', error);
               });
           }}
