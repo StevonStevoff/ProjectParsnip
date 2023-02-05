@@ -45,12 +45,20 @@ async def get_all_plant_profiles(
         profiles_query = select(PlantProfile).where(
             and_(
                 PlantProfile.name.ilike(f"%{contains}%"),
-                or_(PlantProfile.public, PlantProfile.creator_id == user.id),
+                or_(
+                    PlantProfile.public,
+                    PlantProfile.creator_id == user.id,
+                    user.is_superuser,
+                ),
             )
         )
     else:
         profiles_query = select(PlantProfile).where(
-            or_(PlantProfile.public, PlantProfile.creator_id == user.id)
+            or_(
+                PlantProfile.public,
+                PlantProfile.creator_id == user.id,
+                user.is_superuser,
+            )
         )
     results = await session.execute(profiles_query)
     profiles = results.scalars().all()
@@ -79,7 +87,10 @@ async def get_user_profiles(
     session: AsyncSession = Depends(get_async_session),
 ):
     profiles_query = await session.execute(
-        select(PlantProfile).join(PlantProfile.users).filter_by(id=user.id)
+        select(PlantProfile)
+        .join(PlantProfile.users)
+        .filter_by(id=user.id)
+        .order_by(PlantProfile.id)
     )
     profiles = profiles_query.scalars().all()
 
@@ -279,7 +290,8 @@ async def update_profile_plant_type(
     plant_profile: PlantProfile, plant_type_id: int, session: AsyncSession
 ):
     try:
-        plant_type = await get_object_or_404(plant_type_id, PlantType, session)
+        detail = "The plant type does not exist."
+        plant_type = await get_object_or_404(plant_type_id, PlantType, session, detail)
     except HTTPException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
