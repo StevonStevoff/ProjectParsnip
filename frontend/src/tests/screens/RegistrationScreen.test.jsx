@@ -1,38 +1,70 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import RegistrationScreen from '../../screens/AuthScreens/RegistrationScreen';
 import AuthUtils from '../../api/utils/AuthUtils';
 
 jest.mock('../../api/utils/AuthUtils', () => ({
-  registerUser: jest.fn(() => Promise.resolve()),
-  login: jest.fn(() => Promise.resolve()),
+  registerUser: jest.fn(() => Promise.resolve({ status: 200 })),
 }));
 
-describe('RegistrationScreen', () => {
-  it('should render correctly', () => {
-    render(<RegistrationScreen />);
-  });
-  it('should call the register user method when the sign up button is pressed', async () => {
+describe('Registration screen', () => {
+  it('should render without errors', () => {
     const navigation = { navigate: jest.fn() };
-    const { getByText } = render(<RegistrationScreen navigation={navigation} />);
-    fireEvent.press(getByText('Sign Up →'));
-    expect(AuthUtils.registerUser).toHaveBeenCalled();
+    const { getByPlaceholderText } = render(<RegistrationScreen navigation={navigation} />);
+    expect(getByPlaceholderText('Email')).toBeDefined();
+    expect(getByPlaceholderText('Password')).toBeDefined();
   });
 
-  it('should navigate to the login screen when the login button is pressed', () => {
+  it('should show validation error messages for empty inputs', async () => {
+    const navigation = { navigate: jest.fn() };
+    const { getByText, getByPlaceholderText } = render(
+      <RegistrationScreen navigation={navigation} />,
+    );
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const submitBtn = getByText('Sign Up →');
+
+    fireEvent.changeText(emailInput, '');
+    fireEvent.changeText(passwordInput, '');
+    fireEvent.press(submitBtn);
+    await waitFor(() => expect(getByText('Email is required')).toBeDefined());
+    await waitFor(() => expect(getByText('Password is required')).toBeDefined());
+  });
+
+  it('should show error message for incorrect email', async () => {
+    const navigation = { navigate: jest.fn() };
+    const { getByText, getByPlaceholderText } = render(
+      <RegistrationScreen navigation={navigation} />,
+    );
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const submitBtn = getByText('Sign Up →');
+
+    fireEvent.changeText(emailInput, 'not an email');
+    fireEvent.changeText(passwordInput, 'password');
+    fireEvent.press(submitBtn);
+    await waitFor(() => expect(getByText('Invalid email')).toBeDefined());
+  });
+
+  it('should call login API on successful form submission', async () => {
+    const navigation = { navigate: jest.fn() };
+    const { getByPlaceholderText, getByText } = render(
+      <RegistrationScreen navigation={navigation} />,
+    );
+    const emailInput = getByPlaceholderText('Email');
+    const passwordInput = getByPlaceholderText('Password');
+    const submitBtn = getByText('Sign Up →');
+
+    fireEvent.changeText(emailInput, 'email@domain.com');
+    fireEvent.changeText(passwordInput, 'password');
+    fireEvent.press(submitBtn);
+    await waitFor(() => expect(AuthUtils.registerUser).toHaveBeenCalled());
+  });
+
+  it('should navigate to the registration screen when the register button is pressed', () => {
     const navigation = { navigate: jest.fn() };
     const { getByText } = render(<RegistrationScreen navigation={navigation} />);
     fireEvent.press(getByText('Login'));
     expect(navigation.navigate).toHaveBeenCalledWith('Login');
-  });
-
-  it('should navigate redirect to auth utils login function when registering', () => {
-    const navigation = { navigate: jest.fn() };
-    const { getByText } = render(<RegistrationScreen navigation={navigation} />);
-    fireEvent.press(getByText('Sign Up →'));
-    expect(AuthUtils.registerUser).toHaveBeenCalled();
   });
 });

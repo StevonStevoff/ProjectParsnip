@@ -1,6 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import ProfileScreen from '../../screens/AuthScreens/ProfileScreen';
@@ -10,7 +7,7 @@ jest.mock('../../api/utils/AuthUtils', () => ({
   logout: jest.fn(() => Promise.resolve()),
 }));
 
-describe('LoginScreen', () => {
+describe('Profile Screen', () => {
   it('should render correctly', () => {
     render(<ProfileScreen />);
   });
