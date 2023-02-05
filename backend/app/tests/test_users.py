@@ -9,34 +9,40 @@ from app.tests.conftest import get_db
 async def add_users(client):
     async for session in get_db():
         hashed_pwd = PasswordHelper().hash("password")
-        test_users = [None] * 3
+        test_users = []
         # id=1 and id=2 are already in use
-        test_users[0] = User(
-            id=3,
-            email="user1@test.com",
-            username="username1",
-            name="user",
-            hashed_password=hashed_pwd,
-            is_active=True,
-            is_superuser=False,
+        test_users.append(
+            User(
+                id=3,
+                email="user1@test.com",
+                username="username1",
+                name="user",
+                hashed_password=hashed_pwd,
+                is_active=True,
+                is_superuser=False,
+            )
         )
-        test_users[1] = User(
-            id=4,
-            email="user2@test.com",
-            username="username2",
-            name="name",
-            hashed_password=hashed_pwd,
-            is_active=True,
-            is_superuser=False,
+        test_users.append(
+            User(
+                id=4,
+                email="user2@test.com",
+                username="username2",
+                name="name",
+                hashed_password=hashed_pwd,
+                is_active=True,
+                is_superuser=False,
+            )
         )
-        test_users[2] = User(
-            id=5,
-            email="user3@test.com",
-            username="username3",
-            name="username",
-            hashed_password=hashed_pwd,
-            is_active=True,
-            is_superuser=False,
+        test_users.append(
+            User(
+                id=5,
+                email="user3@test.com",
+                username="username3",
+                name="username",
+                hashed_password=hashed_pwd,
+                is_active=True,
+                is_superuser=False,
+            )
         )
 
         for test_user in test_users:
