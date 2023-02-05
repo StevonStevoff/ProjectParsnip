@@ -110,6 +110,10 @@ async def register_plant_type(
     plant_type.description = plant_type_create.description
     plant_type.creator = local_user
 
+    # All plant types created through API are made by users
+    # non user created types inserted directly through script
+    plant_type.user_created = True
+
     session.add(plant_type)
     await session.commit()
     await session.refresh(plant_type)
@@ -184,4 +188,5 @@ async def patch_plant_type(
         plant_type.description = plant_type_update.description
 
     await session.commit()
+    await session.refresh(plant_type)
     return PlantTypeRead.from_orm(plant_type)

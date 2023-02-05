@@ -77,7 +77,8 @@ class PlantTypeBase(BaseModel):
 
 
 class PlantTypeRead(BaseRead, PlantTypeBase):
-    pass
+    user_created: bool
+    creator: UserRead | None
 
 
 class PlantTypeCreate(PlantTypeBase):
@@ -96,7 +97,9 @@ class PlantProfileBase(BaseModel):
 
 
 class PlantProfileRead(BaseRead, PlantProfileBase):
+    user_created: bool
     plant_type: PlantTypeRead
+    creator: UserRead | None
     users: list[UserRead]
 
 
