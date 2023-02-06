@@ -29,14 +29,6 @@ async def add_sensors(client):
         break
 
 
-async def get_sensors(client, query):
-    async for session in get_db():
-        query_res = await session.execute(query)
-        sensors = query_res.scalars().all()
-
-    return sensors
-
-
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
 async def test_get_all_sensors_none(client, user_access_token):
