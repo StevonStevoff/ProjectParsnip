@@ -18,11 +18,13 @@ repos:
         name: poetry-check
         language: system
         entry: bash -c 'cd backend && exec poetry check'
+        require_serial: true
         files: ^backend/
+
       - id: poetry-lock
         name: poetry-lock
         language: system
-        entry: bash -c 'cd backend && exec poetry check'
+        entry: bash -c 'cd backend && exec poetry lock'
         require_serial: true
         files: ^backend/
 
