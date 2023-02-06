@@ -8,5 +8,6 @@ void setup() {
     Serial.print("Connected to wifi ");
 }
 
-void load() {
+void loop() {
+
 }
