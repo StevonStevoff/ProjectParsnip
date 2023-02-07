@@ -7,6 +7,7 @@ from asgi_lifespan import LifespanManager
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.password import PasswordHelper
 from httpx import AsyncClient
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -129,3 +130,19 @@ async def superuser_access_token(client):
     assert response.status_code == 200
     json_response = response.json()
     return json_response["access_token"]
+
+
+async def get_objects(client, query):
+    async for session in get_db():
+        query_res = await session.execute(query)
+        objects = query_res.scalars().all()
+
+    return objects
+
+
+async def get_all_objects(client, model_type: Base):
+    async for session in get_db():
+        query_res = await session.execute(select(model_type))
+        objects = query_res.scalars().all()
+
+    return objects

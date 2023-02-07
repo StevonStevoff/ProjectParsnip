@@ -143,4 +143,5 @@ async def patch_sensor(
         sensor.description = sensor_update.description
 
     await session.commit()
+    await session.refresh(sensor)
     return SensorRead.from_orm(sensor)
