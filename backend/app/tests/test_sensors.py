@@ -55,10 +55,7 @@ async def test_get_all_sensors(client, user_access_token):
     assert len(json_response) == len(sensors)
     assert json_response[0]["id"] == sensors[0].id
     assert json_response[1]["name"] == sensors[1].name
-    assert (
-        json_response[len(sensors) - 1]["description"]
-        == sensors[len(sensors) - 1].description
-    )
+    assert json_response[-1]["description"] == sensors[-1].description
 
 
 @pytest.mark.asyncio(scope="session")

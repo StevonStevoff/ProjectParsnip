@@ -142,7 +142,7 @@ async def get_objects(client, query):
 
 async def get_all_objects(client, model_type: Base):
     async for session in get_db():
-        query_res = await session.execute(select(model_type))
-        objects = query_res.scalars().all()
+        query_result = await session.execute(select(model_type))
+        objects = query_result.scalars().all()
 
     return objects
