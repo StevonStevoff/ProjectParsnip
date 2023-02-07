@@ -132,7 +132,7 @@ async def superuser_access_token(client):
     return json_response["access_token"]
 
 
-async def get_objects(client, query):
+async def get_objects(query):
     async for session in get_db():
         query_res = await session.execute(query)
         objects = query_res.scalars().all()
@@ -140,7 +140,7 @@ async def get_objects(client, query):
     return objects
 
 
-async def get_all_objects(client, model_type: Base):
+async def get_all_objects(model_type: Base):
     async for session in get_db():
         query_res = await session.execute(select(model_type))
         objects = query_res.scalars().all()

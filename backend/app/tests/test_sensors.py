@@ -5,7 +5,7 @@ from app.models import Sensor
 from app.tests.conftest import get_all_objects, get_db, get_objects
 
 
-async def add_sensors(client):
+async def add_sensors():
     async for session in get_db():
         test_sensors = []
         test_sensors.append(
@@ -43,14 +43,14 @@ async def test_get_all_sensors_none(client, user_access_token):
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
 async def test_get_all_sensors(client, user_access_token):
-    await add_sensors(client)
+    await add_sensors()
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/", headers=headers)
 
     assert response.status_code == 200
     json_response = response.json()
 
-    sensors = await get_all_objects(client, Sensor)
+    sensors = await get_all_objects(Sensor)
 
     assert len(json_response) == len(sensors)
     assert json_response[0]["id"] == sensors[0].id
@@ -132,7 +132,7 @@ async def test_register_sensor(client, superuser_access_token):
     json_response = response.json()
 
     query = select(Sensor).where(Sensor.name == "new")
-    sensors = await get_objects(client, query)
+    sensors = await get_objects(query)
 
     assert len(sensors) == 1
     assert sensors[0].description == "this was made via post request"
@@ -157,7 +157,7 @@ async def test_register_sensor_name_already_exists(client, superuser_access_toke
     json_response = response.json()
 
     query = select(Sensor).where(Sensor.name == "new")
-    sensors = await get_objects(client, query)
+    sensors = await get_objects(query)
 
     assert len(sensors) == 2
     assert sensors[0].id != sensors[1].id
@@ -177,7 +177,7 @@ async def test_get_sensor_by_id(client, user_access_token):
     json_response = response.json()
 
     query = select(Sensor).where(Sensor.id == 1)
-    sensors = await get_objects(client, query)
+    sensors = await get_objects(query)
 
     assert len(sensors) == 1
     assert json_response["id"] == 1
@@ -212,7 +212,7 @@ async def test_get_sensor_by_id_invalid(client, user_access_token):
 @pytest.mark.order(3)
 async def test_delete_sensor_by_id(client, superuser_access_token):
     query = select(Sensor).where(Sensor.id == 1)
-    sensors_before = await get_objects(client, query)
+    sensors_before = await get_objects(query)
     assert len(sensors_before) == 1
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
@@ -220,14 +220,14 @@ async def test_delete_sensor_by_id(client, superuser_access_token):
 
     assert response.status_code == 200
 
-    sensors_after = await get_objects(client, query)
+    sensors_after = await get_objects(query)
     assert len(sensors_after) == 0
 
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
 async def test_delete_sensor_by_id_doesnt_exist(client, superuser_access_token):
-    sensors_before = await get_all_objects(client, Sensor)
+    sensors_before = await get_all_objects(Sensor)
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete("/sensors/999", headers=headers)
@@ -236,14 +236,14 @@ async def test_delete_sensor_by_id_doesnt_exist(client, superuser_access_token):
     json_resonse = response.json()
     assert json_resonse["detail"] == "The sensor does not exist."
 
-    sensors_after = await get_all_objects(client, Sensor)
+    sensors_after = await get_all_objects(Sensor)
     assert len(sensors_before) == len(sensors_after)
 
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
 async def test_delete_sensor_by_id_invalid(client, superuser_access_token):
-    sensors_before = await get_all_objects(client, Sensor)
+    sensors_before = await get_all_objects(Sensor)
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete("/sensors/notanid", headers=headers)
@@ -252,7 +252,7 @@ async def test_delete_sensor_by_id_invalid(client, superuser_access_token):
     json_resonse = response.json()
     assert json_resonse["detail"][0]["msg"] == "value is not a valid integer"
 
-    sensors_after = await get_all_objects(client, Sensor)
+    sensors_after = await get_all_objects(Sensor)
     assert len(sensors_before) == len(sensors_after)
 
 
@@ -274,7 +274,7 @@ async def test_patch_sensor_by_id(client, superuser_access_token):
     json_response = response.json()
 
     query = select(Sensor).where(Sensor.id == 1)
-    sensors = await get_objects(client, query)
+    sensors = await get_objects(query)
 
     assert len(sensors) == 1
     assert sensors[0].name == "changed"
@@ -287,7 +287,7 @@ async def test_patch_sensor_by_id(client, superuser_access_token):
 @pytest.mark.order(2)
 async def test_patch_sensor_by_id_doenst_exist(client, superuser_access_token):
     query = select(Sensor).where(Sensor.id == 1)
-    sensors_before = await get_objects(client, query)
+    sensors_before = await get_objects(query)
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
@@ -304,7 +304,7 @@ async def test_patch_sensor_by_id_doenst_exist(client, superuser_access_token):
     json_resonse = response.json()
     assert json_resonse["detail"] == "The sensor does not exist."
 
-    sensors_after = await get_objects(client, query)
+    sensors_after = await get_objects(query)
     assert len(sensors_before) == len(sensors_after)
     assert sensors_before[0].name == sensors_after[0].name
     assert sensors_before[0].description == sensors_after[0].description

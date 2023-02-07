@@ -10,7 +10,7 @@ from app.tests.conftest import get_all_objects, get_db, get_objects
 #
 # Tests simply need two plant types to exist, therefore it doesn't
 # matter if ID 1 and ID 2 are created in test_plant_types.py instead
-async def add_plant_types(client):
+async def add_plant_types():
     async for session in get_db():
         test_plant_types = []
         test_plant_types.append(
@@ -33,7 +33,7 @@ async def add_plant_types(client):
         break
 
 
-async def add_plant_profiles(client):
+async def add_plant_profiles():
     async for session in get_db():
         user_1 = await session.get(User, 1)
         user_2 = await session.get(User, 2)
@@ -101,8 +101,8 @@ async def test_get_all_no_plant_profiles(client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_all_plant_profiles(client, superuser_access_token):
-    await add_plant_types(client)
-    await add_plant_profiles(client)
+    await add_plant_types()
+    await add_plant_profiles()
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/", headers=headers)
@@ -110,7 +110,7 @@ async def test_get_all_plant_profiles(client, superuser_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    plant_profiles = await get_all_objects(client, PlantProfile)
+    plant_profiles = await get_all_objects(PlantProfile)
 
     assert len(json_response) == len(plant_profiles)
     assert json_response[0]["id"] == 1
@@ -142,7 +142,7 @@ async def test_get_all_accessible_plant_profiles(client, user_access_token):
     query = select(PlantProfile).where(
         or_(PlantProfile.public, PlantProfile.creator_id == 2)
     )
-    plant_profiles = await get_objects(client, query)
+    plant_profiles = await get_objects(query)
 
     assert len(json_response) == len(plant_profiles)
 

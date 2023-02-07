@@ -6,7 +6,7 @@ from app.models import User
 from app.tests.conftest import get_db
 
 
-async def add_users(client):
+async def add_users():
     async for session in get_db():
         hashed_pwd = PasswordHelper().hash("password")
         test_users = []
@@ -69,7 +69,7 @@ async def test_access_superuser_info(client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_all_users(client, user_access_token):
-    await add_users(client)
+    await add_users()
 
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/", headers=headers)
