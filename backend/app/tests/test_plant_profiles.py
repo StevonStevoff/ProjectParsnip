@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import or_, select
 
 from app.models import PlantProfile, PlantType, User
-from app.tests.conftest import get_db
+from app.tests.conftest import get_all_objects, get_db, get_objects
 
 
 # create plant for testing here so that we are not
@@ -110,10 +110,7 @@ async def test_get_all_plant_profiles(client, superuser_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    async for session in get_db():
-        profile_results = await session.execute(select(PlantProfile))
-        break
-    plant_profiles = profile_results.scalars().all()
+    plant_profiles = await get_all_objects(client, PlantProfile)
 
     assert len(json_response) == len(plant_profiles)
     assert json_response[0]["id"] == 1
@@ -126,12 +123,10 @@ async def test_get_all_plant_profiles(client, superuser_access_token):
     assert len(json_response[0]["users"]) == 2
 
     # check last item
-    assert json_response[len(plant_profiles) - 1]["id"] == len(plant_profiles)
+    assert json_response[-1]["id"] == len(plant_profiles)
+    assert json_response[-1]["name"] == "User's Private Test Profile"
     assert (
-        json_response[len(plant_profiles) - 1]["name"] == "User's Private Test Profile"
-    )
-    assert (
-        json_response[len(plant_profiles) - 1]["description"]
+        json_response[-1]["description"]
         == "Normal User's Private Test Profile Description"
     )
 
@@ -144,14 +139,10 @@ async def test_get_all_accessible_plant_profiles(client, user_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    async for session in get_db():
-        profile_results = await session.execute(
-            select(PlantProfile).where(
-                or_(PlantProfile.public, PlantProfile.creator_id == 2)
-            )
-        )
-        break
-    plant_profiles = profile_results.scalars().all()
+    query = select(PlantProfile).where(
+        or_(PlantProfile.public, PlantProfile.creator_id == 2)
+    )
+    plant_profiles = await get_objects(client, query)
 
     assert len(json_response) == len(plant_profiles)
 
