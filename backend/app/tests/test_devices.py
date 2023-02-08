@@ -1,5 +1,27 @@
 import pytest
 
+from app.models import Device
+from app.tests.conftest import get_all_objects, get_db
+
+
+async def add_devices():
+    async for session in get_db():
+        test_devices = []
+        test_devices.append(
+            Device(
+                name="Device1", model_name="Model 1", sensor_ids=[2, 3], user_ids=[1, 2]
+            )
+        )
+        test_devices.append(
+            Device(
+                name="Device2", model_name="Model 2", sensor_ids=[2, 4], user_ids=[2]
+            )
+        )
+        for test_device in test_devices:
+            session.add(test_device)
+        await session.commit()
+        break
+
 
 @pytest.mark.asyncio(scope="session")
 async def test_create_device(client, user_access_token):
@@ -52,7 +74,9 @@ async def test_get_owned_devices(client, user_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    assert len(json_response) == 1
+    devices = await get_all_objects(Device)
+
+    assert len(json_response) == len(devices)
     assert json_response[0]["id"] == 1
     assert json_response[0]["name"] == "TestDevice"
     assert json_response[0]["model_name"] == "First Version"
@@ -69,7 +93,9 @@ async def test_get_my_devices(client, user_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    assert len(json_response) == 1
+    devices = await get_all_objects(Device)
+
+    assert len(json_response) == len(devices)
     assert json_response[0]["name"] == "TestDevice"
     assert json_response[0]["model_name"] == "First Version"
 
