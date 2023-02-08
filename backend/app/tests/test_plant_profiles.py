@@ -262,8 +262,10 @@ async def test_get_plant_profile_contains_different(client, user_access_token):
 @pytest.mark.asyncio(scope="session")
 async def test_get_my_plant_profiles_without_token(client):
     response = await client.get("/plant_profiles/me")
+
     assert response.status_code == 401
     json_response = response.json()
+
     assert json_response["detail"] == "Unauthorized"
 
 
