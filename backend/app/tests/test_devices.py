@@ -9,12 +9,20 @@ async def add_devices():
         test_devices = []
         test_devices.append(
             Device(
-                name="Device1", model_name="Model 1", sensor_ids=[2, 3], user_ids=[1, 2]
+                name="Device1",
+                model_name="Model 1",
+                owner_id=2,
+                sensor_ids=[2, 3],
+                user_ids=[1, 2],
             )
         )
         test_devices.append(
             Device(
-                name="Device2", model_name="Model 2", sensor_ids=[2, 4], user_ids=[2]
+                name="Device2",
+                model_name="Model 2",
+                owner_id=1,
+                sensor_ids=[2, 4],
+                user_ids=[2],
             )
         )
         for test_device in test_devices:
@@ -47,6 +55,7 @@ async def test_create_device(client, user_access_token):
     assert len(json_response["users"]) == 2
 
 
+@pytest.mark.asyncio(scope="session")
 async def test_create_device_no_token(client, user_access_token):
     headers = {"Authorization": "Bearer {}"}
     response = await client.post(
