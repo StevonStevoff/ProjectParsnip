@@ -308,8 +308,66 @@ async def test_delete_plant_type_id_invalid(client, superuser_access_token):
     response = await client.delete("/plant_types/1", headers=headers)
 
     assert response.status_code == 404
+    json_response = response.json()
 
     query = select(PlantType).where(PlantType.id == 1)
     plant_type = await get_objects(query)
 
     assert plant_type == []
+    assert json_response["detail"] == "The plant type does not exist."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_type_without_token(client):
+    response = await client.patch("/plant_types/3")
+
+    assert response.status_code == 401
+    json_response = response.json()
+
+    assert json_response["detail"] == "Unauthorized"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_type_invalid_id(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch(
+        "/plant_types/999",
+        headers=headers,
+        json={"name": "Edited Plant Type", "description": "Edited Description"},
+    )
+
+    assert response.status_code == 404
+    json_response = response.json()
+
+    assert json_response["detail"] == "The plant type does not exist."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_type_forbidden(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch(
+        "/plant_types/2",
+        headers=headers,
+        json={"name": "Edited Plant Type", "description": "Edited Description"},
+    )
+
+    assert response.status_code == 403
+    json_response = response.json()
+
+    assert json_response["detail"] == "Forbidden"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_type(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.patch(
+        "/plant_types/3",
+        headers=headers,
+        json={"name": "Edited Plant Type", "description": "Edited Description"},
+    )
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["name"] == "Edited Plant Type"
+    assert json_response["description"] == "Edited Description"
