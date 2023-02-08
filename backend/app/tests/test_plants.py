@@ -310,3 +310,50 @@ async def test_register_valid_plant(client, user_access_token):
     assert json_response["device"]["id"] == 1
     assert json_response["plant_profile"]["id"] == 1
     assert json_response["plant_type"]["id"] == 2
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_plant_id_without_token(client):
+    response = await client.get("/plants/1")
+
+    assert response.status_code == 401
+    json_response = response.json()
+
+    assert json_response["detail"] == "Unauthorized"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_plant_id_forbidden(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/plants/1", headers=headers)
+
+    assert response.status_code == 403
+    json_response = response.json()
+
+    assert json_response["detail"] == "Forbidden"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_plant_id(client, superuser_access_token):
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    response = await client.get("/plants/1", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert json_response["id"] == 1
+    assert json_response["name"] == "My Precious Plant"
+    assert json_response["device"]["id"] == 1
+    assert json_response["plant_profile"]["id"] == 1
+    assert json_response["plant_type"]["id"] == 2
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_plant_invalid_id(client, superuser_access_token):
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    response = await client.get("/plants/999", headers=headers)
+
+    assert response.status_code == 404
+    json_response = response.json()
+
+    assert json_response["detail"] == "The plant does not exist."
