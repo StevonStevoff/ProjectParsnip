@@ -95,7 +95,7 @@ class Plant(Base):
         lazy="selectin",
     )
     plant_data = relationship("PlantData", back_populates="plant")
-    plant_profile = relationship("PlantProfile")
+    plant_profile = relationship("PlantProfile", lazy="selectin")
     plant_type = relationship(
         "PlantType",
         lazy="selectin",

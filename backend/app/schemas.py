@@ -121,9 +121,8 @@ class PlantBase(BaseModel):
 
 
 class PlantRead(BaseRead, PlantBase):
-    device_id = int
-    plant_profile_id = int
-    plant_type_id = int
+    plant_profile: PlantProfileRead
+    device: DeviceRead
 
 
 class PlantCreate(PlantBase):
