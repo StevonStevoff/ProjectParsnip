@@ -118,7 +118,9 @@ async def register_plant_type(
     await session.commit()
     await session.refresh(plant_type)
 
-    created_plant_type = await session.get(PlantType, plant_type.id)
+    created_plant_type = await session.get(
+        PlantType, plant_type.id, populate_existing=True
+    )
     return PlantTypeRead.from_orm(created_plant_type)
 
 

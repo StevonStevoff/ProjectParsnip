@@ -68,7 +68,7 @@ async def register_sensor(
     await session.commit()
     await session.refresh(sensor)
 
-    created_sensor = await session.get(Sensor, sensor.id)
+    created_sensor = await session.get(Sensor, sensor.id, populate_existing=True)
     return SensorRead.from_orm(created_sensor)
 
 

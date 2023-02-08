@@ -175,7 +175,9 @@ async def register_plant_profile(
     await session.commit()
     await session.refresh(plant_profile)
 
-    created_profile = await session.get(PlantProfile, plant_profile.id)
+    created_profile = await session.get(
+        PlantProfile, plant_profile.id, populate_existing=True
+    )
     return PlantProfileRead.from_orm(created_profile)
 
 

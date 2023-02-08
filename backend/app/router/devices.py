@@ -109,7 +109,7 @@ async def register_device(
     await session.commit()
     await session.refresh(device)
 
-    created_device = await session.get(Device, device.id)
+    created_device = await session.get(Device, device.id, populate_existing=True)
     return DeviceRead.from_orm(created_device)
 
 
