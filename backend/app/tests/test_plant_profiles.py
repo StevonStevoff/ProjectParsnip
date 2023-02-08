@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import or_, select
 
 from app.models import PlantProfile, PlantType, User
-from app.tests.conftest import get_db
+from app.tests.conftest import get_all_objects, get_db, get_objects
 
 
 # create plant for testing here so that we are not
@@ -10,7 +10,7 @@ from app.tests.conftest import get_db
 #
 # Tests simply need two plant types to exist, therefore it doesn't
 # matter if ID 1 and ID 2 are created in test_plant_types.py instead
-async def add_plant_types(client):
+async def add_plant_types():
     async for session in get_db():
         test_plant_types = []
         test_plant_types.append(
@@ -33,7 +33,7 @@ async def add_plant_types(client):
         break
 
 
-async def add_plant_profiles(client):
+async def add_plant_profiles():
     async for session in get_db():
         user_1 = await session.get(User, 1)
         user_2 = await session.get(User, 2)
@@ -101,8 +101,8 @@ async def test_get_all_no_plant_profiles(client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_all_plant_profiles(client, superuser_access_token):
-    await add_plant_types(client)
-    await add_plant_profiles(client)
+    await add_plant_types()
+    await add_plant_profiles()
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/", headers=headers)
@@ -110,10 +110,7 @@ async def test_get_all_plant_profiles(client, superuser_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    async for session in get_db():
-        profile_results = await session.execute(select(PlantProfile))
-        break
-    plant_profiles = profile_results.scalars().all()
+    plant_profiles = await get_all_objects(PlantProfile)
 
     assert len(json_response) == len(plant_profiles)
     assert json_response[0]["id"] == 1
@@ -126,12 +123,10 @@ async def test_get_all_plant_profiles(client, superuser_access_token):
     assert len(json_response[0]["users"]) == 2
 
     # check last item
-    assert json_response[len(plant_profiles) - 1]["id"] == len(plant_profiles)
+    assert json_response[-1]["id"] == len(plant_profiles)
+    assert json_response[-1]["name"] == "User's Private Test Profile"
     assert (
-        json_response[len(plant_profiles) - 1]["name"] == "User's Private Test Profile"
-    )
-    assert (
-        json_response[len(plant_profiles) - 1]["description"]
+        json_response[-1]["description"]
         == "Normal User's Private Test Profile Description"
     )
 
@@ -144,14 +139,10 @@ async def test_get_all_accessible_plant_profiles(client, user_access_token):
     assert response.status_code == 200
     json_response = response.json()
 
-    async for session in get_db():
-        profile_results = await session.execute(
-            select(PlantProfile).where(
-                or_(PlantProfile.public, PlantProfile.creator_id == 2)
-            )
-        )
-        break
-    plant_profiles = profile_results.scalars().all()
+    query = select(PlantProfile).where(
+        or_(PlantProfile.public, PlantProfile.creator_id == 2)
+    )
+    plant_profiles = await get_objects(query)
 
     assert len(json_response) == len(plant_profiles)
 
