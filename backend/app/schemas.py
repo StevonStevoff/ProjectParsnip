@@ -98,7 +98,7 @@ class PlantProfileBase(BaseModel):
 
 class PlantProfileRead(BaseRead, PlantProfileBase):
     user_created: bool
-    plant_type: PlantTypeRead
+    plant_type: PlantTypeRead | None
     creator: UserRead | None
     users: list[UserRead]
 
@@ -121,20 +121,19 @@ class PlantBase(BaseModel):
 
 
 class PlantRead(BaseRead, PlantBase):
-    plant_profile: PlantProfileRead
     device: DeviceRead
+    plant_profile: PlantProfileRead | None
+    plant_type: PlantTypeRead | None
 
 
 class PlantCreate(PlantBase):
-    device_id = int
-    plant_profile_id = int
-    plant_type_id = int
+    device_id: int
+    plant_profile_id: int
+    plant_type_id: int
 
 
 class PlantUpdate(PlantBase):
     name: Optional[str]
     device_id: Optional[int]
-    # For some reason these fields cause import error for tests
-    # confused
-    # plant_profile_id = Optional[int]
-    # plant_type_id = Optional[int]
+    plant_profile_id: Optional[int]
+    plant_type_id: Optional[int]
