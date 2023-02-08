@@ -160,7 +160,7 @@ async def delete_plant(
 
 @router.patch(
     "/{id}",
-    response_model=PlantUpdate,
+    response_model=PlantRead,
     name="plants:patch_plant",
     dependencies=[Depends(current_active_user)],
     responses={
@@ -171,7 +171,7 @@ async def delete_plant(
             "description": "Not superuser or associated device owner.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "The plant does not exist.",
+            "description": "The device/profile/type does not exist.",
         },
     },
 )
