@@ -26,6 +26,7 @@ pydantic = "^1.10.4"
 sqlalchemy = { extras = ["asyncio"], version = "^1.4.46" }
 asgi-lifespan = "^2.0.0"
 dependency = "^0.0.3"
+alembic = "^1.9.3"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0.0"
