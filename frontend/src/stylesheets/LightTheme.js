@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 /* eslint-disable no-dupe-keys */
 /* eslint-disable import/prefer-default-export */
 export const LightTheme = {
@@ -11,12 +12,36 @@ export const LightTheme = {
     border: 'rgb(255, 255, 255)',
     iconColor: '#7d7f7e',
     // do not delete require for react navigtion to load correctly
+
     centeredView: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      width: '100%',
+      width: '100%',  
     },
+    formContainer:{
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        
+        ...Platform.select({
+          web: {
+            maxWidth:1000, 
+          }
+        }) 
+    },
+    upperTextContainer:{     
+      
+        ...Platform.select({
+          web: {
+
+            maxHeight:'0%',
+            paddingBottom:50,
+          }
+        })
+    },
+
     title: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -86,16 +111,28 @@ export const LightTheme = {
       height: '100%',
       alignItems: 'center',
       justifyContent: 'center',
+      ...Platform.select({
+            web: {
+              minWidth: '100%',
+            }
+          })
     },
+
     signupBtn: {
       borderRadius: 5,
       borderColor: '#B5EB89',
       borderRadius: 10,
       borderWidth: 1,
-      minWidth: '80%',
+      minWidth: '100%',
       height: '100%',
       alignItems: 'center',
       justifyContent: 'center',
+      ...Platform.select({
+        web: {
+          minWidth: '0%',
+          width:'100%',
+        }
+      }) 
     },
   },
 };
