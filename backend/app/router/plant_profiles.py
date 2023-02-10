@@ -85,7 +85,7 @@ async def get_all_plant_profiles(
 async def get_user_profiles(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[PlantProfileRead]:
     profiles_query = await session.execute(
         select(PlantProfile)
         .join(PlantProfile.users)
@@ -116,7 +116,7 @@ async def get_user_profiles(
 async def get_created_profiles(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[PlantProfileRead]:
     profiles_query = await session.execute(
         select(PlantProfile).where(PlantProfile.creator_id == user.id)
     )
@@ -150,7 +150,7 @@ async def register_plant_profile(
     plant_profile_create: PlantProfileCreate,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantProfileRead:
     local_user = await session.merge(user)
     plant_profile = PlantProfile()
     plant_profile.name = plant_profile_create.name
@@ -197,7 +197,7 @@ async def register_plant_profile(
 )
 async def get_plant_profile(
     plant_profile: PlantProfile = Depends(get_plant_profile_or_404),
-):
+) -> PlantProfileRead:
     return PlantProfileRead.from_orm(plant_profile)
 
 
@@ -221,7 +221,7 @@ async def delete_plant_profile(
     plant_profile: PlantProfile = Depends(get_plant_profile_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     await user_can_manage_object(user, plant_profile.creator_id)
     await session.delete(plant_profile)
     await session.commit()
@@ -230,7 +230,7 @@ async def delete_plant_profile(
 @router.patch(
     "/{id}",
     name="plant_profiles:patch_plant_profile",
-    # response_model=PlantProfileRead,
+    response_model=PlantProfileRead,
     dependencies=[Depends(current_active_user)],
     responses={
         status.HTTP_400_BAD_REQUEST: {
@@ -252,7 +252,7 @@ async def patch_plant_profile(
     plant_profile: PlantProfile = Depends(get_plant_profile_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantProfileRead:
     try:
         await user_can_manage_object(user, plant_profile.creator_id)
         if plant_profile_update.name:
@@ -292,7 +292,7 @@ async def patch_plant_profile(
 
 async def check_removing_or_adding_self(
     plant_profile: PlantProfile, plant_profile_update: PlantProfileUpdate, user_id
-):
+) -> None:
     existing_user_ids = [user.id for user in plant_profile.users]
 
     adding_self = plant_profile_update.user_ids == existing_user_ids + [user_id]
@@ -307,7 +307,7 @@ async def check_removing_or_adding_self(
 
 async def update_profile_plant_type(
     plant_profile: PlantProfile, plant_type_id: int, session: AsyncSession
-):
+) -> None:
     try:
         detail = "The plant type does not exist."
         plant_type = await get_object_or_404(plant_type_id, PlantType, session, detail)
@@ -322,7 +322,7 @@ async def update_profile_plant_type(
 
 async def update_plant_profile_users(
     plant_profile: PlantProfile, user_ids: list[int], session: AsyncSession
-):
+) -> None:
     unique_user_id_list = [*set(user_ids)]
     if plant_profile.creator.id not in unique_user_id_list:
         raise HTTPException(
