@@ -8,7 +8,7 @@ from app.schemas import BaseRead
 
 async def get_object_or_404(
     id: int, model_type: Base, session: AsyncSession, detail: str
-):
+) -> Base:
     model_query = await session.execute(select(model_type).where(model_type.id == id))
     model_object = model_query.scalars().first()
 
@@ -17,12 +17,14 @@ async def get_object_or_404(
     return model_object
 
 
-async def model_list_to_schema(model_list: list[Base], schema: BaseRead, detail: str):
+async def model_list_to_schema(
+    model_list: list[Base], schema: BaseRead, detail: str
+) -> BaseRead:
     if not model_list:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
     return [schema.from_orm(model) for model in model_list]
 
 
-async def user_can_manage_object(user: User, object_manager_id: int):
+async def user_can_manage_object(user: User, object_manager_id: int) -> None:
     if object_manager_id != user.id and not user.is_superuser:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
