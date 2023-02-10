@@ -37,7 +37,7 @@ async def get_plant_or_404(
 )
 async def get_all_plants(
     session: AsyncSession = Depends(get_async_session), contains: str | None = None
-):
+) -> list[PlantRead]:
     if contains:
         plants_query = select(Plant).where(Plant.name.ilike(f"%{contains}%"))
     else:
@@ -66,7 +66,7 @@ async def get_all_plants(
 async def get_my_plants(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[PlantRead]:
     user_device_ids = [device.id for device in user.devices]
     plants_query = await session.execute(
         select(Plant).where(Plant.device_id.in_(user_device_ids))
@@ -98,7 +98,7 @@ async def register_plant(
     plant_create: PlantCreate,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantRead:
     plant = Plant()
     plant.name = plant_create.name
 
@@ -130,7 +130,7 @@ async def register_plant(
 )
 async def get_plant(
     plant: Plant = Depends(get_plant_or_404),
-):
+) -> PlantRead:
     return PlantRead.from_orm(plant)
 
 
@@ -154,7 +154,7 @@ async def delete_plant(
     plant: Plant = Depends(get_plant_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     pass
 
 
@@ -179,13 +179,13 @@ async def patch_plant(
     plant_update: PlantUpdate,
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantRead:
     pass
 
 
 async def update_plant_device(
     plant: Plant, user: User, device_id: int, session: AsyncSession
-):
+) -> None:
     device = await get_object_or_404(
         device_id, Device, session, "The device does not exist."
     )
@@ -201,7 +201,7 @@ async def update_plant_device(
 
 async def update_plant_profile(
     plant: Plant, user: User, plant_profile_id: int, session: AsyncSession
-):
+) -> None:
     plant_profile = await get_object_or_404(
         plant_profile_id, PlantProfile, session, "The plant profile does not exist."
     )
@@ -215,7 +215,9 @@ async def update_plant_profile(
     plant.plant_profile_id = plant_profile_id
 
 
-async def update_plant_type(plant: Plant, plant_type_id: int, session: AsyncSession):
+async def update_plant_type(
+    plant: Plant, plant_type_id: int, session: AsyncSession
+) -> None:
     await get_object_or_404(
         plant_type_id, PlantType, session, "The plant type does not exist."
     )
