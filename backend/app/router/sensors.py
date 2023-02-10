@@ -34,7 +34,7 @@ async def get_sensor_or_404(
 )
 async def get_all_sensors(
     session: AsyncSession = Depends(get_async_session), contains: str | None = None
-):
+) -> list[SensorRead]:
     if contains:
         sensors_query = select(Sensor).where(Sensor.name.ilike(f"%{contains}%"))
     else:
@@ -61,7 +61,7 @@ async def get_all_sensors(
 )
 async def register_sensor(
     sensor_create: SensorCreate, session: AsyncSession = Depends(get_async_session)
-):
+) -> SensorRead:
     sensor = Sensor(**sensor_create.dict())
 
     session.add(sensor)
@@ -86,7 +86,7 @@ async def register_sensor(
         },
     },
 )
-async def get_sensor_by_id(sensor: Sensor = Depends(get_sensor_or_404)):
+async def get_sensor_by_id(sensor: Sensor = Depends(get_sensor_or_404)) -> SensorRead:
     return SensorRead.from_orm(sensor)
 
 
@@ -109,7 +109,7 @@ async def get_sensor_by_id(sensor: Sensor = Depends(get_sensor_or_404)):
 async def delete_sensor(
     sensor: Sensor = Depends(get_sensor_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     await session.delete(sensor)
     await session.commit()
 
@@ -135,7 +135,7 @@ async def patch_sensor(
     sensor_update: SensorUpdate,
     sensor: Sensor = Depends(get_sensor_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> SensorRead:
     if sensor_update.name:
         sensor.name = sensor_update.name
 
