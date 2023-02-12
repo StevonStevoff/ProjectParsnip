@@ -38,7 +38,7 @@ async def get_plant_type_or_404(
 )
 async def get_all_plant_types(
     session: AsyncSession = Depends(get_async_session), contains: str | None = None
-):
+) -> list[PlantTypeRead]:
     if contains:
         plant_types_query = select(PlantType).where(
             PlantType.name.ilike(f"%{contains}%")
@@ -70,7 +70,7 @@ async def get_all_plant_types(
 async def get_my_plant_types(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[PlantTypeRead]:
     plant_types_query = await session.execute(
         select(PlantType).where(PlantType.creator_id == user.id)
     )
@@ -103,7 +103,7 @@ async def register_plant_type(
     plant_type_create: PlantTypeCreate,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantTypeRead:
     local_user = await session.merge(user)
     plant_type = PlantType()
     plant_type.name = plant_type_create.name
@@ -118,7 +118,9 @@ async def register_plant_type(
     await session.commit()
     await session.refresh(plant_type)
 
-    created_plant_type = await session.get(PlantType, plant_type.id)
+    created_plant_type = await session.get(
+        PlantType, plant_type.id, populate_existing=True
+    )
     return PlantTypeRead.from_orm(created_plant_type)
 
 
@@ -138,7 +140,7 @@ async def register_plant_type(
 )
 async def get_plant_type(
     plant_type: PlantType = Depends(get_plant_type_or_404),
-):
+) -> PlantTypeRead:
     return PlantTypeRead.from_orm(plant_type)
 
 
@@ -162,7 +164,7 @@ async def delete_plant_type(
     plant_type: PlantType = Depends(get_plant_type_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     await user_can_manage_object(user, plant_type.creator_id)
     await session.delete(plant_type)
     await session.commit()
@@ -173,13 +175,21 @@ async def delete_plant_type(
     dependencies=[Depends(current_active_user)],
     name="plant_types:patch_plant_type",
     response_model=PlantTypeRead,
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Missing token or inactive user.",
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "description": "The plant type does not exist.",
+        },
+    },
 )
 async def patch_plant_type(
     plant_type_update: PlantTypeUpdate,
     user: User = Depends(current_active_user),
     plant_type: PlantType = Depends(get_plant_type_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantTypeRead:
     await user_can_manage_object(user, plant_type.creator_id)
     if plant_type_update.name:
         plant_type.name = plant_type_update.name

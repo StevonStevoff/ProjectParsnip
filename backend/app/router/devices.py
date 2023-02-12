@@ -39,7 +39,7 @@ async def get_device_or_404(
 async def get_user_devices(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[DeviceRead]:
     devices_query = await session.execute(
         select(Device).join(Device.users).filter_by(id=user.id)
     )
@@ -65,7 +65,7 @@ async def get_user_devices(
 async def get_owned_devices(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[DeviceRead]:
     devices_query = await session.execute(
         select(Device).where(Device.owner_id == user.id)
     )
@@ -93,7 +93,7 @@ async def register_device(
     device_create: DeviceCreate,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> DeviceRead:
     local_user = await session.merge(user)
     device = Device()
     device.name = device_create.name
@@ -109,7 +109,7 @@ async def register_device(
     await session.commit()
     await session.refresh(device)
 
-    created_device = await session.get(Device, device.id)
+    created_device = await session.get(Device, device.id, populate_existing=True)
     return DeviceRead.from_orm(created_device)
 
 
@@ -132,7 +132,7 @@ async def register_device(
 )
 async def get_device(
     device: Device = Depends(get_device_or_404),
-):
+) -> DeviceRead:
     return DeviceRead.from_orm(device)
 
 
@@ -156,7 +156,7 @@ async def delete_device(
     device: Device = Depends(get_device_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     await user_can_manage_object(user, device.owner_id)
     await session.delete(device)
     await session.commit()
@@ -191,7 +191,7 @@ async def patch_device(
     user: User = Depends(current_active_user),
     device: Device = Depends(get_device_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> DeviceRead:
     await user_can_manage_object(user, device.owner_id)
     if device_update.name:
         device.name = device_update.name
@@ -214,7 +214,7 @@ async def patch_device(
 
 async def update_device_sensors(
     device: Device, sensor_ids: list[int], session: AsyncSession
-):
+) -> None:
     sensors_query = select(Sensor).where(Sensor.id.in_(sensor_ids))
     results = await session.execute(sensors_query)
     sensor_list = results.scalars().all()
@@ -223,7 +223,9 @@ async def update_device_sensors(
         device.sensors = sensor_list
 
 
-async def update_device_owner(device: Device, new_owner_id: int, session: AsyncSession):
+async def update_device_owner(
+    device: Device, new_owner_id: int, session: AsyncSession
+) -> None:
     try:
         user = await get_object_or_404(new_owner_id, User, session)
     except HTTPException:
@@ -242,7 +244,7 @@ async def update_device_owner(device: Device, new_owner_id: int, session: AsyncS
 
 async def update_device_users(
     device: Device, user_ids: list[int], session: AsyncSession
-):
+) -> None:
     unique_user_id_list = [*set(user_ids)]
     if device.owner.id not in user_ids:
         raise HTTPException(

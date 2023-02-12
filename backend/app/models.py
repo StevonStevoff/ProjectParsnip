@@ -56,14 +56,18 @@ class Device(Base):
     model_name = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship("User")
+    owner = relationship("User", lazy="selectin")
     users = relationship(
         "User",
         secondary=UserDevice,
         back_populates="devices",
         lazy="selectin",
     )
-    plants = relationship("Plant", back_populates="device")
+    plants = relationship(
+        "Plant",
+        back_populates="device",
+        lazy="selectin",
+    )
     sensors = relationship(
         "Sensor",
         secondary=DeviceSensors,
@@ -95,7 +99,7 @@ class Plant(Base):
         lazy="selectin",
     )
     plant_data = relationship("PlantData", back_populates="plant")
-    plant_profile = relationship("PlantProfile")
+    plant_profile = relationship("PlantProfile", lazy="selectin")
     plant_type = relationship(
         "PlantType",
         lazy="selectin",

@@ -35,7 +35,7 @@ async def get_user_or_404(
 )
 async def get_all_users(
     session: AsyncSession = Depends(get_async_session), contains: str | None = None
-):
+) -> list[UserRead]:
     if contains:
         users_query = select(User).where(User.username.ilike(f"%{contains}%"))
     else:
@@ -70,7 +70,5 @@ for route in router.routes:
         },
     },
 )
-async def get_user_by_id(
-    user: User = Depends(get_user_or_404),
-):
+async def get_user_by_id(user: User = Depends(get_user_or_404)) -> UserRead:
     return UserRead.from_orm(user)
