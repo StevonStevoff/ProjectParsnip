@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Image,Platform
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@react-navigation/native';
@@ -23,9 +28,7 @@ function LoginScreen({ navigation }) {
         source={require('../../../assets/backgroundBlob.png')}
         style={colors.blobImage}
       />
-      
 
-        
       <View
         style={{
           flexDirection: 'column',
@@ -34,18 +37,18 @@ function LoginScreen({ navigation }) {
           width: '100%',
           ...Platform.select({
             web: {
-              maxWidth:1000, 
-            }
-          }) 
+              maxWidth: 1000,
+            },
+          }),
         }}
       >
         <View
-        style={colors.upperTextContainer}
-      >
-        <Text style={colors.subtitle}> Login</Text>
-        <Text style={colors.tagline}>Please sign in to continue </Text>
-      </View>
-      
+          style={colors.upperTextContainer}
+        >
+          <Text style={colors.subtitle}> Login</Text>
+          <Text style={colors.tagline}>Please sign in to continue </Text>
+        </View>
+
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={LoginSchema}

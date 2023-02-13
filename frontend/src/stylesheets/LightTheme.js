@@ -17,29 +17,29 @@ export const LightTheme = {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      width: '100%',  
+      width: '100%',
     },
-    formContainer:{
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        
-        ...Platform.select({
-          web: {
-            maxWidth:1000, 
-          }
-        }) 
-    },
-    upperTextContainer:{     
-      
-        ...Platform.select({
-          web: {
+    formContainer: {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
 
-            maxHeight:'0%',
-            paddingBottom:50,
-          }
-        })
+      ...Platform.select({
+        web: {
+          maxWidth: 1000,
+        },
+      }),
+    },
+    upperTextContainer: {
+
+      ...Platform.select({
+        web: {
+
+          maxHeight: '0%',
+          paddingBottom: 50,
+        },
+      }),
     },
 
     title: {
@@ -112,10 +112,10 @@ export const LightTheme = {
       alignItems: 'center',
       justifyContent: 'center',
       ...Platform.select({
-            web: {
-              minWidth: '100%',
-            }
-          })
+        web: {
+          minWidth: '100%',
+        },
+      }),
     },
 
     signupBtn: {
@@ -130,9 +130,9 @@ export const LightTheme = {
       ...Platform.select({
         web: {
           minWidth: '0%',
-          width:'100%',
-        }
-      }) 
+          width: '100%',
+        },
+      }),
     },
   },
 };

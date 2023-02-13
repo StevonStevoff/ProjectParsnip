@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 /* eslint-disable no-dupe-keys */
 // eslint-disable-next-line import/prefer-default-export
 export const DarkTheme = {
-  
+
   dark: false,
   background: '#1c1e21',
   // do not delete require for react navigtion to load correctly
@@ -20,34 +20,34 @@ export const DarkTheme = {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      width: '100%',  
+      width: '100%',
     },
-    formContainer:{
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        
-        ...Platform.select({
-          web: {
-            maxWidth:1000, 
-          }
-        }) 
+    formContainer: {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+
+      ...Platform.select({
+        web: {
+          maxWidth: 1000,
+        },
+      }),
     },
-    upperTextContainer:{     
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        width: '71%',
-        maxHeight:'20%',
+    upperTextContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      width: '71%',
+      maxHeight: '20%',
 
-        ...Platform.select({
-          web: {
+      ...Platform.select({
+        web: {
 
-            maxHeight:'0%',
-            paddingBottom:50,
-          }
-        })
+          maxHeight: '0%',
+          paddingBottom: 50,
+        },
+      }),
     },
     title: {
       flexDirection: 'row',
@@ -92,8 +92,8 @@ export const DarkTheme = {
       ...Platform.select({
         web: {
           width: '70%',
-        }
-      }) 
+        },
+      }),
     },
     profilePicMobile: {
       width: 37,
@@ -129,8 +129,8 @@ export const DarkTheme = {
       ...Platform.select({
         web: {
           minWidth: '100%',
-        }
-      }) 
+        },
+      }),
     },
     signupBtn: {
       borderRadius: 5,
@@ -144,9 +144,9 @@ export const DarkTheme = {
       ...Platform.select({
         web: {
           minWidth: '0%',
-          width:'100%',
-        }
-      }) 
+          width: '100%',
+        },
+      }),
     },
   },
 };

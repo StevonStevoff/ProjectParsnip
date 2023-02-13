@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Image,Platform
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@react-navigation/native';
@@ -23,8 +28,6 @@ function RegistrationScreen({ navigation }) {
         source={require('../../../assets/backgroundBlob.png')}
         style={colors.blobImage}
       />
-      
-        
 
       <View
         style={{
@@ -34,15 +37,15 @@ function RegistrationScreen({ navigation }) {
           width: '100%',
           ...Platform.select({
             web: {
-              maxWidth:1000, 
-            }
-          }) 
+              maxWidth: 1000,
+            },
+          }),
         }}
       >
 
-      <View style={colors.upperTextContainer}>
-        <Text style={colors.subtitle}>Create Account</Text>
-       </View>
+        <View style={colors.upperTextContainer}>
+          <Text style={colors.subtitle}>Create Account</Text>
+        </View>
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={LoginSchema}
