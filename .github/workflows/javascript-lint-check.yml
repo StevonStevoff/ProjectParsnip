@@ -1,0 +1,42 @@
+name: Linting Check for React
+
+on:
+  push:
+    branches: ["main", "frontend"]
+  pull_request:
+    branches: ["main", "frontend", "development"]
+
+permissions:
+  checks: write
+  contents: write
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+
+      - name: npm install
+        working-directory: ./frontend
+        run: npm ci --legacy-peer-deps 
+      
+      - name: npm install eslint
+        run: npm i eslint 
+
+      - name: Run ESLint
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true
