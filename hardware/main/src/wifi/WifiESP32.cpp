@@ -1,7 +1,7 @@
 #include "Arduino.h"
-#include "Wifi.h"
+#include "WifiESP32.h"
 
-Wifi::Wifi(const char* ssid, const char* password) {
+void WifiESP32::setupWifi(const char* ssid, const char* password) {
     WiFi.mode(WIFI_STA); // SETS TO STATION MODE!
     WiFi.begin(ssid, password);
 
@@ -9,3 +9,9 @@ Wifi::Wifi(const char* ssid, const char* password) {
         delay(1500);
     }
 }
+
+
+
+
+
+

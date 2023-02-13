@@ -2,11 +2,10 @@
 #define Wifi_h
 
 #include "Arduino.h"
-#include <ESP8266WiFi.h>
 
 class Wifi {
     public:
-        Wifi(const char* ssid, const char* password);
+        virtual void setupWifi(const char* ssid, const char* password) = 0;
     private:
 };
 
