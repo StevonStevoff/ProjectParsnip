@@ -6,4 +6,13 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
-# parsnip-frontend:
+
+  react_native_app:
+    build: ./frontend
+    environment:
+      - NODE_ENV=development
+    tty: true
+    ports:
+      - '19006:19006'
+    volumes:
+      - /app/node_modules
