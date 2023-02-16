@@ -2,7 +2,15 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import User, create_db_and_tables
-from app.router import devices, plant_profiles, plant_types, plants, sensors, users
+from app.router import (
+    devices,
+    grow_properties,
+    plant_profiles,
+    plant_types,
+    plants,
+    sensors,
+    users,
+)
 from app.schemas import UserCreate, UserRead
 from app.users import auth_backend, current_active_user, fastapi_users
 
@@ -31,13 +39,17 @@ app.include_router(
 
 # === Project Parsnip Routes ===
 app.include_router(devices.router, prefix="/devices", tags=["devices"])
-app.include_router(sensors.router, prefix="/sensors", tags=["sensors"])
-app.include_router(users.router, prefix="/users", tags=["users"])
-app.include_router(plant_types.router, prefix="/plant_types", tags=["plant_types"])
+app.include_router(
+    grow_properties.router, prefix="/grow_properties", tags=["grow_properties"]
+)
+app.include_router(plants.router, prefix="/plants", tags=["plants"])
 app.include_router(
     plant_profiles.router, prefix="/plant_profiles", tags=["plant_profiles"]
 )
-app.include_router(plants.router, prefix="/plants", tags=["plants"])
+app.include_router(plant_types.router, prefix="/plant_types", tags=["plant_types"])
+app.include_router(sensors.router, prefix="/sensors", tags=["sensors"])
+app.include_router(users.router, prefix="/users", tags=["users"])
+
 
 origins = ["http://localhost:3000", "localhost:3000"]
 
