@@ -1,5 +1,14 @@
 from fastapi_users.db import SQLAlchemyBaseUserTable
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+)
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -27,6 +36,14 @@ DeviceSensors = Table(
     Column("device_id", Integer, ForeignKey("devices.id")),
     Column("sensor_id", Integer, ForeignKey("sensors.id")),
 )
+
+# ProfileProperties = Table(
+#     "profile_properties",
+#     Base.metadata,
+#     Column("id", Integer, primary_key=True),
+#     Column("plant_profile_id", Integer, ForeignKey("plant_profiles.id")),
+#     Column("grow_property_id", Integer, ForeignKey("grow_properties.id")),
+# )
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -92,6 +109,7 @@ class Plant(Base):
     device_id = Column(Integer, ForeignKey("devices.id"))
     plant_profile_id = Column(Integer, ForeignKey("plant_profiles.id"))
     plant_type_id = Column(Integer, ForeignKey("plant_types.id"))
+    time_planted = Column(DateTime(timezone=True))
 
     device = relationship(
         "Device",
@@ -109,12 +127,16 @@ class Plant(Base):
 class PlantData(Base):
     __tablename__ = "plant_data"
     id = Column(Integer, primary_key=True, index=True)
-    telemetry_data = Column(String)
-    timestamp = Column(DateTime)
+
     plant_id = Column(Integer, ForeignKey("plants.id"))
 
     plant = relationship(
         "Plant",
+        back_populates="plant_data",
+        lazy="selectin",
+    )
+    sensor_readings = relationship(
+        "SensorReading",
         back_populates="plant_data",
         lazy="selectin",
     )
@@ -126,6 +148,7 @@ class PlantType(Base):
     name = Column(String)
     description = Column(String)
     user_created = Column(Boolean)
+
     creator_id = Column(Integer, ForeignKey("users.id"))
 
     creator = relationship("User", lazy="selectin")
@@ -138,6 +161,8 @@ class PlantProfile(Base):
     description = Column(String)
     public = Column(Boolean)
     user_created = Column(Boolean)
+    grow_duration = Column(Integer)
+
     plant_type_id = Column(Integer, ForeignKey("plant_types.id"))
     creator_id = Column(Integer, ForeignKey("users.id"))
 
@@ -150,5 +175,44 @@ class PlantProfile(Base):
         "User",
         secondary=UserProfile,
         back_populates="plant_profiles",
+        lazy="selectin",
+    )
+    grow_properties = relationship(
+        "GrowProperty",
+        lazy="selectin",
+    )
+
+
+class GrowProperty(Base):
+    __tablename__ = "grow_properties"
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    min = Column(Float, nullable=False)
+    max = Column(Float, nullable=False)
+
+    plant_profile_id = Column(Integer, ForeignKey("plant_profiles.id"))
+    sensor_id = Column(Integer, ForeignKey("sensors.id"))
+
+    plant_profile = relationship(
+        "PlantProfile",
+        back_populates="grow_properties",
+        lazy="selectin",
+    )
+
+
+class SensorReading(Base):
+    __tablename__ = "sensor_readings"
+    id = Column(Integer, primary_key=True, nullable=False)
+    timestamp = Column(DateTime(timezone=True))
+    value = Column(Float, nullable=False)
+
+    sensor_id = Column(Integer, ForeignKey("sensors.id"))
+    grow_property_id = Column(Integer, ForeignKey("grow_properties.id"))
+    plant_data_id = Column(Integer, ForeignKey("plant_data.id"))
+
+    plant_data = relationship(
+        "PlantData",
+        back_populates="sensor_readings",
         lazy="selectin",
     )

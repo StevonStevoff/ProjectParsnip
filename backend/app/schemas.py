@@ -1,5 +1,6 @@
 from typing import Optional
 
+from datetime import datetime
 from fastapi_users import schemas
 from pydantic import BaseModel
 
@@ -90,10 +91,60 @@ class PlantTypeUpdate(PlantTypeBase):
     description: Optional[str]
 
 
+class GrowPropertyBase(BaseModel):
+    name: str
+    description: str
+    min: float
+    max: float
+    sensor_id: int
+
+
+class GrowPropertyCreate(GrowPropertyBase):
+    plant_profile_id: int
+
+
+class GrowPropertyRead(BaseRead, GrowPropertyBase):
+    pass
+
+
+class GrowPropertyUpdate(GrowPropertyBase):
+    name: Optional[str]
+    description: Optional[str]
+    min: Optional[float]
+    max: Optional[float]
+    sensor_id: Optional[int]
+    plant_profile_id: Optional[int]
+
+
+class SensorReadingBase(BaseModel):
+    value: float
+    timestamp: datetime
+
+
+class SensorReadingRead(BaseRead, SensorReadingBase):
+    grow_property: GrowPropertyRead
+    # plant_data: PlantDataRead
+
+
+class SensorReadingCreate(SensorReadingBase):
+    sensor_id: int
+    grow_property_id: int
+    plant_data_id: int
+
+
+class SensorReadingUpdate(SensorReadingBase):
+    value: Optional[float]
+    timestamp: Optional[datetime]
+    sensor_id: Optional[int]
+    grow_property_id: Optional[int]
+    plant_data_id: Optional[int]
+
+
 class PlantProfileBase(BaseModel):
     name: str
     description: str
     public: bool
+    grow_duration: int | None
 
 
 class PlantProfileRead(BaseRead, PlantProfileBase):
@@ -101,11 +152,13 @@ class PlantProfileRead(BaseRead, PlantProfileBase):
     plant_type: PlantTypeRead | None
     creator: UserRead | None
     users: list[UserRead]
+    grow_properties: list[GrowPropertyRead] | None
 
 
 class PlantProfileCreate(PlantProfileBase):
     plant_type_id: int
     user_ids: list[int]
+    grow_duration: int
 
 
 class PlantProfileUpdate(PlantProfileBase):
@@ -114,6 +167,8 @@ class PlantProfileUpdate(PlantProfileBase):
     public: Optional[bool]
     plant_type_id: Optional[int]
     user_ids: Optional[list[int]]
+    grow_duration: Optional[int]
+    grow_property_ids: Optional[list[int]]
 
 
 class PlantBase(BaseModel):
@@ -124,6 +179,7 @@ class PlantRead(BaseRead, PlantBase):
     device: DeviceRead
     plant_profile: PlantProfileRead | None
     plant_type: PlantTypeRead | None
+    time_planted: datetime | None
 
 
 class PlantCreate(PlantBase):
@@ -137,3 +193,4 @@ class PlantUpdate(PlantBase):
     device_id: Optional[int]
     plant_profile_id: Optional[int]
     plant_type_id: Optional[int]
+    time_planted: Optional[datetime]
