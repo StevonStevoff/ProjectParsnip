@@ -17,7 +17,7 @@ function NavigationRoot() {
   return (
     <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
       <Stack.Navigator
-        initialRouteName="Profile"
+        initialRouteName="LoginScreen"
         screenOptions={{
           headerShown: false,
         }}

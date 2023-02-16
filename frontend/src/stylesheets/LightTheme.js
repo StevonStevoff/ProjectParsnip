@@ -19,6 +19,15 @@ export const LightTheme = {
       alignItems: 'center',
       width: '100%',
     },
+    centeredViewWithColumnFlex: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden',
+    },
     formContainer: {
       flexDirection: 'column',
       justifyContent: 'center',
@@ -106,48 +115,6 @@ export const LightTheme = {
       height: 40,
       marginRight: 5,
       borderRadius: '50%',
-    },
-    blobImage: {
-      flexDirection: 'row-reverse',
-      height: '85%',
-      width: '85%',
-      resizeMode: 'contain',
-      transform: [{ rotate: '-30deg' }],
-      position: 'absolute',
-      top: -230,
-      right: -105,
-    },
-    loginBtn: {
-      borderRadius: 5,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#fff',
-      minWidth: '100%',
-      height: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...Platform.select({
-        web: {
-          minWidth: '100%',
-        },
-      }),
-    },
-
-    signupBtn: {
-      borderRadius: 5,
-      borderColor: '#B5EB89',
-      borderRadius: 10,
-      borderWidth: 1,
-      minWidth: '100%',
-      height: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...Platform.select({
-        web: {
-          minWidth: '0%',
-          width: '100%',
-        },
-      }),
     },
     tableCardView: {
       borderRadius: 20,

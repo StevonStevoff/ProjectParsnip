@@ -23,6 +23,15 @@ export const DarkTheme = {
       alignItems: 'center',
       width: '100%',
     },
+    centeredViewWithColumnFlex: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden',
+    },
     formContainer: {
       flexDirection: 'column',
       justifyContent: 'center',
@@ -39,12 +48,11 @@ export const DarkTheme = {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'flex-start',
-      width: '71%',
+      width: '80%',
       maxHeight: '20%',
 
       ...Platform.select({
         web: {
-
           maxHeight: '0%',
           paddingBottom: 50,
         },
@@ -129,36 +137,7 @@ export const DarkTheme = {
       top: -230,
       right: 100,
     },
-    loginBtn: {
-      borderRadius: 5,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#272b31',
-      height: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...Platform.select({
-        web: {
-          minWidth: '100%',
-        },
-      }),
-    },
-    signupBtn: {
-      borderRadius: 5,
-      borderColor: '#B5EB89',
-      borderRadius: 10,
-      borderWidth: 1,
-      minWidth: '100%',
-      height: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...Platform.select({
-        web: {
-          minWidth: '0%',
-          width: '100%',
-        },
-      }),
-    },
+
     tableCardView: {
       borderRadius: 20,
       width: '90%',
