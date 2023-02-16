@@ -1,15 +1,11 @@
 import {
   Text,
   View,
-  TouchableOpacity,
-  Button,
   Image,
-  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
-import AuthUtils from '../../api/utils/AuthUtils';
+import UsersPlantProfilesTable from '../../components/UsersPlantProfilesTable';
 
 function ProfileScreen({ navigation }) {
   const { colors } = useTheme();
@@ -23,9 +19,18 @@ function ProfileScreen({ navigation }) {
         flexDirection: 'column',
         width: '100%',
         height: '100%',
+        overflow: 'hidden',
       }}
     >
-      <View style={{ width: '70%', height: '20%', marginTop: '1%' }}>
+      <View
+        style={{
+          width: '70%',
+          height: '20%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}
+      >
         <Image
           source={require('../../../assets/templateProfilePic.png')}
           style={{
@@ -34,9 +39,13 @@ function ProfileScreen({ navigation }) {
             resizeMode: 'contain',
           }}
         />
+        <Text style={colors.profileName}>Jane Doe</Text>
+        <Text style={colors.username}>@JDoe</Text>
       </View>
-      <View style={colors.centeredView}>
-        <Text style={colors.subtitle}>Jane Doe</Text>
+      <View
+        style={colors.tableCardView}
+      >
+        <UsersPlantProfilesTable />
       </View>
     </View>
   );

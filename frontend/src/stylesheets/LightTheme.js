@@ -56,6 +56,16 @@ export const LightTheme = {
       fontWeight: 'bold',
       marginBottom: 10,
     },
+    profileName: {
+      fontSize: 45,
+      fontWeight: 'bold',
+      color: '#000',
+    },
+    username: {
+      fontSize: 25,
+      fontWeight: 'bold',
+      color: '#438707',
+    },
     tagline: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -63,6 +73,11 @@ export const LightTheme = {
       fontWeight: 'semi-bold',
       marginLeft: 9,
       color: '#7d7f7e',
+    },
+    tableTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#000',
     },
     textFormat: {
       flexDirection: 'row',
@@ -133,6 +148,38 @@ export const LightTheme = {
           width: '100%',
         },
       }),
+    },
+    tableCardView: {
+      borderRadius: 20,
+      width: '90%',
+      height: '50%',
+      marginTop: '15%',
+      padding: '3%',
+      paddingTop: '1%',
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    plantProfileRow: {
+      height: '10%',
+      minHeight: '10%',
+    },
+    plantProfileCol: {
+      width: '40%',
+      minWidth: '40%',
+    },
+    plantProfileHeadingText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#000',
+      width: '100%',
+      minWidth: '100%',
+    },
+    plantProfileText: {
+      fontSize: 18,
+      color: '#000',
+      width: '100%',
+      minWidth: '100%',
     },
   },
 };

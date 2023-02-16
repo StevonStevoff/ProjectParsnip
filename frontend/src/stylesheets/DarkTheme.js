@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 // eslint-disable-next-line import/prefer-default-export
 export const DarkTheme = {
 
-  dark: false,
+  dark: true,
   background: '#1c1e21',
   // do not delete require for react navigtion to load correctly
   colors: {
@@ -14,6 +14,7 @@ export const DarkTheme = {
     text: '#efeef0',
     border: '#1a1c1e',
     iconColor: '#fff',
+    dark: true,
     // do not delete require for react navigtion to load correctly
 
     centeredView: {
@@ -63,6 +64,16 @@ export const DarkTheme = {
       fontWeight: 'bold',
       marginBottom: 10,
       color: '#fff',
+    },
+    profileName: {
+      fontSize: 45,
+      fontWeight: 'bold',
+      color: '#fff',
+    },
+    username: {
+      fontSize: 25,
+      fontWeight: 'bold',
+      color: '#438707',
     },
     tagline: {
       flexDirection: 'row',
@@ -147,6 +158,38 @@ export const DarkTheme = {
           width: '100%',
         },
       }),
+    },
+    tableCardView: {
+      borderRadius: 20,
+      width: '90%',
+      height: '50%',
+      marginTop: '15%',
+      padding: '3%',
+      paddingTop: '1%',
+      borderRadius: 15,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    plantProfileRow: {
+      height: '10%',
+      minHeight: '10%',
+    },
+    plantProfileCol: {
+      width: '40%',
+      minWidth: '40%',
+    },
+    plantProfileHeadingText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#fff',
+      width: '100%',
+      minWidth: '100%',
+    },
+    plantProfileText: {
+      fontSize: 18,
+      color: '#fff',
+      width: '100%',
+      minWidth: '100%',
     },
   },
 };
