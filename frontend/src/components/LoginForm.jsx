@@ -23,11 +23,11 @@ function LoginForm({ navigation }) {
 
   return (
     <Formik
-      initialValues={{ email: '', password: '' }}
+      initialValues={{ username: '', password: '' }}
       validationSchema={LoginSchema}
       onSubmit={async (values, { setSubmitting, setFieldError }) => {
         setIsLoading(true);
-        AuthUtils.login(navigation, values.email, values.password)
+        AuthUtils.login(navigation, values.username, values.password)
           .then(() => {
             setIsLoading(false);
             setSubmitting(false);
@@ -51,20 +51,20 @@ function LoginForm({ navigation }) {
         <>
           <VStack marginTop={5} width="90%">
             <FormControl isRequired isInvalid={errors.general} alignItems="center">
-              <FormControl isRequired isInvalid={errors.email && touched.email} alignItems="center">
+              <FormControl isRequired isInvalid={errors.username && touched.username} alignItems="center">
                 <Input
                   w="80%"
                   size="2xl"
                   marginBottom="2%"
-                  InputLeftElement={<Icon as={<MaterialIcons name="mail" />} size={5} ml="2" color="muted.400" />}
-                  placeholder="Email"
+                  InputLeftElement={<Icon as={<MaterialIcons name="alternate-email" />} size={5} ml="2" color="muted.400" />}
+                  placeholder="Username"
                   variant="filled"
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  value={values.email}
+                  onChangeText={handleChange('username')}
+                  onBlur={handleBlur('username')}
+                  value={values.username}
                 />
                 <FormControl.ErrorMessage>
-                  {errors.email}
+                  {errors.username}
                 </FormControl.ErrorMessage>
               </FormControl>
               <FormControl isRequired isInvalid={errors.password && touched.password} alignItems="center">

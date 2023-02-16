@@ -14,13 +14,17 @@ const API = {
 
     return response.data;
   },
-  async registerUser({ email, password }, cancel = false) {
+  async registerUser({
+    email, password, name, username,
+  }, cancel = false) {
     const response = await api.request({
       url: '/auth/register',
       method: 'POST',
       data: {
         email,
         password,
+        name,
+        username,
       },
       headers: {
         'Content-Type': 'application/json',
@@ -31,13 +35,13 @@ const API = {
     return response;
   },
 
-  async loginUser({ email, password }, cancel = false) {
+  async loginUser({ username, password }, cancel = false) {
     const response = await api.request({
       url: '/auth/jwt/login',
       method: 'POST',
       data: qs
         .stringify({
-          username: email,
+          username,
           password,
         })
         .replace(/%40/, '@'),
