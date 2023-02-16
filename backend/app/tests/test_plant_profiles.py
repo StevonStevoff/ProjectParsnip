@@ -45,6 +45,7 @@ async def add_plant_profiles():
                 name="First Test Profile",
                 description="Test Profile Description",
                 public=True,
+                grow_duration=10,
                 user_created=True,
                 plant_type_id=1,
                 creator_id=1,
@@ -57,6 +58,7 @@ async def add_plant_profiles():
                 name="Private Test Profile",
                 description="Admin's Private Test Profile Description",
                 public=False,
+                grow_duration=19,
                 user_created=True,
                 plant_type_id=1,
                 creator_id=1,
@@ -69,6 +71,7 @@ async def add_plant_profiles():
                 name="User's Private Test Profile",
                 description="Normal User's Private Test Profile Description",
                 public=False,
+                grow_duration=75,
                 user_created=True,
                 plant_type_id=1,
                 creator_id=2,
@@ -117,6 +120,7 @@ async def test_get_all_plant_profiles(client, superuser_access_token):
     assert json_response[0]["name"] == "First Test Profile"
     assert json_response[0]["description"] == "Test Profile Description"
     assert json_response[0]["public"]
+    assert json_response[0]["grow_duration"] == 10
     assert json_response[0]["user_created"]
     assert json_response[0]["creator"]["id"] == 1
     assert json_response[0]["plant_type"]["id"] == 1
@@ -125,6 +129,7 @@ async def test_get_all_plant_profiles(client, superuser_access_token):
     # check last item
     assert json_response[-1]["id"] == len(plant_profiles)
     assert json_response[-1]["name"] == "User's Private Test Profile"
+    assert json_response[-1]["grow_duration"] == 75
     assert (
         json_response[-1]["description"]
         == "Normal User's Private Test Profile Description"
@@ -320,6 +325,7 @@ async def test_register_valid_plant_profile(client, user_access_token):
             "name": "Test Registered Profile",
             "description": "Profile created by unittest",
             "public": True,
+            "grow_duration": 57,
             "plant_type_id": 1,
             "user_ids": [1, 2],
         },
@@ -332,6 +338,7 @@ async def test_register_valid_plant_profile(client, user_access_token):
     assert json_response["name"] == "Test Registered Profile"
     assert json_response["description"] == "Profile created by unittest"
     assert json_response["public"]
+    assert json_response["grow_duration"] == 57
     assert json_response["plant_type"]["id"] == 1
     assert json_response["creator"]["id"] == 2
     assert len(json_response["users"]) == 2
@@ -380,6 +387,7 @@ async def test_register_plant_profile_invalid_plant_type(client, user_access_tok
             "name": "Test Registered Profile",
             "description": "Profile created by unittest",
             "public": True,
+            "grow_duration": 12,
             "plant_type_id": 9999,
             "user_ids": [1, 2],
         },
@@ -389,6 +397,28 @@ async def test_register_plant_profile_invalid_plant_type(client, user_access_tok
     json_response = response.json()
 
     assert json_response["detail"] == "No plant type with id (9999) found."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_register_plant_profile_invalid_grow_duration(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.post(
+        "/plant_profiles/register",
+        headers=headers,
+        json={
+            "name": "Test Registered Profile",
+            "description": "Profile created by unittest",
+            "public": True,
+            "grow_duration": -17,
+            "plant_type_id": 1,
+            "user_ids": [1, 2],
+        },
+    )
+
+    assert response.status_code == 400
+    json_response = response.json()
+
+    assert json_response["detail"] == "Grow duration cannot be less than zero."
 
 
 @pytest.mark.asyncio(scope="session")
@@ -549,6 +579,7 @@ async def test_patch_plant_profile(client, user_access_token):
             "name": "Edited Public Test Profile",
             "description": "Edited User's Public Test Profile Description",
             "public": True,
+            "grow_duration": 99,
             "plant_type_id": 2,
             "user_ids": [1, 2],
         },
@@ -563,6 +594,7 @@ async def test_patch_plant_profile(client, user_access_token):
     )
     assert json_response["public"]
     assert json_response["plant_type"]["id"] == 2
+    assert json_response["grow_duration"] == 99
     assert len(json_response["users"]) == 2
 
 

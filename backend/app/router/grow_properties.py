@@ -11,7 +11,7 @@ from app.router.utils import (
     model_list_to_schema,
     user_can_manage_object,
 )
-from app.schemas import GrowPropertyRead, GrowPropertyCreate, GrowPropertyUpdate
+from app.schemas import GrowPropertyCreate, GrowPropertyRead, GrowPropertyUpdate
 from app.users import current_active_superuser, current_active_user
 
 router = APIRouter()

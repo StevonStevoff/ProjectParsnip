@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
 from app.models import Device, Plant, PlantProfile, PlantType, User
-from app.router.utils import get_object_or_404, model_list_to_schema
+from app.router.utils import (
+    get_object_or_404,
+    model_list_to_schema,
+    user_can_use_object,
+)
 from app.schemas import PlantCreate, PlantRead, PlantUpdate
 from app.users import current_active_superuser, current_active_user
 
@@ -186,32 +190,16 @@ async def patch_plant(
 async def update_plant_device(
     plant: Plant, user: User, device_id: int, session: AsyncSession
 ) -> None:
-    device = await get_object_or_404(
-        device_id, Device, session, "The device does not exist."
-    )
-    device_user_ids = [user.id for user in device.users]
-    if user.id not in device_user_ids:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Not owner or user of device with ID {device_id}",
-        )
-
+    await user_can_use_object(user, device_id, Device, "device", session)
     plant.device_id = device_id
 
 
 async def update_plant_profile(
     plant: Plant, user: User, plant_profile_id: int, session: AsyncSession
 ) -> None:
-    plant_profile = await get_object_or_404(
-        plant_profile_id, PlantProfile, session, "The plant profile does not exist."
+    await user_can_use_object(
+        user, plant_profile_id, PlantProfile, "plant profile", session
     )
-    plant_profile_user_ids = [user.id for user in plant_profile.users]
-    if user.id not in plant_profile_user_ids:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Not owner or user of plant_profile with ID {plant_profile_id}",
-        )
-
     plant.plant_profile_id = plant_profile_id
 
 
