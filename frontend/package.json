@@ -30,7 +30,7 @@
     "@react-navigation/stack": "^6.3.10",
     "antd": "^5.1.0",
     "axios": "^1.2.1",
-    "expo": "~47.0.9",
+    "expo": "^47.0.13",
     "expo-device": "~5.0.0",
     "expo-linear-gradient": "~12.0.1",
     "expo-network": "^5.0.0",

@@ -74,6 +74,25 @@ const API = {
 
     return response;
   },
+  async registerPlant({ name, device_id ,plant_profile_id,plant_type_id}, cancel = false) {
+    const response = await api.request({
+      url: '/plants/register',
+      method: 'POST',
+      data: {
+        name,
+         device_id ,
+         plant_profile_id,
+         plant_type_id
+      },
+      headers: {
+        'Content-Type': 'application/json',
+
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+    return response;
+  },
 };
 
 // defining the cancel API object for ProductAPI
