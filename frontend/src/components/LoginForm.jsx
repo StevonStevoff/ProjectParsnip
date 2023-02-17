@@ -56,6 +56,7 @@ function LoginForm({ navigation }) {
                   w="80%"
                   size="2xl"
                   marginBottom="2%"
+                  testID="username-input"
                   InputLeftElement={<Icon as={<MaterialIcons name="alternate-email" />} size={5} ml="2" color="muted.400" />}
                   placeholder="Username"
                   variant="filled"
@@ -72,6 +73,7 @@ function LoginForm({ navigation }) {
                   w="80%"
                   size="2xl"
                   marginBottom="2%"
+                  testID="password-input"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
                   InputLeftElement={<Icon as={<MaterialIcons name="lock" />} size={5} ml="2" color="muted.400" />}

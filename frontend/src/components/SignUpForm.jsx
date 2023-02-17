@@ -58,11 +58,12 @@ function SignUpForm({ navigation }) {
       }) => (
         <>
           <VStack marginTop={5} width="90%">
-            <FormControl isRequired isInvalid={errors.general}>
+            <FormControl isRequired isInvalid={errors.general} alignItems="center">
               <FormControl isRequired isInvalid={errors.name && touched.name} alignItems="center">
                 <Input
                   w="80%"
                   size="2xl"
+                  testID="name-input-signup"
                   marginBottom="3%"
                   InputLeftElement={<Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />}
                   placeholder="Name"
@@ -79,6 +80,7 @@ function SignUpForm({ navigation }) {
                 <Input
                   w="80%"
                   size="2xl"
+                  testID="username-input-signup"
                   marginBottom="3%"
                   InputLeftElement={<Icon as={<MaterialIcons name="alternate-email" />} size={5} ml="2" color="muted.400" />}
                   placeholder="Username"
@@ -95,6 +97,7 @@ function SignUpForm({ navigation }) {
                 <Input
                   w="80%"
                   size="2xl"
+                  testID="email-input-signup"
                   marginBottom="3%"
                   InputLeftElement={<Icon as={<MaterialIcons name="mail" />} size={5} ml="2" color="muted.400" />}
                   placeholder="Email"
@@ -111,6 +114,7 @@ function SignUpForm({ navigation }) {
                 <Input
                   w="80%"
                   size="2xl"
+                  testID="password-input-signup"
                   marginBottom="3%"
                   type={showPassword ? 'text' : 'password'}
                   InputLeftElement={<Icon as={<MaterialIcons name="lock" />} size={5} ml="2" color="muted.400" />}
@@ -133,6 +137,7 @@ function SignUpForm({ navigation }) {
                 <Input
                   w="80%"
                   size="2xl"
+                  testID="confirm-password-input-signup"
                   marginBottom="3%"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Confirm Password"

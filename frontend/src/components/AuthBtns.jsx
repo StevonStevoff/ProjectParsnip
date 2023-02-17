@@ -77,6 +77,7 @@ function AuthBtns({
       >
         <TouchableOpacity
           style={AuthBtnsStyles.secondaryBtn}
+          testID="auth-btn"
           onPress={() => {
             if (btnName === 'Login →') {
               navigation.navigate('Registration');
