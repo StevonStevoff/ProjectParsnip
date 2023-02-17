@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   TextInput,
+  ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
@@ -25,6 +26,11 @@ function PlantsScreen({ navigation }) {
   const { colors } = useTheme();
   const [userEmail, setUserEmail] = useState('');
   const [plants, setPlants] = useState([]);
+  const [isViewVisible, setIsViewVisible] = useState(false);
+
+  const handleButtonClick = () => {
+    setIsViewVisible(!isViewVisible);
+  };
 
   useEffect(() => {
     PlantUtils.getAuthenticatedUser().then((email) => {
@@ -51,7 +57,6 @@ function PlantsScreen({ navigation }) {
   }
 
   const handleRegisterPlant = async (values, { setSubmitting }) => {
-    console.log(values);
     try {
       const response = await API.registerPlant(values);
       console.log(response);
@@ -64,7 +69,7 @@ function PlantsScreen({ navigation }) {
     }
   };
   return (
-
+    <ScrollView style={styles.scrollView}>
     <View
       style={{
         flex: 1,
@@ -75,90 +80,86 @@ function PlantsScreen({ navigation }) {
     >
       <Text style={colors.textFormat}>{userEmail}</Text>
       <Text style={colors.textFormat}>PlantsScreen</Text>
-      <Button
-        title="Plant Details"
-        onPress={() => navigation.navigate('PlantDetails', { itemID: 12 })}
-      />
+      
+      <Button  title={isViewVisible ? 'Close' : 'Create Plant'} onPress={handleButtonClick} />
+      
+      {isViewVisible && (
+          <Formik
+        initialValues={{
+          name: '',
+          device_id: '',
+          plant_profile_id: '',
+          plant_type_id: '',
+        }}
+        validationSchema={RegisterPlantSchema}
+        onSubmit={handleRegisterPlant}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
+          <View style={styles.container}>
+            <Text style={styles.label}>Name</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('name')}
+              onBlur={handleBlur('name')}
+              value={values.name}
+            />
+            {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
 
-      <View>
-          {plants.map((plant) => (
-            <Text key={plant.id}>{plant.name}</Text>
-          ))}
-        </View>
+            <Text style={styles.label}>Device ID</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('device_id')}
+              onBlur={handleBlur('device_id')}
+              value={values.device_id}
+            />
+            {touched.device_id && errors.device_id && <Text style={styles.error}>{errors.device_id}</Text>}
 
-      {/* Each Plant Div */}
-        <View style={{borderColor:'black'}}>
-          <Text  style={colors.textFormat}>Plant Type</Text>
-          <View>
-            <Text  style={colors.textFormat}>Temp</Text>
-            <Text  style={colors.textFormat}>Soil Moisture</Text>
-            <Text  style={colors.textFormat}>Soil Nitrogen</Text>
+            <Text style={styles.label}>Plant Profile ID</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('plant_profile_id')}
+              onBlur={handleBlur('plant_profile_id')}
+              value={values.plant_profile_id}
+            />
+            {touched.plant_profile_id && errors.plant_profile_id && (
+              <Text style={styles.error}>{errors.plant_profile_id}</Text>
+            )}
+
+            <Text style={styles.label}>Plant Type ID</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('plant_type_id')}
+              onBlur={handleBlur('plant_type_id')}
+              value={values.plant_type_id}
+            />
+            {touched.plant_type_id && errors.plant_type_id && (
+              <Text style={styles.error}>{errors.plant_type_id}</Text>
+            )}
+
+            <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
+              <Text style={styles.buttonText}>Register Plant</Text>
+            </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={{borderColor:'black'}}>
-          <Text  style={colors.textFormat}>Plant Type</Text>
-        </View>
-
-        <Formik
-      initialValues={{
-        name: '',
-        device_id: '',
-        plant_profile_id: '',
-        plant_type_id: '',
-      }}
-      validationSchema={RegisterPlantSchema}
-      onSubmit={handleRegisterPlant}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
-        <View style={styles.container}>
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChange('name')}
-            onBlur={handleBlur('name')}
-            value={values.name}
-          />
-          {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
-
-          <Text style={styles.label}>Device ID</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChange('device_id')}
-            onBlur={handleBlur('device_id')}
-            value={values.device_id}
-          />
-          {touched.device_id && errors.device_id && <Text style={styles.error}>{errors.device_id}</Text>}
-
-          <Text style={styles.label}>Plant Profile ID</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChange('plant_profile_id')}
-            onBlur={handleBlur('plant_profile_id')}
-            value={values.plant_profile_id}
-          />
-          {touched.plant_profile_id && errors.plant_profile_id && (
-            <Text style={styles.error}>{errors.plant_profile_id}</Text>
-          )}
-
-          <Text style={styles.label}>Plant Type ID</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChange('plant_type_id')}
-            onBlur={handleBlur('plant_type_id')}
-            value={values.plant_type_id}
-          />
-          {touched.plant_type_id && errors.plant_type_id && (
-            <Text style={styles.error}>{errors.plant_type_id}</Text>
-          )}
-
-          <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
-            <Text style={styles.buttonText}>Register Plant</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </Formik>
+        )}
+        
+      </Formik>
+    )}
+    <View >
+          {plants.map((plant) => (
+            <>
+              <View style={{borderColor:'red',borderWidth:3,padding: 10}}>
+                <Text style={colors.textFormat} key={plant.id}>{plant.name}</Text>
+                <Button
+                  title="Plant Details"
+                  onPress={() => navigation.navigate('PlantDetails', { itemID: 12 })} />
+              </View>
+          </>   
+          ))}
       </View>
+
+      </View>
+
+      </ScrollView>
 
 
 
@@ -198,6 +199,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+    },
+    scrollView: {
+      marginHorizontal: 40,
     },
     });
     
