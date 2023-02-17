@@ -85,12 +85,23 @@ const API = {
          plant_type_id
       },
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
 
       },
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
+    return response;
+  },
+
+  async getCurrentUsersPlants(cancel = false) {
+    const response = await api.request({
+      url: '/plants/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
     return response;
   },
 };

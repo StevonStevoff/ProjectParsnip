@@ -24,11 +24,24 @@ const RegisterPlantSchema = yup.object().shape({
 function PlantsScreen({ navigation }) {
   const { colors } = useTheme();
   const [userEmail, setUserEmail] = useState('');
+  const [plants, setPlants] = useState([]);
 
   useEffect(() => {
     PlantUtils.getAuthenticatedUser().then((email) => {
       setUserEmail(email);
     });
+  }, []);
+
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const response = await API.getCurrentUsersPlants();
+        setPlants(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPlants();
   }, []);
 
   if (userEmail == null) {
@@ -38,6 +51,7 @@ function PlantsScreen({ navigation }) {
   }
 
   const handleRegisterPlant = async (values, { setSubmitting }) => {
+    console.log(values);
     try {
       const response = await API.registerPlant(values);
       console.log(response);
@@ -66,7 +80,11 @@ function PlantsScreen({ navigation }) {
         onPress={() => navigation.navigate('PlantDetails', { itemID: 12 })}
       />
 
-
+      <View>
+          {plants.map((plant) => (
+            <Text key={plant.id}>{plant.name}</Text>
+          ))}
+        </View>
 
       {/* Each Plant Div */}
         <View style={{borderColor:'black'}}>
@@ -76,6 +94,10 @@ function PlantsScreen({ navigation }) {
             <Text  style={colors.textFormat}>Soil Moisture</Text>
             <Text  style={colors.textFormat}>Soil Nitrogen</Text>
           </View>
+        </View>
+
+        <View style={{borderColor:'black'}}>
+          <Text  style={colors.textFormat}>Plant Type</Text>
         </View>
 
         <Formik
