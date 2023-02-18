@@ -104,6 +104,21 @@ const API = {
 
     return response;
   },
+
+  async deletePlant(id,cancel = false) {
+    const response = await api.request({ 
+      url: '/plants/2',
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
 };
 
 // defining the cancel API object for ProductAPI

@@ -14,6 +14,11 @@ import PlantUtils from '../../api/utils/PlantUtils';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import API from '../../api/API';
+import { Heading ,Select,CheckIcon, VStack,Box} from 'native-base';
+import { YellowBox } from 'react-native';
+
+YellowBox.ignoreWarnings(['Encountered two children with the same key']);
+
 
 const RegisterPlantSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -23,10 +28,12 @@ const RegisterPlantSchema = yup.object().shape({
 });
 
 function PlantsScreen({ navigation }) {
+  const [service, setService] = useState("");
   const { colors } = useTheme();
   const [userEmail, setUserEmail] = useState('');
   const [plants, setPlants] = useState([]);
   const [isViewVisible, setIsViewVisible] = useState(false);
+
 
   const handleButtonClick = () => {
     setIsViewVisible(!isViewVisible);
@@ -42,6 +49,7 @@ function PlantsScreen({ navigation }) {
     const fetchPlants = async () => {
       try {
         const response = await API.getCurrentUsersPlants();
+        // console.log(response.data)
         setPlants(response.data);
       } catch (error) {
         console.error(error);
@@ -50,11 +58,29 @@ function PlantsScreen({ navigation }) {
     fetchPlants();
   }, []);
 
+
+ 
+
+  useEffect(() => {
+    console.log(false);
+    setIsViewVisible(false);
+  }, []);
+
   if (userEmail == null) {
     return (
       <ActivityIndicator size="large" color="#00ff00" />
     );
   }
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await API.deletePlant(id);
+      // Handle successful deletion here
+      console.log(response);
+    } catch (error) {
+      // Handle error here
+    }
+  };
 
   const handleRegisterPlant = async (values, { setSubmitting }) => {
     try {
@@ -75,13 +101,19 @@ function PlantsScreen({ navigation }) {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        color: '#fff',
+        color: '#fff'
+        
       }}
     >
+
+                
+
       <Text style={colors.textFormat}>{userEmail}</Text>
-      <Text style={colors.textFormat}>PlantsScreen</Text>
+      <Text style={colors.textFormat}>PlantsScreen
+        <Button  style={{top:10}} title={isViewVisible ? 'Close' : 'Create Plant'} onPress={handleButtonClick} />
+      </Text>
       
-      <Button  title={isViewVisible ? 'Close' : 'Create Plant'} onPress={handleButtonClick} />
+      
       
       {isViewVisible && (
           <Formik
@@ -140,18 +172,30 @@ function PlantsScreen({ navigation }) {
               <Text style={styles.buttonText}>Register Plant</Text>
             </TouchableOpacity>
           </View>
+
+          
         )}
+
         
+
       </Formik>
+      
     )}
+
+      </Box> */}
     <View >
           {plants.map((plant) => (
             <>
-              <View style={{borderColor:'red',borderWidth:3,padding: 10}}>
-                <Text style={colors.textFormat} key={plant.id}>{plant.name}</Text>
+              <TouchableOpacity onPress={() => handleDelete(plant.id)}>
+            <Text>Delete</Text>
+            </TouchableOpacity>
+              <View style={{borderColor:'black',borderWidth:3,padding: 10,width:300,marginBottom:10, borderRadius: 10}}>
+                <Text style={{fontSize:25}} key={plant.id}>{plant.name}</Text>
+                <Text style={{fontSize:20,color:'green'}} key={plant.id}>{plant.plant_type.name}</Text>
+                
                 <Button
                   title="Plant Details"
-                  onPress={() => navigation.navigate('PlantDetails', { itemID: 12 })} />
+                  onPress={() => navigation.navigate('PlantDetails', { itemID: plant.name })} />
               </View>
           </>   
           ))}
@@ -202,6 +246,9 @@ const styles = StyleSheet.create({
     },
     scrollView: {
       marginHorizontal: 40,
+      width:'100%',
+      // backgroundColor:'grey',
+      left:-40
     },
     });
     
