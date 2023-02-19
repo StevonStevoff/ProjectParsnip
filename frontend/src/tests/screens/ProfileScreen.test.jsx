@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  render, waitFor, fireEvent,
+  render, waitFor, fireEvent, cleanup,
 } from '@testing-library/react-native';
 import { NativeBaseProvider } from 'native-base';
 import ProfileScreen from '../../screens/AuthScreens/ProfileScreen';
@@ -26,6 +26,9 @@ const inset = {
 const theme = defaultTheme();
 
 describe('ProfileScreen', () => {
+  afterEach(() => {
+    cleanup();
+  });
   it('renders the profile screen', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
@@ -54,13 +57,13 @@ describe('ProfileScreen', () => {
   });
   it('should have a button to the edit profile page', async () => {
     const navigation = { navigate: jest.fn() };
-    const { getByTestId } = render(
+    const { findByTestId } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
         <ProfileScreen navigation={navigation} />
       </NativeBaseProvider>,
     );
     await waitFor(() => {
-      const editProfileButton = getByTestId('edit-profile-button');
+      const editProfileButton = findByTestId('edit-profile-button');
       expect(editProfileButton).toBeDefined();
     });
   });

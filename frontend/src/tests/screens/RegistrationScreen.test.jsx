@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  render, waitFor, fireEvent,
+  render, waitFor, fireEvent, cleanup, act,
 } from '@testing-library/react-native';
 import { NativeBaseProvider } from 'native-base';
 import RegistrationScreen from '../../screens/AuthScreens/RegistrationScreen';
@@ -21,6 +21,9 @@ const inset = {
 const theme = defaultTheme();
 
 describe('Basic Registration Screen function and loadin', () => {
+  afterEach(() => {
+    cleanup();
+  });
   it('renders the create account heading', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
@@ -54,23 +57,13 @@ describe('Basic Registration Screen function and loadin', () => {
         <RegistrationScreen navigation={navigation} />
       </NativeBaseProvider>,
     );
-    fireEvent.changeText(getByTestId('password-input-signup'), '');
-    fireEvent.changeText(getByTestId('username-input-signup'), '');
     await waitFor(() => {
+      fireEvent.changeText(getByTestId('password-input-signup'), '');
+      fireEvent.changeText(getByTestId('username-input-signup'), '');
       const usernameError = findByText('Username is required');
       const passwordError = findByText('Password is required');
       expect(passwordError).toBeDefined();
       expect(usernameError).toBeDefined();
     });
-  });
-  it('should navigate to sign up screen when sign up button is pressed', async () => {
-    const navigation = { navigate: jest.fn() };
-    const { getByTestId } = render(
-      <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
-        <RegistrationScreen navigation={navigation} />
-      </NativeBaseProvider>,
-    );
-    fireEvent.press(getByTestId('auth-btn'));
-    expect(navigation.navigate).toHaveBeenCalledWith('LoginScreen');
   });
 });

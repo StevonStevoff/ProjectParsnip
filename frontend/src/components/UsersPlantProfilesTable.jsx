@@ -1,39 +1,52 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, IconButton, Heading } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { useTheme } from '@react-navigation/native';
 
 function Table() {
-  const { colors } = useTheme();
   return (
     <Grid style={{ width: '100%' }}>
-      <Row style={colors.plantProfileRow}>
-        <Col style={colors.plantProfileCol}>
-          <Text style={colors.plantProfileHeadingText}>Name</Text>
+      <Row style={{
+        height: '10%',
+        minHeight: '10%',
+      }}
+      >
+        <Col style={{
+          width: '40%',
+          minWidth: '40%',
+        }}
+        >
+          <Text>Name</Text>
         </Col>
-        <Col style={colors.plantProfileCol}>
-          <Text style={colors.plantProfileHeadingText}>Plant Types</Text>
+        <Col style={{
+          width: '40%',
+          minWidth: '40%',
+        }}
+        >
+          <Heading size="lg">Plant Types</Heading>
         </Col>
         <Col style={{ width: '20%', minWidth: '20%' }} />
       </Row>
       <Row>
-        <Col style={colors.plantProfileCol}>
-          <Text style={colors.plantProfileText}>Brown Cactus</Text>
+        <Col style={{
+          width: '40%',
+          minWidth: '40%',
+        }}
+        >
+          <Text>Brown Cactus</Text>
         </Col>
-        <Col style={colors.plantProfileCol}>
-          <Text style={colors.plantProfileText}>Cactus</Text>
+        <Col style={{
+          width: '40%',
+          minWidth: '40%',
+        }}
+        >
+          <Text>Cactus</Text>
         </Col>
         <Col style={{
           flexDirection: 'row', justifyContent: 'space-evenly', width: '20%', minWidth: '20%',
         }}
         >
-          <TouchableOpacity>
-            <MaterialCommunityIcons name="pencil-outline" size={24} color={colors.dark ? 'white' : 'black'} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <MaterialCommunityIcons name="content-copy" size={24} color={colors.dark ? 'white' : 'black'} />
-          </TouchableOpacity>
+          <IconButton as={MaterialCommunityIcons} name="content-copy" size="lg" />
 
         </Col>
       </Row>
