@@ -6,13 +6,21 @@ import { useNavigation } from '@react-navigation/native';
 import Avatar from '../../assets/avatar.png';
 import { DarkTheme } from '../stylesheets/DarkTheme';
 import { LightTheme } from '../stylesheets/LightTheme';
+import AuthUtils from '../api/utils/AuthUtils';
 
 function Header() {
   const scheme = useColorScheme();
   const dimensions = useWindowDimensions();
   const isLargeScreen = dimensions.width >= 768;
   const navigation = useNavigation();
+  const [user, setUser] = React.useState({ name: '', username: '', email: '' });
   const { colors } = scheme === 'dark' ? DarkTheme : LightTheme;
+
+  React.useEffect(() => {
+    AuthUtils.getUserInfo().then((userDetails) => {
+      setUser(userDetails);
+    });
+  }, []);
 
   return (
     <View
@@ -50,7 +58,7 @@ function Header() {
               color: scheme === 'dark' ? '#fff' : '#000',
             }}
           >
-            Jane
+            {user.name}
           </Text>
         </View>
       </TouchableOpacity>

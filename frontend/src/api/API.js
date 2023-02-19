@@ -86,13 +86,14 @@ const API = {
     return response;
   },
 
-  async updateUserInfo(id, name, email, cancel = false) {
+  async updateUserInfo({ name, email, username }, cancel = false) {
     const response = await api.request({
       url: '/users/me',
       method: 'PATCH',
       data: {
         name,
         email,
+        username,
       },
       headers: {
         'Content-Type': 'application/json',

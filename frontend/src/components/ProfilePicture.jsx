@@ -45,7 +45,7 @@ function ProfilePicture({
                   <Icon
                     as={MaterialIcons}
                     name="add-circle"
-                    color="primary.600"
+                    color="primary.800"
                     size="3xl"
                     style={{ top: '-23%', marginTop: '-18%' }}
                   />

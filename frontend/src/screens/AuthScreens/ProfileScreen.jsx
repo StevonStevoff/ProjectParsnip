@@ -1,10 +1,9 @@
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import React from 'react';
 import {
-  VStack, FormControl, Input, Button, Text, Icon,
+  VStack, FormControl, Input, Button, Text
 } from 'native-base';
 import { Formik } from 'formik';
-import { MaterialIcons } from '@expo/vector-icons';
 import ProfilePicture from '../../components/ProfilePicture';
 import AuthUtils from '../../api/utils/AuthUtils';
 import CloseBtn from '../../components/CloseBtn';
@@ -20,29 +19,113 @@ function ProfileScreen({ navigation }) {
     });
   }, []);
   return (
-    <View style={{
-      width: '100%', height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center',
-    }}
+    <View
+      style={{
+        width: '100%',
+        height: '100%',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
     >
-      <ProfilePicture name={user.name} username={user.username} />
-      <VStack space={3} alignItems="center" width="90%">
-        <FormControl>
-          <FormControl.Label color="red">
-            Name
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+          padding: 25,
+        }}
+      >
+        <CloseBtn navigation={navigation} />
+      </View>
+      <ProfilePicture
+        name={user.name}
+        username={user.username}
+        setEditMode={setEditMode}
+        editMode={editMode}
+      />
 
-          </FormControl.Label>
-          <Input
-            variant="underlined"
-            value={user.name}
-          />
-        </FormControl>
-        <FormControl>
-          <FormControl.Label>Email Address</FormControl.Label>
-          <Input variant="underlined" value={user.email} />
-        </FormControl>
-        <VStack marginTop="24%" alignItems="center" width="90%">
-          <Button onPress={() => AuthUtils.logout(navigation)} w="40%" bg="error.600"> Log Out </Button>
-        </VStack>
+      <VStack space={3} alignItems="center" width="90%">
+        <Formik
+          initialValues={{
+            name: user.name,
+            email: user.email,
+            username: user.username,
+          }}
+          validationSchema={profileSchema}
+          enableReinitialize
+          onSubmit={async (values, { setSubmitting, setFieldError }) => {
+            setIsLoading(true);
+            setUser(values);
+            AuthUtils.updateUserInfo(values.name, values.email, values.username)
+              .then(() => {
+                setIsLoading(false);
+                setSubmitting(false);
+                setEditMode(false);
+              })
+              .catch((error) => {
+                setIsLoading(false);
+                setSubmitting(false);
+                setFieldError('general', error);
+              });
+          }}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+          }) => (
+            <>
+              <VStack marginTop={5} width="90%">
+                <FormControl>
+                  <FormControl.Label color="red">Name</FormControl.Label>
+                  <Input
+                    variant="underlined"
+                    value={values.name}
+                    onChangeText={handleChange('name')}
+                    onBlur={handleBlur('name')}
+                    isDisabled={!editMode}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormControl.Label>Email Address</FormControl.Label>
+                  <Input
+                    variant="underlined"
+                    value={values.email}
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    isDisabled={!editMode}
+                  />
+                </FormControl>
+              </VStack>
+              <VStack marginTop="24%" alignItems="center" width="90%">
+                {editMode ? (
+
+                  <Button onPress={handleSubmit} w="40%" bg="primary.600">
+                    {isFormLoading ? (
+                      <ActivityIndicator size="small" color="white" />
+                    ) : (
+                      <Text>Save</Text>)}
+                  </Button>
+                ) : (
+                  <Button
+                    onPress={() => AuthUtils.logout(navigation)}
+                    w="40%"
+                    bg="error.600"
+                    _hover={{ bg: 'error.700' }}
+                  >
+                    Log Out
+                  </Button>
+                )}
+              </VStack>
+            </>
+          )}
+        </Formik>
       </VStack>
     </View>
   );

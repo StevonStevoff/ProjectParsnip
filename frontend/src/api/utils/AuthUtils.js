@@ -56,8 +56,8 @@ const AuthUtils = {
       });
   },
 
-  async updateUserInfo(name, email) {
-    return API.updateUserInfo(name, email)
+  async updateUserInfo(name, email, username) {
+    return API.updateUserInfo({ name, email, username })
       .then((response) => response.data)
       .catch((error) => {
         console.log(error);
