@@ -135,7 +135,7 @@ function ProfileScreen({ navigation }) {
                     bg="error.600"
                     _hover={{ bg: 'error.700' }}
                   >
-                    Log Out
+                    Logout
                   </Button>
                 )}
               </VStack>

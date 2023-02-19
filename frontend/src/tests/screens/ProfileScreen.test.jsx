@@ -64,4 +64,18 @@ describe('ProfileScreen', () => {
       expect(editProfileButton).toBeDefined();
     });
   });
+  it('should navigate to the edit profile page when the edit profile button is pressed', async () => {
+    const navigation = { navigate: jest.fn() };
+    const { getByTestId, getByText } = render(
+      <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
+        <ProfileScreen navigation={navigation} />
+      </NativeBaseProvider>,
+    );
+    await waitFor(() => {
+      const editProfileButton = getByTestId('edit-profile-button');
+      fireEvent.press(editProfileButton);
+      const saveButton = getByText('Save');
+      expect(saveButton).toBeDefined();
+    });
+  });
 });
