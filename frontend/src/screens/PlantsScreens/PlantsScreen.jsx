@@ -16,6 +16,7 @@ import {Icon} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 import { LogBox } from 'react-native';
 
+// Added this because I was getting annoying errors when using fake data
 LogBox.ignoreLogs(['Encountered two children with the same key']);
 
 function PlantsScreen({ navigation }) {
@@ -40,7 +41,6 @@ function PlantsScreen({ navigation }) {
     const fetchPlants = async () => {
       try {
         const response = await API.getCurrentUsersPlants();
-        // console.log(response.data)
         setPlants(response.data);
       } catch (error) {
         console.error(error);
@@ -53,7 +53,6 @@ function PlantsScreen({ navigation }) {
     const fetchPlantsTypes = async () => {
       try {
         const response = await API.getAllPlantTypes();
-        // console.log(response.data)
         setPlantsTypes(response.data);
       } catch (error) {
         console.error(error);
@@ -62,9 +61,7 @@ function PlantsScreen({ navigation }) {
     fetchPlantsTypes();
   }, []);
  
-
   useEffect(() => {
-    console.log(false);
     setIsViewVisible(false);
   }, []);
 
@@ -77,10 +74,7 @@ function PlantsScreen({ navigation }) {
   const handleDelete = async (id) => {
     try {
       const response = await API.deletePlant(id);
-      // Handle successful deletion here
-      console.log(response);
     } catch (error) {
-      // Handle error here
     }
   };
 
@@ -112,6 +106,7 @@ function PlantsScreen({ navigation }) {
                   <Icon as={MaterialIcons} name="delete" color="coolGray.800" _dark={{color: "warmGray.50"}} />
                 </TouchableOpacity>
 
+                {/* To be Change to handleEdit */}
                 <TouchableOpacity onPress={() => handleDelete(plant.id)}>
                   <Icon as={MaterialIcons} name="edit" color="coolGray.800" _dark={{color: "warmGray.50"}} />
                 </TouchableOpacity>
@@ -144,7 +139,6 @@ const styles = StyleSheet.create({
     scrollView: {
       marginHorizontal: 40,
       width:'100%',
-      // backgroundColor:'grey',
       left:-40
     },
     });

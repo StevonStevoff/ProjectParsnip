@@ -107,7 +107,7 @@ const API = {
 
   async deletePlant(id,cancel = false) {
     const response = await api.request({ 
-      url: '/plants/2',
+      url: '/plants/'+id,
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
