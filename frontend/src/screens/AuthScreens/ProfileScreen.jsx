@@ -1,7 +1,7 @@
 import { ActivityIndicator, View } from 'react-native';
 import React from 'react';
 import {
-  VStack, FormControl, Input, Button, Text
+  VStack, FormControl, Input, Button, Text,
 } from 'native-base';
 import { Formik } from 'formik';
 import ProfilePicture from '../../components/ProfilePicture';
@@ -78,29 +78,45 @@ function ProfileScreen({ navigation }) {
             handleChange,
             handleBlur,
             handleSubmit,
-            isSubmitting,
           }) => (
             <>
               <VStack marginTop={5} width="90%">
-                <FormControl>
-                  <FormControl.Label color="red">Name</FormControl.Label>
-                  <Input
-                    variant="underlined"
-                    value={values.name}
-                    onChangeText={handleChange('name')}
-                    onBlur={handleBlur('name')}
-                    isDisabled={!editMode}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormControl.Label>Email Address</FormControl.Label>
-                  <Input
-                    variant="underlined"
-                    value={values.email}
-                    onChangeText={handleChange('email')}
-                    onBlur={handleBlur('email')}
-                    isDisabled={!editMode}
-                  />
+                <FormControl isRequired={!editMode} isInvalid={errors.general} alignItems="center">
+                  <FormControl
+                    isRequired={editMode}
+                    isInvalid={errors.username && touched.username}
+                  >
+                    <FormControl.Label color="red">Name</FormControl.Label>
+                    <Input
+                      variant="underlined"
+                      value={values.name}
+                      onChangeText={handleChange('name')}
+                      onBlur={handleBlur('name')}
+                      isDisabled={!editMode}
+                    />
+                    <FormControl.ErrorMessage>
+                      {errors.name}
+                    </FormControl.ErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    isRequired={editMode}
+                    isInvalid={errors.email && touched.email}
+                  >
+                    <FormControl.Label>Email Address</FormControl.Label>
+                    <Input
+                      variant="underlined"
+                      value={values.email}
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      isDisabled={!editMode}
+                    />
+                    <FormControl.ErrorMessage>
+                      {errors.email}
+                    </FormControl.ErrorMessage>
+                  </FormControl>
+                  <FormControl.ErrorMessage>
+                    {errors.general}
+                  </FormControl.ErrorMessage>
                 </FormControl>
               </VStack>
               <VStack marginTop="24%" alignItems="center" width="90%">

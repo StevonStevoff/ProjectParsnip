@@ -31,7 +31,10 @@ function ProfilePicture({
           >
             <Avatar.Badge bg="white" alignItems="center">
               {!editMode ? (
-                <Pressable onPress={() => setEditMode(!editMode)}>
+                <Pressable
+                  testID="edit-profile-button"
+                  onPress={() => setEditMode(!editMode)}
+                >
                   <Icon
                     as={MaterialCommunityIcons}
                     name="pencil-circle"
