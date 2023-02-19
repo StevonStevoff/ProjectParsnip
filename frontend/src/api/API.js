@@ -74,6 +74,35 @@ const API = {
 
     return response;
   },
+
+  async getUserInfo(cancel = false) {
+    const response = await api.request({
+      url: '/users/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
+  async updateUserInfo(id, name, email, cancel = false) {
+    const response = await api.request({
+      url: '/users/me',
+      method: 'PATCH',
+      data: {
+        name,
+        email,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
 };
 
 // defining the cancel API object for ProductAPI

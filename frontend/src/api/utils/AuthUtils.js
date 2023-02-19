@@ -48,6 +48,22 @@ const AuthUtils = {
       });
   },
 
+  async getUserInfo() {
+    return API.getUserInfo()
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
+  async updateUserInfo(name, email) {
+    return API.updateUserInfo(name, email)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
   logout(navigation) {
     API.logout();
     navigation.navigate('LoginScreen');

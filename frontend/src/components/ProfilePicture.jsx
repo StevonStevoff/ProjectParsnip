@@ -1,14 +1,16 @@
 import { View } from 'react-native';
 import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import {
   Avatar, VStack, Center, Text, Icon, Pressable,
 } from 'native-base';
 
-function ProfilePicture({ name, username }) {
+function ProfilePicture({
+  name, username, setEditMode, editMode,
+}) {
   return (
     <View style={{
-      width: '100%', maxHeight: '30%', height: '30%', flex: 1, justifyContent: 'center', alignItems: 'center',
+      width: '100%', maxHeight: '30%', height: '40%', flex: 1, justifyContent: 'center', alignItems: 'center',
     }}
     >
       <VStack
@@ -28,15 +30,27 @@ function ProfilePicture({ name, username }) {
             }}
           >
             <Avatar.Badge bg="white" alignItems="center">
-              <Pressable onPress={() => console.log("I'm Pressed")}>
-                <Icon
-                  as={MaterialCommunityIcons}
-                  name="pencil-circle"
-                  color="primary.600"
-                  size="3xl"
-                  style={{ top: '-23%', marginTop: '-18%' }}
-                />
-              </Pressable>
+              {!editMode ? (
+                <Pressable onPress={() => setEditMode(!editMode)}>
+                  <Icon
+                    as={MaterialCommunityIcons}
+                    name="pencil-circle"
+                    color="primary.600"
+                    size="3xl"
+                    style={{ top: '-23%', marginTop: '-18%' }}
+                  />
+                </Pressable>
+              ) : (
+                <Pressable onPress={() => console.log('open new page to add image')}>
+                  <Icon
+                    as={MaterialIcons}
+                    name="add-circle"
+                    color="primary.600"
+                    size="3xl"
+                    style={{ top: '-23%', marginTop: '-18%' }}
+                  />
+                </Pressable>
+              )}
             </Avatar.Badge>
           </Avatar>
           <Text fontSize="3xl" fontWeight="700">{name}</Text>
