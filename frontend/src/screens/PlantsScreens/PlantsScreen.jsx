@@ -14,10 +14,16 @@ import PlantUtils from '../../api/utils/PlantUtils';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import API from '../../api/API';
-import { Heading ,Select,CheckIcon, VStack,Box} from 'native-base';
-import { YellowBox } from 'react-native';
 
-YellowBox.ignoreWarnings(['Encountered two children with the same key']);
+import {
+  Input, Icon, FormControl, Pressable, VStack
+} from 'native-base';
+import { MaterialIcons ,Select} from '@expo/vector-icons';
+
+import { LogBox } from 'react-native';
+
+
+LogBox.ignoreLogs(['Encountered two children with the same key']);
 
 
 const RegisterPlantSchema = yup.object().shape({
@@ -28,10 +34,12 @@ const RegisterPlantSchema = yup.object().shape({
 });
 
 function PlantsScreen({ navigation }) {
-  const [service, setService] = useState("");
+  const [language, setLanguage] = useState('');
+
   const { colors } = useTheme();
   const [userEmail, setUserEmail] = useState('');
   const [plants, setPlants] = useState([]);
+  const [plantTypes, setPlantsTypes] = useState([]);
   const [isViewVisible, setIsViewVisible] = useState(false);
 
 
@@ -58,7 +66,18 @@ function PlantsScreen({ navigation }) {
     fetchPlants();
   }, []);
 
-
+  useEffect(() => {
+    const fetchPlantsTypes = async () => {
+      try {
+        const response = await API.getAllPlantTypes();
+        // console.log(response.data)
+        setPlantsTypes(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPlantsTypes();
+  }, []);
  
 
   useEffect(() => {
@@ -182,20 +201,38 @@ function PlantsScreen({ navigation }) {
       
     )}
 
-      </Box> */}
+    
     <View >
           {plants.map((plant) => (
             <>
-              <TouchableOpacity onPress={() => handleDelete(plant.id)}>
-            <Text>Delete</Text>
-            </TouchableOpacity>
+              
               <View style={{borderColor:'black',borderWidth:3,padding: 10,width:300,marginBottom:10, borderRadius: 10}}>
                 <Text style={{fontSize:25}} key={plant.id}>{plant.name}</Text>
+                <TouchableOpacity onPress={() => handleDelete(plant.id)}>
+                  <Icon as={MaterialIcons} name="delete" color="coolGray.800" _dark={{color: "warmGray.50"}} />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => handleDelete(plant.id)}>
+                  <Icon as={MaterialIcons} name="edit" color="coolGray.800" _dark={{color: "warmGray.50"}} />
+                </TouchableOpacity>
                 <Text style={{fontSize:20,color:'green'}} key={plant.id}>{plant.plant_type.name}</Text>
                 
                 <Button
                   title="Plant Details"
                   onPress={() => navigation.navigate('PlantDetails', { itemID: plant.name })} />
+              </View>
+          </>   
+          ))}
+      </View>
+
+
+
+      <View >
+          {plantTypes.map((type) => (
+            <>
+              
+              <View style={{borderColor:'black',borderWidth:3,padding: 10,width:300,marginBottom:10, borderRadius: 10}}>
+                <Text style={{fontSize:20,color:'green'}} key={type.id}>{type.name}</Text>
               </View>
           </>   
           ))}

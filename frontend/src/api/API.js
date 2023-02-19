@@ -119,6 +119,17 @@ const API = {
 
     return response;
   },
+
+  async getAllPlantTypes(cancel = false) {
+    const response = await api.request({
+      url: '/plant_types/',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
 };
 
 // defining the cancel API object for ProductAPI
