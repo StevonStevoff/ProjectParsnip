@@ -29,7 +29,7 @@ describe('ProfileScreen', () => {
   afterEach(() => {
     cleanup();
   });
-  it('renders the profile screen', async () => {
+  test('renders the profile screen', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
@@ -41,7 +41,7 @@ describe('ProfileScreen', () => {
       expect(profileTitle).toBeDefined();
     });
   });
-  it('should render the form component', async () => {
+  test('should render the form component', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
@@ -55,7 +55,7 @@ describe('ProfileScreen', () => {
       expect(email).toBeDefined();
     });
   });
-  it('should have a button to the edit profile page', async () => {
+  test('should have a button to the edit profile page', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByTestId } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
@@ -67,7 +67,7 @@ describe('ProfileScreen', () => {
       expect(editProfileButton).toBeDefined();
     });
   });
-  it('should navigate to the edit profile page when the edit profile button is pressed', async () => {
+  test('should navigate to the edit profile page when the edit profile button is pressed', async () => {
     const navigation = { navigate: jest.fn() };
     const { getByTestId, getByText } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>

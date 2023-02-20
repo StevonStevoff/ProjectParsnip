@@ -24,7 +24,7 @@ describe('LoginScreen', () => {
   afterEach(() => {
     cleanup();
   });
-  it('renders the login heading', async () => {
+  test('renders the login heading', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
       <NativeBaseProvider theme={theme}>
@@ -39,7 +39,7 @@ describe('LoginScreen', () => {
     });
   });
 
-  it('should render the login form component', async () => {
+  test('should render the login form component', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByPlaceholderText } = render(
       <NativeBaseProvider theme={theme}>
@@ -54,7 +54,7 @@ describe('LoginScreen', () => {
     });
   });
 
-  it('should have a button to the sign up page', async () => {
+  test('should have a button to the sign up page', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
       <NativeBaseProvider theme={theme}>
@@ -67,7 +67,7 @@ describe('LoginScreen', () => {
       expect(signUpBtn).toBeDefined();
     });
   });
-  it('should have a button to the forgot password page', async () => {
+  test('should have a button to the forgot password page', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
       <NativeBaseProvider theme={theme}>
@@ -80,7 +80,7 @@ describe('LoginScreen', () => {
       expect(forgotPasswordBtn).toBeDefined();
     });
   });
-  it('should show an error message if the password is not entered', async () => {
+  test('should show an error message if the password is not entered', async () => {
     const navigation = { navigate: jest.fn() };
     const { getByTestId, findByText } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
@@ -94,16 +94,16 @@ describe('LoginScreen', () => {
       expect(error).toBeDefined();
     });
   });
-  it('should show an error message if the username is not entered', async () => {
+  test('should show an error message if the username is not entered', async () => {
     const navigation = { navigate: jest.fn() };
-    const { getByTestId, findByText } = render(
+    const { findByTestId, findByText } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
         <LoginScreen navigation={navigation} />
       </NativeBaseProvider>,
     );
+    const username = await findByTestId('username-input');
 
     await waitFor(() => {
-      const username = getByTestId('username-input');
       fireEvent.changeText(username, '');
       const error = findByText('Username is required');
       expect(error).toBeDefined();

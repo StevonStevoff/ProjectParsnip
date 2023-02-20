@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  render, waitFor, fireEvent, cleanup, act,
+  render, waitFor, fireEvent, cleanup,
 } from '@testing-library/react-native';
 import { NativeBaseProvider } from 'native-base';
 import RegistrationScreen from '../../screens/AuthScreens/RegistrationScreen';
@@ -24,7 +24,7 @@ describe('Basic Registration Screen function and loadin', () => {
   afterEach(() => {
     cleanup();
   });
-  it('renders the create account heading', async () => {
+  test('renders the create account heading', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
       <NativeBaseProvider theme={theme}>
@@ -37,7 +37,7 @@ describe('Basic Registration Screen function and loadin', () => {
     });
   });
 
-  it('should have a button to the login page', async () => {
+  test('should have a button to the login page', async () => {
     const navigation = { navigate: jest.fn() };
     const { findByText } = render(
       <NativeBaseProvider theme={theme}>
@@ -50,7 +50,7 @@ describe('Basic Registration Screen function and loadin', () => {
       expect(loginBtn).toBeDefined();
     });
   });
-  it('should show an error message if any form fields are blank', async () => {
+  test('should show an error message if any form fields are blank', async () => {
     const navigation = { navigate: jest.fn() };
     const { getByTestId, findByText } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
