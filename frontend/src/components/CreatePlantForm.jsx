@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
       borderRadius: 4,
       padding: 8,
       marginBottom: 16,
-      width:250,
+      width:300,
     },
       error: {
       color: 'red',
