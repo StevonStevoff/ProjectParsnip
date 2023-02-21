@@ -4,7 +4,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useTheme } from '@react-navigation/native';
+import { useColorModeValue } from 'native-base';
 import Header from './Header';
 import PlantsStackNavigation from '../screens/PlantsScreens/PlantsStackNavigation';
 import PlantProfileStackNavigation from '../screens/PlantProfileScreens/PlantProfilesStackNavigation';
@@ -12,7 +12,6 @@ import DevicesDetailsStackNavigation from '../screens/DevicesScreens/DeviceStack
 import NotificationsScreen from '../screens/SettingScreens/NotificationsScreen';
 
 function Navigation() {
-  const { colors } = useTheme();
   const dimensions = useWindowDimensions();
   const isLargeScreen = dimensions.width >= 760;
   const Tab = isLargeScreen
@@ -27,11 +26,11 @@ function Navigation() {
         borderRadius: 5,
       }}
       screenOptions={{
-        headerTintColor: colors.text,
+        headerTintColor: useColorModeValue('#1E1E1E', '#fafafa'),
         headerTitle: () => <Header />,
-        drawerStyle: isLargeScreen ? { width: '22%' } : { width: '90%' },
+        drawerStyle: isLargeScreen ? { width: '27%' } : { width: '90%' },
         drawerType: 'back',
-        tabBarInactiveTintColor: colors.iconColor,
+        tabBarInactiveTintColor: useColorModeValue('#404040', '#fafafa'),
       }}
     >
       <Tab.Screen
@@ -39,10 +38,10 @@ function Navigation() {
         component={PlantsStackNavigation}
         options={{
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="flower" color={color} size={26} />
+            <MaterialCommunityIcons name="flower" color={color} size={24} />
           ),
           drawerIcon: ({ color }) => (
-            <MaterialCommunityIcons name="flower" color={color} size={26} />
+            <MaterialCommunityIcons name="flower" color={color} size={20} />
           ),
         }}
       />
@@ -54,14 +53,14 @@ function Navigation() {
             <MaterialCommunityIcons
               name="book-cog-outline"
               color={color}
-              size={26}
+              size={24}
             />
           ),
           drawerIcon: ({ color }) => (
             <MaterialCommunityIcons
               name="book-cog-outline"
               color={color}
-              size={26}
+              size={20}
             />
           ),
         }}
@@ -74,14 +73,14 @@ function Navigation() {
             <MaterialCommunityIcons
               name="cellphone-link"
               color={color}
-              size={26}
+              size={24}
             />
           ),
           drawerIcon: ({ color }) => (
             <MaterialCommunityIcons
               name="cellphone-link"
               color={color}
-              size={26}
+              size={20}
             />
           ),
         }}
@@ -94,14 +93,14 @@ function Navigation() {
             <MaterialCommunityIcons
               name="bell-outline"
               color={color}
-              size={26}
+              size={24}
             />
           ),
           drawerIcon: ({ color }) => (
             <MaterialCommunityIcons
               name="bell-outline"
               color={color}
-              size={26}
+              size={20}
             />
           ),
         }}

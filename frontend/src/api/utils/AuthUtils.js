@@ -22,8 +22,8 @@ const AuthUtils = {
     }
   },
 
-  async login(navigation, email, password) {
-    return API.loginUser({ email, password })
+  async login(navigation, username, password) {
+    return API.loginUser({ username, password })
       .then((response) => {
         this.setUserToken(response.data.access_token);
         navigation.navigate('Navigation');
@@ -35,14 +35,32 @@ const AuthUtils = {
       });
   },
 
-  async registerUser(navigation, email, password) {
-    return API.registerUser({ email, password })
+  async registerUser(navigation, email, password, name, username) {
+    return API.registerUser({
+      email, password, name, username,
+    })
       .then(() => {
-        this.login(navigation, email, password);
+        this.login(navigation, username, password);
       })
       .catch((error) => {
         this.handleAuthenticationError(error.response.data.detail);
-        return this.errorMessage;
+        return Promise.reject(this.errorMessage);
+      });
+  },
+
+  async getUserInfo() {
+    return API.getUserInfo()
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
+  async updateUserInfo(name, email, username) {
+    return API.updateUserInfo({ name, email, username })
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
       });
   },
 

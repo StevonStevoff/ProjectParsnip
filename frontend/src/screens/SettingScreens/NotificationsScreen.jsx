@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { View } from 'react-native';
+import { Text } from 'native-base';
 
 function NotificationsScreen() {
-  const { colors } = useTheme();
   return (
     <View>
-      <Text style={colors.textFormat}> NotificationsScreen </Text>
+      <Text> NotificationsScreen </Text>
     </View>
   );
 }

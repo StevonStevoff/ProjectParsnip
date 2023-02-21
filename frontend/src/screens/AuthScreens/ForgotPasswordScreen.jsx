@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View, Text, Button, TextInput, TouchableOpacity,
+  View, TextInput, TouchableOpacity,
 } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import AuthUtils from '../../api/utils/AuthUtils';
+import { Text, Button } from 'native-base';
 
 function ForgotPasswordScreen({ navigation }) {
-  const { colors } = useTheme();
   const [email, setEmail] = useState('');
   return (
     <View
@@ -17,7 +15,7 @@ function ForgotPasswordScreen({ navigation }) {
         width: '100%',
       }}
     >
-      <Text style={colors.subtitle}> Forgot Password </Text>
+      <Text> Forgot Password </Text>
       <View
         style={{
           flexDirection: 'column',
