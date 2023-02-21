@@ -13,8 +13,6 @@ import API from '../../api/API';
 import CreatePlantForm from '../../components/CreatePlantForm';
 import { Icon} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
-import { LogBox } from 'react-native';
-
 
 function PlantsScreen({ navigation }) {
   const { colors } = useTheme();
@@ -24,7 +22,6 @@ function PlantsScreen({ navigation }) {
   const [devices, setDevices] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
   const [isViewVisible, setIsViewVisible] = useState(false);
-
 
   const handleButtonClick = () => {
     setIsViewVisible(!isViewVisible);
@@ -84,8 +81,6 @@ function PlantsScreen({ navigation }) {
     fetchDevices();
   }, []);
 
-
-
   useEffect(() => {
     setIsViewVisible(false);
   }, []);
@@ -127,7 +122,7 @@ function PlantsScreen({ navigation }) {
         </View>
 
         {isViewVisible && (
-          <View style={{borderColor:'grey',borderWidth:3,height:350,width:350,borderRadius: 10,marginTop:10}}>
+          <View style={{borderColor:'grey',borderWidth:3,width:"90%",borderRadius: 10,marginTop:10,padding:10}}>
             <CreatePlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices}/> 
           </View>
         )}
