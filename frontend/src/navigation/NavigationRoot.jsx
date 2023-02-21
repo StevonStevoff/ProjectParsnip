@@ -15,8 +15,8 @@ function NavigationRoot() {
     colors: {
       primary: '#5fbf08', // bae3cc
       // eslint-disable-next-line max-len
-      background: useColorModeValue('#fff', '#1c1917'), // Screen background color
-      card: useColorModeValue('#fafafa', '#1c1917'), // Tabs background color
+      background: useColorModeValue('#fff', '#18181b'), // Screen background color
+      card: useColorModeValue('#fafafa', '#18181b'), // Tabs background color
       text: useColorModeValue('#1E1E1E', '#fafafa'),
       border: useColorModeValue('#fafafa', '#1c1917'),
       iconColor: useColorModeValue('#404040', '#fafafa'),

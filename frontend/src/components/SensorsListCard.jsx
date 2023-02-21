@@ -5,10 +5,9 @@ import {
 } from 'native-base';
 import React from 'react';
 import { Entypo } from '@expo/vector-icons';
-import { View } from 'react-native';
 import CardSensors from './CardSensors';
 
-function DevicesCard(device) {
+function SensorsListCard(sensors) {
   const {
     name, model_name, users, sensors,
   } = device.device;
@@ -112,4 +111,4 @@ function DevicesCard(device) {
   );
 }
 
-export default DevicesCard;
+export default SensorsListCard;
