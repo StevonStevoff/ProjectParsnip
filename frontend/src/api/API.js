@@ -130,6 +130,28 @@ const API = {
 
     return response;
   },
+
+  async getAllDevices(cancel = false) {
+    const response = await api.request({
+      url: '/devices/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
+  async getAllPlantProfiles(cancel = false) {
+    const response = await api.request({
+      url: '/plant_profiles/',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
 };
 
 // defining the cancel API object for ProductAPI
