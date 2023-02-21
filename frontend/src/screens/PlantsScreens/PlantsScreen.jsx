@@ -127,11 +127,11 @@ function PlantsScreen({ navigation }) {
           </View>
         )}
 
-        <View >
+        <View style={{width:"90%"}}>
           {plants.map((plant) => (
             <>
             <Text style={{fontSize:25,paddingBottom: 7}} key={plant.id}>{plant.name}</Text>
-            <View style={{borderColor:'grey',borderWidth:3,paddingBottom: 7,paddingLeft: 2,paddingRight: 2,width:350,marginBottom:10, borderRadius: 10}}>
+            <View style={{borderColor:'grey',borderWidth:3,paddingBottom: 7,paddingLeft: 2,paddingRight: 2,width:"100%",marginBottom:10, borderRadius: 10}}>
                 <View style={{flexDirection:'row',flex:1,padding:10}}>
                   <Text style={{fontSize:20,color:'green', flex:10,fontWeight:'bold'}} key={plant.id}>{plant.plant_type.name}</Text>
                   <TouchableOpacity style={{fontSize:25,flex:1}} onPress={() => handleDelete(plant.id)}>
