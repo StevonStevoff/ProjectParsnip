@@ -37,14 +37,6 @@ DeviceSensors = Table(
     Column("sensor_id", Integer, ForeignKey("sensors.id")),
 )
 
-# ProfileProperties = Table(
-#     "profile_properties",
-#     Base.metadata,
-#     Column("id", Integer, primary_key=True),
-#     Column("plant_profile_id", Integer, ForeignKey("plant_profiles.id")),
-#     Column("grow_property_id", Integer, ForeignKey("grow_properties.id")),
-# )
-
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     id = Column(Integer, primary_key=True, index=True)
@@ -99,7 +91,17 @@ class Sensor(Base):
     name = Column(String)
     description = Column(String)
 
-    devices = relationship("Device", secondary=DeviceSensors, back_populates="sensors")
+    grow_property_type_id = Column(Integer, ForeignKey("grow_property_types.id"))
+
+    grow_property_type = relationship(
+        "GrowPropertyType",
+        lazy="selectin",
+    )
+    devices = relationship(
+        "Device",
+        secondary=DeviceSensors,
+        back_populates="sensors",
+    )
 
 
 class Plant(Base):
@@ -110,6 +112,9 @@ class Plant(Base):
     plant_profile_id = Column(Integer, ForeignKey("plant_profiles.id"))
     plant_type_id = Column(Integer, ForeignKey("plant_types.id"))
     time_planted = Column(DateTime(timezone=True))
+    outdoor = Column(Boolean)
+    latitude = Column(Float)
+    longitude = Column(Float)
 
     device = relationship(
         "Device",
@@ -127,6 +132,7 @@ class Plant(Base):
 class PlantData(Base):
     __tablename__ = "plant_data"
     id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime(timezone=True))
 
     plant_id = Column(Integer, ForeignKey("plants.id"))
 
@@ -178,22 +184,32 @@ class PlantProfile(Base):
         lazy="selectin",
     )
     grow_properties = relationship(
-        "GrowProperty",
+        "GrowPropertyRange",
         lazy="selectin",
     )
 
 
-class GrowProperty(Base):
-    __tablename__ = "grow_properties"
+class GrowPropertyType(Base):
+    __tablename__ = "grow_property_types"
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
+
+
+class GrowPropertyRange(Base):
+    __tablename__ = "grow_property_ranges"
+    id = Column(Integer, primary_key=True, nullable=False)
     min = Column(Float, nullable=False)
     max = Column(Float, nullable=False)
 
+    grow_property_type_id = Column(Integer, ForeignKey("grow_property_types.id"))
     plant_profile_id = Column(Integer, ForeignKey("plant_profiles.id"))
     sensor_id = Column(Integer, ForeignKey("sensors.id"))
 
+    grow_property_type = relationship(
+        "GrowPropertyType",
+        lazy="selectin",
+    )
     plant_profile = relationship(
         "PlantProfile",
         back_populates="grow_properties",
@@ -204,15 +220,18 @@ class GrowProperty(Base):
 class SensorReading(Base):
     __tablename__ = "sensor_readings"
     id = Column(Integer, primary_key=True, nullable=False)
-    timestamp = Column(DateTime(timezone=True))
     value = Column(Float, nullable=False)
 
     sensor_id = Column(Integer, ForeignKey("sensors.id"))
-    grow_property_id = Column(Integer, ForeignKey("grow_properties.id"))
+    grow_property_id = Column(Integer, ForeignKey("grow_property_ranges.id"))
     plant_data_id = Column(Integer, ForeignKey("plant_data.id"))
 
     plant_data = relationship(
         "PlantData",
         back_populates="sensor_readings",
+        lazy="selectin",
+    )
+    grow_property = relationship(
+        "GrowPropertyRange",
         lazy="selectin",
     )

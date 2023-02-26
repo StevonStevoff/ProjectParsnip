@@ -3,7 +3,7 @@ from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
-from app.models import GrowProperty, PlantProfile, PlantType, User
+from app.models import GrowPropertyRange, PlantProfile, PlantType, User
 from app.router.utils import (
     get_object_or_404,
     model_list_to_schema,
@@ -375,6 +375,8 @@ async def update_profile_grow_properties(
             )
 
     grow_properties_query = await session.execute(
-        select(GrowProperty).where(GrowProperty.id.in_(unique_grow_property_ids))
+        select(GrowPropertyRange).where(
+            GrowPropertyRange.id.in_(unique_grow_property_ids)
+        )
     )
     plant_profile.grow_properties = grow_properties_query.scalars().all()

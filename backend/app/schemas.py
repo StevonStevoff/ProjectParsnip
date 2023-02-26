@@ -31,22 +31,41 @@ class BaseRead(BaseModel):
         orm_mode = True
 
 
+class GrowPropertyTypeBase(BaseModel):
+    name: str
+    description: str
+
+
+class GrowPropertyTypeCreate(GrowPropertyTypeBase):
+    pass
+
+
+class GrowPropertyTypeRead(BaseRead, GrowPropertyTypeBase):
+    pass
+
+
+class GrowPropertyTypeUpdate(GrowPropertyTypeBase):
+    name: Optional[str]
+    description: Optional[str]
+
+
 class SensorBase(BaseModel):
     name: str
     description: str
 
 
 class SensorRead(BaseRead, SensorBase):
-    pass
+    grow_property_type: GrowPropertyTypeRead
 
 
 class SensorCreate(SensorBase):
-    pass
+    grow_property_type_id: int
 
 
 class SensorUpdate(SensorBase):
     name: Optional[str]
     description: Optional[str]
+    grow_property_type_id: Optional[int]
 
 
 class DeviceBase(BaseModel):
@@ -92,44 +111,38 @@ class PlantTypeUpdate(PlantTypeBase):
 
 
 class GrowPropertyBase(BaseModel):
-    name: str
-    description: str
     min: float
     max: float
     sensor_id: int
 
 
 class GrowPropertyCreate(GrowPropertyBase):
+    grow_property_type_id: int
     plant_profile_id: int
 
 
 class GrowPropertyRead(BaseRead, GrowPropertyBase):
-    pass
+    grow_property_type: GrowPropertyTypeRead
 
 
 class GrowPropertyUpdate(GrowPropertyBase):
-    name: Optional[str]
-    description: Optional[str]
     min: Optional[float]
     max: Optional[float]
     sensor_id: Optional[int]
+    grow_property_type_id: Optional[int]
     plant_profile_id: Optional[int]
 
 
 class SensorReadingBase(BaseModel):
     value: float
-    timestamp: datetime
 
 
 class SensorReadingRead(BaseRead, SensorReadingBase):
-    grow_property: GrowPropertyRead
-    # plant_data: PlantDataRead
+    grow_property: Optional[GrowPropertyRead]
 
 
 class SensorReadingCreate(SensorReadingBase):
     sensor_id: int
-    grow_property_id: int
-    plant_data_id: int
 
 
 class SensorReadingUpdate(SensorReadingBase):
@@ -180,12 +193,18 @@ class PlantRead(BaseRead, PlantBase):
     plant_profile: PlantProfileRead | None
     plant_type: PlantTypeRead | None
     time_planted: datetime | None
+    outdoor: bool | None
+    latitude: float | None
+    longitude: float | None
 
 
 class PlantCreate(PlantBase):
     device_id: int
     plant_profile_id: int
     plant_type_id: int
+    outdoor: bool
+    latitude: Optional[float]
+    longitude: Optional[float]
 
 
 class PlantUpdate(PlantBase):
@@ -194,3 +213,20 @@ class PlantUpdate(PlantBase):
     plant_profile_id: Optional[int]
     plant_type_id: Optional[int]
     time_planted: Optional[datetime]
+    outdoor: Optional[bool]
+    latitude: Optional[float]
+    longitude: Optional[float]
+
+
+class PlantDataBase(BaseModel):
+    plant_id: int
+    timestamp: datetime
+
+
+class PlantDataCreate(PlantDataBase):
+    device_id: int
+    sensor_readings: list[SensorReadingCreate]
+
+
+class PlantDataRead(BaseRead, PlantDataBase):
+    sensor_readings: list[SensorReadingRead]
