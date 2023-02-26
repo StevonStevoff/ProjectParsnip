@@ -1,21 +1,30 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { useColorScheme } from 'react-native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { useColorModeValue } from 'native-base';
 import Navigation from './BottomTabNavigation';
 import ProfileScreen from '../screens/AuthScreens/ProfileScreen';
-import { LightTheme } from '../stylesheets/LightTheme';
-import { DarkTheme } from '../stylesheets/DarkTheme';
 import RegistrationScreen from '../screens/AuthScreens/RegistrationScreen';
 import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import ForgotPasswordScreen from '../screens/AuthScreens/ForgotPasswordScreen';
 
 const Stack = createStackNavigator();
 function NavigationRoot() {
-  const scheme = useColorScheme();
-
+  const reactNavigationTheme = {
+    ...DefaultTheme,
+    colors: {
+      primary: '#5fbf08', // bae3cc
+      // eslint-disable-next-line max-len
+      background: useColorModeValue('#fff', '#1c1917'), // Screen background color
+      card: useColorModeValue('#fafafa', '#1c1917'), // Tabs background color
+      text: useColorModeValue('#1E1E1E', '#fafafa'),
+      border: useColorModeValue('#fafafa', '#1c1917'),
+      iconColor: useColorModeValue('#404040', '#fafafa'),
+      dark: true,
+    },
+  };
   return (
-    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : LightTheme}>
+    <NavigationContainer theme={reactNavigationTheme}>
       <Stack.Navigator
         initialRouteName="LoginScreen"
         screenOptions={{

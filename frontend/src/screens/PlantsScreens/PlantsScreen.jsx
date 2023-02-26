@@ -1,15 +1,12 @@
 import {
-  Text,
   View,
-  Button,
   ActivityIndicator,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '@react-navigation/native';
+import { Text, Button } from 'native-base';
 import PlantUtils from '../../api/utils/PlantUtils';
 
 function PlantsScreen({ navigation }) {
-  const { colors } = useTheme();
   const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
@@ -33,8 +30,8 @@ function PlantsScreen({ navigation }) {
         color: '#fff',
       }}
     >
-      <Text style={colors.textFormat}>{userEmail}</Text>
-      <Text style={colors.textFormat}>PlantsScreen</Text>
+      <Text>{userEmail}</Text>
+      <Text>PlantsScreen</Text>
       <Button
         title="Plant Details"
         onPress={() => navigation.navigate('PlantDetails', { itemID: 12 })}

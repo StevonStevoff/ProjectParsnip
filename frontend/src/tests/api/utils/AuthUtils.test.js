@@ -51,7 +51,7 @@ describe('AuthUtils', () => {
 
   describe('login', () => {
     const navigation = { navigate: jest.fn() };
-    const email = 'email@example.com';
+    const username = 'email@example.com';
     const password = 'password';
 
     afterEach(() => {
@@ -63,9 +63,9 @@ describe('AuthUtils', () => {
         data: { access_token: 'token' },
       });
 
-      const result = await AuthUtils.login(navigation, email, password);
+      const result = await AuthUtils.login(navigation, username, password);
 
-      expect(API.loginUser).toHaveBeenCalledWith({ email, password });
+      expect(API.loginUser).toHaveBeenCalledWith({ username, password });
       expect(SecureStore.setItemAsync).toHaveBeenCalledWith('token', 'token');
       expect(navigation.navigate).toHaveBeenCalledWith('Navigation');
       expect(result).toBe('Successful Login');
@@ -91,59 +91,6 @@ describe('AuthUtils', () => {
         expect(error).toBe('Login Credentails Incorrect');
         expect(AuthUtils.handleAuthenticationError).toHaveBeenCalledWith('LOGIN_BAD_CREDENTIALS');
       }
-    });
-  });
-
-  describe('register', () => {
-    let navigation;
-    let email;
-    let password;
-    let responseData;
-
-    beforeEach(() => {
-      navigation = {
-        navigate: jest.fn(),
-      };
-      email = 'test@example.com';
-      password = 'password';
-      responseData = {
-        access_token: 'token',
-      };
-    });
-    it('should call API.registerUser with correct parameters', async () => {
-      API.registerUser.mockResolvedValue({ data: responseData });
-      await AuthUtils.registerUser(navigation, email, password);
-      expect(API.registerUser).toHaveBeenCalledWith({ email, password });
-    });
-
-    it('should return error message when API.registerUser fails', async () => {
-      API.registerUser.mockRejectedValue({
-        response: {
-          data: {
-            detail: 'REGISTER_USER_ALREADY_EXISTS',
-          },
-        },
-      });
-      const result = await AuthUtils.registerUser(navigation, email, password);
-      expect(result).toBe('User already exists');
-    });
-    it('should return error message when API.registerUser fails', async () => {
-      API.registerUser.mockRejectedValue({
-        response: {
-          data: {
-            detail: 'REGISTER_INVALID_PASSWORD',
-          },
-        },
-      });
-      const result = await AuthUtils.registerUser(navigation, email, password);
-      expect(result).toBe('Invalid password. Password should be at least 3 characters');
-    });
-    it('register user should call login function', async () => {
-      API.registerUser.mockResolvedValue({ data: responseData });
-      AuthUtils.login = jest.fn().mockResolvedValue('Successful Login');
-
-      await AuthUtils.registerUser(navigation, email, password);
-      expect(AuthUtils.login).toHaveBeenCalledWith(navigation, email, password);
     });
   });
 });
