@@ -16,16 +16,21 @@ from app.database import get_async_session, get_user_db
 from app.models import Base, User
 
 PWD = os.path.abspath(os.curdir)
-WORK_PATH = PWD.rsplit("ProjectParsnip", 1)[0]
 
-slashes = "///"
-if os.name != "nt":
-    # nt means system is windows
-    # windows needs one less slash for sqlalchemy
-    slashes += "/"
-SQLALCHEMY_DATABASE_URL = (
-    f"sqlite+aiosqlite:{slashes}{WORK_PATH}ProjectParsnip/backend/app/tests/test.db"
-)
+if "ProjectParsnip" in PWD:
+    WORK_PATH = PWD.rsplit("ProjectParsnip", 1)[0]
+
+    slashes = "///"
+    if os.name != "nt":
+        # nt means system is windows
+        # windows needs one less slash for sqlalchemy
+        slashes += "/"
+    SQLALCHEMY_DATABASE_URL = (
+        f"sqlite+aiosqlite:{slashes}{WORK_PATH}ProjectParsnip/backend/app/tests/test.db"
+    )
+else:
+    # For Docker
+    SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
 engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}

@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
-from app.models import Sensor
+from app.models import GrowPropertyType, Sensor
 from app.router.utils import get_object_or_404, model_list_to_schema
 from app.schemas import SensorCreate, SensorRead, SensorUpdate
 from app.users import current_active_superuser, current_active_user
@@ -34,7 +34,7 @@ async def get_sensor_or_404(
 )
 async def get_all_sensors(
     session: AsyncSession = Depends(get_async_session), contains: str | None = None
-):
+) -> list[SensorRead]:
     if contains:
         sensors_query = select(Sensor).where(Sensor.name.ilike(f"%{contains}%"))
     else:
@@ -61,8 +61,14 @@ async def get_all_sensors(
 )
 async def register_sensor(
     sensor_create: SensorCreate, session: AsyncSession = Depends(get_async_session)
-):
-    sensor = Sensor(**sensor_create.dict())
+) -> SensorRead:
+    sensor = Sensor()
+    sensor.name = sensor_create.name
+    sensor.description = sensor_create.description
+
+    await update_sensor_grow_property_type_id(
+        sensor, sensor_create.grow_property_type_id, session
+    )
 
     session.add(sensor)
     await session.commit()
@@ -86,7 +92,7 @@ async def register_sensor(
         },
     },
 )
-async def get_sensor_by_id(sensor: Sensor = Depends(get_sensor_or_404)):
+async def get_sensor_by_id(sensor: Sensor = Depends(get_sensor_or_404)) -> SensorRead:
     return SensorRead.from_orm(sensor)
 
 
@@ -109,7 +115,7 @@ async def get_sensor_by_id(sensor: Sensor = Depends(get_sensor_or_404)):
 async def delete_sensor(
     sensor: Sensor = Depends(get_sensor_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     await session.delete(sensor)
     await session.commit()
 
@@ -135,13 +141,28 @@ async def patch_sensor(
     sensor_update: SensorUpdate,
     sensor: Sensor = Depends(get_sensor_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> SensorRead:
     if sensor_update.name:
         sensor.name = sensor_update.name
 
     if sensor_update.description:
         sensor.description = sensor_update.description
 
+    if sensor_update.grow_property_type_id:
+        await update_sensor_grow_property_type_id(
+            sensor, sensor_update.grow_property_type_id, session
+        )
+
     await session.commit()
     await session.refresh(sensor)
     return SensorRead.from_orm(sensor)
+
+
+async def update_sensor_grow_property_type_id(
+    sensor: Sensor, type_id: int, session: AsyncSession
+) -> None:
+    await get_object_or_404(
+        type_id, GrowPropertyType, session, "The grow property type does not exist."
+    )
+
+    sensor.grow_property_type_id = type_id

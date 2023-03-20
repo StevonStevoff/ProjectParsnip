@@ -40,6 +40,9 @@ async def add_plants():
                 device_id=1,
                 plant_profile_id=1,
                 plant_type_id=2,
+                outdoor=True,
+                latitude=53.8067,
+                longitude=-1.5550,
             )
         )
         test_plants.append(
@@ -48,6 +51,9 @@ async def add_plants():
                 device_id=1,
                 plant_profile_id=2,
                 plant_type_id=2,
+                outdoor=False,
+                latitude=53.8067,
+                longitude=-1.5550,
             )
         )
         test_plants.append(
@@ -56,6 +62,9 @@ async def add_plants():
                 device_id=2,
                 plant_profile_id=2,
                 plant_type_id=2,
+                outdoor=True,
+                latitude=53.8067,
+                longitude=-1.5550,
             )
         )
         for test_plant in test_plants:
@@ -240,6 +249,9 @@ async def test_register_plant_invalid_device(client, user_access_token):
             "device_id": 999,
             "plant_profile_id": 1,
             "plant_type_id": 1,
+            "outdoor": True,
+            "latitude": 53.8067,
+            "longitude": -1.5550,
         },
     )
 
@@ -260,6 +272,9 @@ async def test_register_plant_invalid_plant_profile(client, user_access_token):
             "device_id": 1,
             "plant_profile_id": 999,
             "plant_type_id": 2,
+            "outdoor": True,
+            "latitude": 53.8067,
+            "longitude": -1.5550,
         },
     )
 
@@ -280,6 +295,9 @@ async def test_register_plant_invalid_plant_type(client, user_access_token):
             "device_id": 1,
             "plant_profile_id": 1,
             "plant_type_id": 999,
+            "outdoor": True,
+            "latitude": 53.8067,
+            "longitude": -1.5550,
         },
     )
 
@@ -287,6 +305,52 @@ async def test_register_plant_invalid_plant_type(client, user_access_token):
     json_response = response.json()
 
     assert json_response["detail"] == "The plant type does not exist."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_register_plant_invalid_latitude(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.post(
+        "/plants/register",
+        headers=headers,
+        json={
+            "name": "Invalid lattitude Plant",
+            "device_id": 1,
+            "plant_profile_id": 1,
+            "plant_type_id": 2,
+            "outdoor": True,
+            "latitude": 91.0,
+            "longitude": -1.5550,
+        },
+    )
+
+    assert response.status_code == 400
+    json_response = response.json()
+
+    assert json_response["detail"] == "Invalid coordinates."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_register_plant_invalid_longitude(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.post(
+        "/plants/register",
+        headers=headers,
+        json={
+            "name": "Invalid Longitude Plant",
+            "device_id": 1,
+            "plant_profile_id": 1,
+            "plant_type_id": 2,
+            "outdoor": True,
+            "latitude": 53.8067,
+            "longitude": -181.0,
+        },
+    )
+
+    assert response.status_code == 400
+    json_response = response.json()
+
+    assert json_response["detail"] == "Invalid coordinates."
 
 
 @pytest.mark.asyncio(scope="session")
@@ -300,6 +364,9 @@ async def test_register_valid_plant(client, user_access_token):
             "device_id": 1,
             "plant_profile_id": 1,
             "plant_type_id": 2,
+            "outdoor": True,
+            "latitude": 53.8067,
+            "longitude": -1.5550,
         },
     )
 
@@ -310,6 +377,36 @@ async def test_register_valid_plant(client, user_access_token):
     assert json_response["device"]["id"] == 1
     assert json_response["plant_profile"]["id"] == 1
     assert json_response["plant_type"]["id"] == 2
+    assert json_response["outdoor"]
+    assert json_response["latitude"] == 53.8067
+    assert json_response["longitude"] == -1.5550
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_register_valid_plant_no_coorindates(client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.post(
+        "/plants/register",
+        headers=headers,
+        json={
+            "name": "My Plant Without Coordinates",
+            "device_id": 1,
+            "plant_profile_id": 1,
+            "plant_type_id": 2,
+            "outdoor": True,
+        },
+    )
+
+    assert response.status_code == 201
+    json_response = response.json()
+
+    assert json_response["name"] == "My Plant Without Coordinates"
+    assert json_response["device"]["id"] == 1
+    assert json_response["plant_profile"]["id"] == 1
+    assert json_response["plant_type"]["id"] == 2
+    assert json_response["outdoor"]
+    assert not json_response["latitude"]
+    assert not json_response["longitude"]
 
 
 @pytest.mark.asyncio(scope="session")

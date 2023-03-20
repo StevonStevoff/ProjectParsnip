@@ -3,7 +3,7 @@ from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
-from app.models import PlantProfile, PlantType, User
+from app.models import GrowPropertyRange, PlantProfile, PlantType, User
 from app.router.utils import (
     get_object_or_404,
     model_list_to_schema,
@@ -85,7 +85,7 @@ async def get_all_plant_profiles(
 async def get_user_profiles(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[PlantProfileRead]:
     profiles_query = await session.execute(
         select(PlantProfile)
         .join(PlantProfile.users)
@@ -116,7 +116,7 @@ async def get_user_profiles(
 async def get_created_profiles(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[PlantProfileRead]:
     profiles_query = await session.execute(
         select(PlantProfile).where(PlantProfile.creator_id == user.id)
     )
@@ -150,13 +150,15 @@ async def register_plant_profile(
     plant_profile_create: PlantProfileCreate,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantProfileRead:
     local_user = await session.merge(user)
     plant_profile = PlantProfile()
     plant_profile.name = plant_profile_create.name
     plant_profile.description = plant_profile_create.description
     plant_profile.public = plant_profile_create.public
     plant_profile.creator = local_user
+
+    await update_grow_duration(plant_profile, plant_profile_create.grow_duration)
 
     # All plant profiles created through API are made by users
     # non user created profiles inserted directly through script
@@ -197,7 +199,7 @@ async def register_plant_profile(
 )
 async def get_plant_profile(
     plant_profile: PlantProfile = Depends(get_plant_profile_or_404),
-):
+) -> PlantProfileRead:
     return PlantProfileRead.from_orm(plant_profile)
 
 
@@ -221,7 +223,7 @@ async def delete_plant_profile(
     plant_profile: PlantProfile = Depends(get_plant_profile_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     await user_can_manage_object(user, plant_profile.creator_id)
     await session.delete(plant_profile)
     await session.commit()
@@ -230,7 +232,7 @@ async def delete_plant_profile(
 @router.patch(
     "/{id}",
     name="plant_profiles:patch_plant_profile",
-    # response_model=PlantProfileRead,
+    response_model=PlantProfileRead,
     dependencies=[Depends(current_active_user)],
     responses={
         status.HTTP_400_BAD_REQUEST: {
@@ -252,7 +254,7 @@ async def patch_plant_profile(
     plant_profile: PlantProfile = Depends(get_plant_profile_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantProfileRead:
     try:
         await user_can_manage_object(user, plant_profile.creator_id)
         if plant_profile_update.name:
@@ -273,6 +275,16 @@ async def patch_plant_profile(
             await update_plant_profile_users(
                 plant_profile, plant_profile_update.user_ids, session
             )
+
+        if plant_profile_update.grow_duration:
+            await update_grow_duration(
+                plant_profile, plant_profile_update.grow_duration
+            )
+
+        if plant_profile_update.grow_property_ids:
+            update_profile_grow_properties(
+                plant_profile, plant_profile_update.grow_property_ids, session
+            )
     except HTTPException:
         # non-creator users can add or remove themselves to public profiles
         if plant_profile.public and plant_profile_update.user_ids:
@@ -292,7 +304,7 @@ async def patch_plant_profile(
 
 async def check_removing_or_adding_self(
     plant_profile: PlantProfile, plant_profile_update: PlantProfileUpdate, user_id
-):
+) -> None:
     existing_user_ids = [user.id for user in plant_profile.users]
 
     adding_self = plant_profile_update.user_ids == existing_user_ids + [user_id]
@@ -307,7 +319,7 @@ async def check_removing_or_adding_self(
 
 async def update_profile_plant_type(
     plant_profile: PlantProfile, plant_type_id: int, session: AsyncSession
-):
+) -> None:
     try:
         detail = "The plant type does not exist."
         plant_type = await get_object_or_404(plant_type_id, PlantType, session, detail)
@@ -322,7 +334,7 @@ async def update_profile_plant_type(
 
 async def update_plant_profile_users(
     plant_profile: PlantProfile, user_ids: list[int], session: AsyncSession
-):
+) -> None:
     unique_user_id_list = [*set(user_ids)]
     if plant_profile.creator.id not in unique_user_id_list:
         raise HTTPException(
@@ -334,3 +346,37 @@ async def update_plant_profile_users(
         select(User).where(User.id.in_(unique_user_id_list))
     )
     plant_profile.users = users_query.scalars().all()
+
+
+async def update_grow_duration(plant_profile: PlantProfile, grow_duration: int):
+    if grow_duration < 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Grow duration cannot be less than zero.",
+        )
+    plant_profile.grow_duration = grow_duration
+
+
+async def update_profile_grow_properties(
+    plant_profile: PlantProfile, grow_property_ids: list[int], session: AsyncSession
+) -> None:
+    unique_grow_property_ids = [*set(grow_property_ids)]
+    profile_grow_property_ids = [
+        grow_property.id for grow_property in plant_profile.grow_properties
+    ]
+    if profile_grow_property_ids == unique_grow_property_ids:
+        return
+
+    for grow_property in unique_grow_property_ids:
+        if grow_property not in profile_grow_property_ids:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot add new grow properties from plant profile route.",
+            )
+
+    grow_properties_query = await session.execute(
+        select(GrowPropertyRange).where(
+            GrowPropertyRange.id.in_(unique_grow_property_ids)
+        )
+    )
+    plant_profile.grow_properties = grow_properties_query.scalars().all()

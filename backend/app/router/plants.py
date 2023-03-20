@@ -1,11 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.database import get_async_session
 from app.models import Device, Plant, PlantProfile, PlantType, User
-from app.router.utils import get_object_or_404, model_list_to_schema
-from app.schemas import PlantCreate, PlantRead, PlantUpdate
+from app.router.utils import (
+    get_object_or_404,
+    model_list_to_schema,
+    user_can_use_object,
+)
+from app.schemas import PlantCreate, PlantDataRead, PlantRead, PlantUpdate
 from app.users import current_active_superuser, current_active_user
 
 router = APIRouter()
@@ -37,7 +42,7 @@ async def get_plant_or_404(
 )
 async def get_all_plants(
     session: AsyncSession = Depends(get_async_session), contains: str | None = None
-):
+) -> list[PlantRead]:
     if contains:
         plants_query = select(Plant).where(Plant.name.ilike(f"%{contains}%"))
     else:
@@ -66,7 +71,7 @@ async def get_all_plants(
 async def get_my_plants(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> list[PlantRead]:
     user_device_ids = [device.id for device in user.devices]
     plants_query = await session.execute(
         select(Plant).where(Plant.device_id.in_(user_device_ids))
@@ -98,13 +103,19 @@ async def register_plant(
     plant_create: PlantCreate,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantRead:
     plant = Plant()
     plant.name = plant_create.name
+    plant.outdoor = plant_create.outdoor
 
     await update_plant_device(plant, user, plant_create.device_id, session)
     await update_plant_profile(plant, user, plant_create.plant_profile_id, session)
     await update_plant_type(plant, plant_create.plant_type_id, session)
+
+    if plant_create.longitude and plant_create.latitude:
+        await update_plant_coordinates(
+            plant, plant_create.latitude, plant_create.longitude
+        )
 
     session.add(plant)
     await session.commit()
@@ -130,7 +141,7 @@ async def register_plant(
 )
 async def get_plant(
     plant: Plant = Depends(get_plant_or_404),
-):
+) -> PlantRead:
     return PlantRead.from_orm(plant)
 
 
@@ -154,14 +165,14 @@ async def delete_plant(
     plant: Plant = Depends(get_plant_or_404),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> None:
     pass
 
 
 @router.patch(
     "/{id}",
-    response_model=PlantRead,
     name="plants:patch_plant",
+    response_model=PlantRead,
     dependencies=[Depends(current_active_user)],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
@@ -179,44 +190,66 @@ async def patch_plant(
     plant_update: PlantUpdate,
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
-):
+) -> PlantRead:
     pass
+
+
+@router.get("/{id}/data", name="plants:plant_data", response_model=list[PlantDataRead])
+async def get_plant_data(
+    id: int,
+    user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    # custom query used to grab plant data
+    plant_query = await session.execute(
+        select(Plant).where(Plant.id == id).options(selectinload(Plant.plant_data))
+    )
+    plant = plant_query.scalars().first()
+    if plant is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="The plant does not exist."
+        )
+
+    await user_can_use_object(user, plant.device_id, Device, "device", session)
+
+    return await model_list_to_schema(
+        plant.plant_data, PlantDataRead, "No plant data found."
+    )
 
 
 async def update_plant_device(
     plant: Plant, user: User, device_id: int, session: AsyncSession
-):
-    device = await get_object_or_404(
-        device_id, Device, session, "The device does not exist."
-    )
-    device_user_ids = [user.id for user in device.users]
-    if user.id not in device_user_ids:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Not owner or user of device with ID {device_id}",
-        )
-
+) -> None:
+    await user_can_use_object(user, device_id, Device, "device", session)
     plant.device_id = device_id
 
 
 async def update_plant_profile(
     plant: Plant, user: User, plant_profile_id: int, session: AsyncSession
-):
-    plant_profile = await get_object_or_404(
-        plant_profile_id, PlantProfile, session, "The plant profile does not exist."
+) -> None:
+    await user_can_use_object(
+        user, plant_profile_id, PlantProfile, "plant profile", session
     )
-    plant_profile_user_ids = [user.id for user in plant_profile.users]
-    if user.id not in plant_profile_user_ids:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Not owner or user of plant_profile with ID {plant_profile_id}",
-        )
-
     plant.plant_profile_id = plant_profile_id
 
 
-async def update_plant_type(plant: Plant, plant_type_id: int, session: AsyncSession):
+async def update_plant_type(
+    plant: Plant, plant_type_id: int, session: AsyncSession
+) -> None:
     await get_object_or_404(
         plant_type_id, PlantType, session, "The plant type does not exist."
     )
     plant.plant_type_id = plant_type_id
+
+
+async def update_plant_coordinates(
+    plant: Plant, latitude: float, longitude: float
+) -> None:
+    valid_coordinate = abs(latitude) <= 90 and abs(longitude) <= 180
+    if not valid_coordinate:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid coordinates."
+        )
+
+    plant.latitude = latitude
+    plant.longitude = longitude

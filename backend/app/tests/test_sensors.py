@@ -1,8 +1,24 @@
 import pytest
 from sqlalchemy import select
 
-from app.models import Sensor
+from app.models import GrowPropertyType, Sensor
 from app.tests.conftest import get_all_objects, get_db, get_objects
+
+
+async def add_grow_property_types():
+    async for session in get_db():
+        test_grow_property_types = []
+        test_grow_property_types.append(
+            GrowPropertyType(
+                name="Temperature",
+                description="Temperature Data values, stored in Degrees C",
+            )
+        )
+
+        for grow_property_type in test_grow_property_types:
+            session.add(grow_property_type)
+        await session.commit()
+        break
 
 
 async def add_sensors():
@@ -13,6 +29,7 @@ async def add_sensors():
                 id=2,
                 name="sensor1",
                 description="this is a description",
+                grow_property_type_id=1,
             )
         )
         test_sensors.append(
@@ -20,6 +37,7 @@ async def add_sensors():
                 id=3,
                 name="sensor2",
                 description="this is also a description",
+                grow_property_type_id=1,
             )
         )
 
@@ -114,10 +132,12 @@ async def test_get_all_sensors_contains_multiple(client, user_access_token):
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
 async def test_register_sensor(client, superuser_access_token):
+    await add_grow_property_types()
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
         "name": "new",
         "description": "this was made via post request",
+        "grow_property_type_id": 1,
     }
     response = await client.post(
         "/sensors/register",
@@ -143,7 +163,11 @@ async def test_register_sensor(client, superuser_access_token):
 @pytest.mark.order(2)
 async def test_register_sensor_name_already_exists(client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
-    body = {"name": "new", "description": "duplicate named sensor"}
+    body = {
+        "name": "new",
+        "description": "duplicate named sensor",
+        "grow_property_type_id": 1,
+    }
     response = await client.post(
         "/sensors/register",
         headers=headers,
