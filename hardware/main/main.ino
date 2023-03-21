@@ -1,11 +1,16 @@
-#include "src/devices/DeviceESP8266.h"
+#include "src/devices/DeviceESP32.h"
+
 
 void setup() {
-    Serial.begin(115200);
+
+    #define ESP32
+
+    // Serial.begin(115200);
+    Serial.begin(9600);
     
     Serial.print("Started");
 
-    DeviceESP8266 device = DeviceESP8266();
+    DeviceESP32 device = DeviceESP32();
     device.connectDeviceToWifi("SeaniPhone", "will1234");
 
     Serial.print("Connected to wifi");

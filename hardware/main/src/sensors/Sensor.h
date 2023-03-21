@@ -6,6 +6,7 @@
 class Sensor {
     public:
         virtual void read();
+        virtual void structureData();
     private:
 };
 
