@@ -1,10 +1,7 @@
 #include "src/devices/DeviceESP32.h"
 
-
 void setup() {
-
     #define ESP32
-
     // Serial.begin(115200);
     Serial.begin(9600);
     

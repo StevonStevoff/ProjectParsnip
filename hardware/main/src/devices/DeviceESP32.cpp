@@ -10,7 +10,6 @@ void DeviceESP32::connectDeviceToWifi(const char* ssid, const char* password) {
 
         while (WiFi.status() != WL_CONNECTED) {
             delay(1500);
-
         }
 
     #endif
