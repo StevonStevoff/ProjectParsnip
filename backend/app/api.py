@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import User, create_db_and_tables
+from app.database import User
 from app.router import (
     devices,
     grow_properties,
@@ -121,5 +121,4 @@ async def authenticated_route(user: User = Depends(current_active_user)):
 
 @app.on_event("startup")
 async def on_startup():
-    # Not needed if you setup a migration system like Alembic
-    await create_db_and_tables()
+    pass
