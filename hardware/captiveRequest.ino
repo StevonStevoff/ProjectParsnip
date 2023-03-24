@@ -73,6 +73,7 @@ void setupServer(){
 
 
 void setup(){
+  //starting the serve
   //your other setup stuff...
   Serial.begin(9600);
   Serial.println();
@@ -95,7 +96,10 @@ void setup(){
       Serial.println("We'll connect to your network now!");
     }
   }
- server.end();
+  server.end();
+
+
+  // connecting to wifi network
   WiFi.mode(WIFI_STA);
   Serial.printf("Attempting to connect to WiFi...%s",ssid.c_str());
   WiFi.begin(ssid.c_str(), pass.c_str()); // connecting to inputted network 

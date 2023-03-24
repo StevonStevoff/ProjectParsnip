@@ -18,5 +18,3 @@ void DeviceESP8266::connectDeviceToWifi(const char* ssid, const char* password) 
 
 
 
-
-

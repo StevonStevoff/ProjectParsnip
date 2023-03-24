@@ -9,9 +9,18 @@
 
 class DeviceESP32: public Device {
     public:
-       virtual void connectDeviceToWifi(const char* ssid, const char* password);
+      DeviceESP32();
+      virtual void connectDeviceToWifi(const char* ssid, const char* password);
+      void deviceSetup(const char* ssid, const char* password);
+      void deviceSetupLoop();
     private:
-        // Wifi* wifi;
+      WiFiServer server;
+      // Variable to store the HTTP request
+      String header;
+      String user_ssid;
+      String user_pass;
+      boolean wifiSetupCompleteFlag;
+    
 };
 
 #endif
