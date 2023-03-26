@@ -281,7 +281,7 @@ async def test_delete_plant_type_id_without_token(setup, client):
 @pytest.mark.asyncio(scope="session")
 async def test_delete_plant_type_id_forbidden(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.delete("/plant_types/1", headers=headers)
+    response = await client.delete("/plant_types/3", headers=headers)
 
     assert response.status_code == 403
     json_response = response.json()
@@ -346,7 +346,7 @@ async def test_patch_plant_type_invalid_id(setup, client, user_access_token):
 async def test_patch_plant_type_forbidden(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
-        "/plant_types/2",
+        "/plant_types/3",
         headers=headers,
         json={"name": "Edited Plant Type", "description": "Edited Description"},
     )
@@ -361,7 +361,7 @@ async def test_patch_plant_type_forbidden(setup, client, user_access_token):
 async def test_patch_plant_type(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
-        "/plant_types/3",
+        "/plant_types/2",
         headers=headers,
         json={"name": "Edited Plant Type", "description": "Edited Description"},
     )
