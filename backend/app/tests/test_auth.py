@@ -29,13 +29,34 @@ async def test_create_user(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_user_already_exists(setup, client):
+async def test_username_already_exists(setup, client):
+    # Attempt to re-register user created in previous test
+    response = await client.post(
+        "/auth/register",
+        json={
+            "email": "newemail@example.com",
+            "username": "AnotherTestUser",
+            "name": "Mr Another Test",
+            "password": "password",
+            "is_active": True,
+            "is_superuser": False,
+            "is_verified": False,
+        },
+    )
+
+    assert response.status_code == 400
+    json_response = response.json()
+    assert json_response["detail"] == "REGISTER_USER_ALREADY_EXISTS"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_user_email_already_exists(setup, client):
     # Attempt to re-register user created in previous test
     response = await client.post(
         "/auth/register",
         json={
             "email": "anotheruser@example.com",
-            "username": "AnotherTestUser",
+            "username": "newusername",
             "name": "Mr Another Test",
             "password": "password",
             "is_active": True,
