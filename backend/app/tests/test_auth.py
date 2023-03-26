@@ -2,7 +2,6 @@ import pytest
 
 
 @pytest.mark.asyncio(scope="session")
-@pytest.mark.order(1)
 async def test_create_user(setup, client):
     # Register Valid User
     response = await client.post(
@@ -30,15 +29,14 @@ async def test_create_user(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-@pytest.mark.order(2)
 async def test_user_already_exists(setup, client):
     # Attempt to re-register user created in previous test
     response = await client.post(
         "/auth/register",
         json={
-            "email": "testuser@example.com",
-            "username": "TestUser",
-            "name": "Mr Test",
+            "email": "anotheruser@example.com",
+            "username": "AnotherTestUser",
+            "name": "Mr Another Test",
             "password": "password",
             "is_active": True,
             "is_superuser": False,
@@ -58,7 +56,7 @@ async def test_login_user_by_email(setup, client):
     response = await client.post(
         "/auth/jwt/login",
         headers=headers,
-        data={"username": "testuser@example.com", "password": "password"},
+        data={"username": "anotheruser@example.com", "password": "password"},
     )
 
     assert response.status_code == 200
@@ -73,7 +71,7 @@ async def test_login_user_by_username(setup, client):
     response = await client.post(
         "/auth/jwt/login",
         headers=headers,
-        data={"username": "TestUser", "password": "password"},
+        data={"username": "AnotherTestUser", "password": "password"},
     )
 
     assert response.status_code == 200
