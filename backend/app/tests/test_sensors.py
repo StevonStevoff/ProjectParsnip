@@ -49,7 +49,8 @@ async def add_sensors():
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
-async def test_get_all_sensors_none(client, user_access_token):
+async def test_get_all_sensors_none(setup, client, user_access_token):
+    #await set_up()
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/", headers=headers)
 
@@ -60,7 +61,7 @@ async def test_get_all_sensors_none(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_get_all_sensors(client, user_access_token):
+async def test_get_all_sensors(setup, client, user_access_token):
     await add_sensors()
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/", headers=headers)
@@ -78,7 +79,7 @@ async def test_get_all_sensors(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_get_all_sensors_contains(client, user_access_token):
+async def test_get_all_sensors_contains(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/?contains=sensor1", headers=headers)
 
@@ -92,7 +93,7 @@ async def test_get_all_sensors_contains(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_get_all_sensors_contains_similar(client, user_access_token):
+async def test_get_all_sensors_contains_similar(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/?contains=sor1", headers=headers)
 
@@ -106,7 +107,7 @@ async def test_get_all_sensors_contains_similar(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_get_all_sensors_contains_invalid(client, user_access_token):
+async def test_get_all_sensors_contains_invalid(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/?contains=notsensor", headers=headers)
 
@@ -117,7 +118,7 @@ async def test_get_all_sensors_contains_invalid(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_get_all_sensors_contains_multiple(client, user_access_token):
+async def test_get_all_sensors_contains_multiple(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/?contains=sensor", headers=headers)
 
@@ -131,7 +132,7 @@ async def test_get_all_sensors_contains_multiple(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
-async def test_register_sensor(client, superuser_access_token):
+async def test_register_sensor(setup, client, superuser_access_token):
     await add_grow_property_types()
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
@@ -161,7 +162,7 @@ async def test_register_sensor(client, superuser_access_token):
 # at this point we allow sensors to be registered with the same name
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_register_sensor_name_already_exists(client, superuser_access_token):
+async def test_register_sensor_name_already_exists(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
         "name": "new",
@@ -190,7 +191,7 @@ async def test_register_sensor_name_already_exists(client, superuser_access_toke
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_get_sensor_by_id(client, user_access_token):
+async def test_get_sensor_by_id(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/1", headers=headers)
 
@@ -208,7 +209,7 @@ async def test_get_sensor_by_id(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_get_sensor_by_id_doesnt_exist(client, user_access_token):
+async def test_get_sensor_by_id_doesnt_exist(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/9999", headers=headers)
 
@@ -219,7 +220,7 @@ async def test_get_sensor_by_id_doesnt_exist(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
-async def test_get_sensor_by_id_invalid(client, user_access_token):
+async def test_get_sensor_by_id_invalid(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/sensors/notanid", headers=headers)
 
@@ -231,7 +232,7 @@ async def test_get_sensor_by_id_invalid(client, user_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(3)
-async def test_delete_sensor_by_id(client, superuser_access_token):
+async def test_delete_sensor_by_id(setup, client, superuser_access_token):
     query = select(Sensor).where(Sensor.id == 1)
     sensors_before = await get_objects(query)
     assert len(sensors_before) == 1
@@ -247,7 +248,7 @@ async def test_delete_sensor_by_id(client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_delete_sensor_by_id_doesnt_exist(client, superuser_access_token):
+async def test_delete_sensor_by_id_doesnt_exist(setup, client, superuser_access_token):
     sensors_before = await get_all_objects(Sensor)
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
@@ -263,7 +264,7 @@ async def test_delete_sensor_by_id_doesnt_exist(client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
-async def test_delete_sensor_by_id_invalid(client, superuser_access_token):
+async def test_delete_sensor_by_id_invalid(setup, client, superuser_access_token):
     sensors_before = await get_all_objects(Sensor)
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
@@ -279,7 +280,7 @@ async def test_delete_sensor_by_id_invalid(client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_patch_sensor_by_id(client, superuser_access_token):
+async def test_patch_sensor_by_id(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
         "name": "changed",
@@ -306,7 +307,7 @@ async def test_patch_sensor_by_id(client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_patch_sensor_by_id_doenst_exist(client, superuser_access_token):
+async def test_patch_sensor_by_id_doenst_exist(setup, client, superuser_access_token):
     query = select(Sensor).where(Sensor.id == 1)
     sensors_before = await get_objects(query)
 

@@ -39,7 +39,7 @@ async def add_plant_types():
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_plant_types_without_token(client):
+async def test_get_all_plant_types_without_token(setup, client):
     response = await client.get("/plant_types/")
 
     assert response.status_code == 401
@@ -49,7 +49,7 @@ async def test_get_all_plant_types_without_token(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_plant_types(client, user_access_token):
+async def test_get_all_plant_types(setup, client, user_access_token):
     await add_plant_types()
 
     headers = {"Authorization": f"Bearer {user_access_token}"}
@@ -68,7 +68,7 @@ async def test_get_all_plant_types(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_types_contains_exact(client, user_access_token):
+async def test_get_plant_types_contains_exact(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
         "/plant_types/?contains=Test%20Tomato%20Type", headers=headers
@@ -88,7 +88,7 @@ async def test_get_plant_types_contains_exact(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_types_contains_multiple(client, user_access_token):
+async def test_get_plant_types_contains_multiple(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/?contains=Type", headers=headers)
 
@@ -101,7 +101,7 @@ async def test_get_plant_types_contains_multiple(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_types_contains_similar(client, user_access_token):
+async def test_get_plant_types_contains_similar(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/?contains=arTi", headers=headers)
 
@@ -113,7 +113,7 @@ async def test_get_plant_types_contains_similar(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_types_contains_multiple_similar(client, user_access_token):
+async def test_get_plant_types_contains_multiple_similar(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/?contains=tYpE", headers=headers)
 
@@ -126,7 +126,7 @@ async def test_get_plant_types_contains_multiple_similar(client, user_access_tok
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_types_contains_different(client, user_access_token):
+async def test_get_plant_types_contains_different(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/?contains=spongebob", headers=headers)
 
@@ -137,7 +137,7 @@ async def test_get_plant_types_contains_different(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_my_plant_types_without_token(client):
+async def test_get_my_plant_types_without_token(setup, client):
     response = await client.get("/plant_types/me")
 
     assert response.status_code == 401
@@ -147,7 +147,7 @@ async def test_get_my_plant_types_without_token(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_my_plant_types(client, user_access_token):
+async def test_get_my_plant_types(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/me", headers=headers)
 
@@ -165,7 +165,7 @@ async def test_get_my_plant_types(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_my_plant_types_no_types(client, superuser_access_token):
+async def test_get_my_plant_types_no_types(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_types/me", headers=headers)
 
@@ -176,7 +176,7 @@ async def test_get_my_plant_types_no_types(client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_plant_type_without_token(client):
+async def test_register_plant_type_without_token(setup, client):
     response = await client.post("/plant_types/register", json={})
 
     assert response.status_code == 401
@@ -186,7 +186,7 @@ async def test_register_plant_type_without_token(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_valid_plant_type(client, user_access_token):
+async def test_register_valid_plant_type(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/plant_types/register",
@@ -207,7 +207,7 @@ async def test_register_valid_plant_type(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_invalid_plant_type(client, user_access_token):
+async def test_register_invalid_plant_type(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/plant_types/register",
@@ -221,7 +221,7 @@ async def test_register_invalid_plant_type(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_type_id_without_token(client):
+async def test_get_plant_type_id_without_token(setup, client):
     response = await client.get("/plant_types/1")
 
     assert response.status_code == 401
@@ -231,7 +231,7 @@ async def test_get_plant_type_id_without_token(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_type_id_forbidden(client, user_access_token):
+async def test_get_plant_type_id_forbidden(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/1", headers=headers)
 
@@ -242,7 +242,7 @@ async def test_get_plant_type_id_forbidden(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_type_id(client, superuser_access_token):
+async def test_get_plant_type_id(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_types/1", headers=headers)
 
@@ -258,7 +258,7 @@ async def test_get_plant_type_id(client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_type_id_invalid(client, superuser_access_token):
+async def test_get_plant_type_id_invalid(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_types/999", headers=headers)
 
@@ -269,7 +269,7 @@ async def test_get_plant_type_id_invalid(client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_type_id_without_token(client):
+async def test_delete_plant_type_id_without_token(setup, client):
     response = await client.delete("/plant_types/3")
 
     assert response.status_code == 401
@@ -279,7 +279,7 @@ async def test_delete_plant_type_id_without_token(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_type_id_forbidden(client, user_access_token):
+async def test_delete_plant_type_id_forbidden(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.delete("/plant_types/1", headers=headers)
 
@@ -290,7 +290,7 @@ async def test_delete_plant_type_id_forbidden(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_type_id(client, superuser_access_token):
+async def test_delete_plant_type_id(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete("/plant_types/1", headers=headers)
 
@@ -303,7 +303,7 @@ async def test_delete_plant_type_id(client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_type_id_invalid(client, superuser_access_token):
+async def test_delete_plant_type_id_invalid(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete("/plant_types/1", headers=headers)
 
@@ -318,7 +318,7 @@ async def test_delete_plant_type_id_invalid(client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_type_without_token(client):
+async def test_patch_plant_type_without_token(setup, client):
     response = await client.patch("/plant_types/3")
 
     assert response.status_code == 401
@@ -328,7 +328,7 @@ async def test_patch_plant_type_without_token(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_type_invalid_id(client, user_access_token):
+async def test_patch_plant_type_invalid_id(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
         "/plant_types/999",
@@ -343,7 +343,7 @@ async def test_patch_plant_type_invalid_id(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_type_forbidden(client, user_access_token):
+async def test_patch_plant_type_forbidden(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
         "/plant_types/2",
@@ -358,7 +358,7 @@ async def test_patch_plant_type_forbidden(client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_type(client, user_access_token):
+async def test_patch_plant_type(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
         "/plant_types/3",

@@ -3,14 +3,14 @@ import pytest
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(1)
-async def test_create_user(client):
+async def test_create_user(setup, client):
     # Register Valid User
     response = await client.post(
         "/auth/register",
         json={
-            "email": "testuser@example.com",
-            "username": "TestUser",
-            "name": "Mr Test",
+            "email": "anotheruser@example.com",
+            "username": "AnotherTestUser",
+            "name": "Mr Another Test",
             "password": "password",
             "is_active": True,
             "is_superuser": False,
@@ -21,9 +21,9 @@ async def test_create_user(client):
     assert response.status_code == 201
 
     json_response = response.json()
-    assert json_response["email"] == "testuser@example.com"
-    assert json_response["username"] == "TestUser"
-    assert json_response["name"] == "Mr Test"
+    assert json_response["email"] == "anotheruser@example.com"
+    assert json_response["username"] == "AnotherTestUser"
+    assert json_response["name"] == "Mr Another Test"
     assert json_response["is_active"]
     assert not json_response["is_superuser"]
     assert not json_response["is_verified"]
@@ -31,7 +31,7 @@ async def test_create_user(client):
 
 @pytest.mark.asyncio(scope="session")
 @pytest.mark.order(2)
-async def test_user_already_exists(client):
+async def test_user_already_exists(setup, client):
     # Attempt to re-register user created in previous test
     response = await client.post(
         "/auth/register",
@@ -52,7 +52,7 @@ async def test_user_already_exists(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_user_by_email(client):
+async def test_login_user_by_email(setup, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -67,7 +67,7 @@ async def test_login_user_by_email(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_user_by_username(client):
+async def test_login_user_by_username(setup, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -82,7 +82,7 @@ async def test_login_user_by_username(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_superuser_by_email(client):
+async def test_login_superuser_by_email(setup, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -95,7 +95,7 @@ async def test_login_superuser_by_email(client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_superuser_by_username(client):
+async def test_login_superuser_by_username(setup, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
