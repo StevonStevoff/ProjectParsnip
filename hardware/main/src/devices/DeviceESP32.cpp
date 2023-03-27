@@ -1,6 +1,6 @@
 #include "DeviceESP32.h"
 
-DeviceESP32::DeviceESP32() : Portal(server) {
+DeviceESP32::DeviceESP32() : Portal(server), handler() {
     #ifdef ESP32 // Check if using ESP32 board
         server.on("/", std::bind(&DeviceESP32::rootPage, this));
         // if (Portal.begin()) {

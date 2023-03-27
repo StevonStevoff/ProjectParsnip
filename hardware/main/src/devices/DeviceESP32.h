@@ -2,6 +2,7 @@
 #define DeviceESP32_h
 
 #include "Device.h"
+#include "../http/HTTPHandler.h"
 
 #ifdef ESP32 // Check if using ESP32 board
   #include "WiFi.h" //wifi library 
@@ -10,16 +11,19 @@
 
 #include <AutoConnect.h>
 
+#include <HTTPClient.h>
+
+
 class DeviceESP32 {
     public:
       DeviceESP32();
       void rootPage();
-      // WebServer getServer();
       AutoConnect& getPortal();
-      // void setupServer();
+      // void handleHTTPRequest();
+      HTTPHandler handler;
     private:
       WebServer server;
-      AutoConnect Portal;
+      AutoConnect Portal;    
 };
 
 #endif
