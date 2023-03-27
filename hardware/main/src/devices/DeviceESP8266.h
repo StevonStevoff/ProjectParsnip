@@ -12,7 +12,7 @@
 
 class DeviceESP8266: public Device {
     public:
-       virtual void connectDeviceToWifi(const char* ssid, const char* password);
+       virtual boolean connectDeviceToWifi(const char* ssid, const char* password);
     // private:
         // Wifi* wifi;
 };

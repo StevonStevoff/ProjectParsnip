@@ -4,23 +4,22 @@
 #include "Device.h"
 
 #ifdef ESP32 // Check if using ESP32 board
-    #include "WiFi.h" //wifi library 
+  #include "WiFi.h" //wifi library 
+  #include "WebServer.h"
 #endif
 
-class DeviceESP32: public Device {
+#include <AutoConnect.h>
+
+class DeviceESP32 {
     public:
       DeviceESP32();
-      virtual void connectDeviceToWifi(const char* ssid, const char* password);
-      void deviceSetup(const char* ssid, const char* password);
-      void deviceSetupLoop();
+      void rootPage();
+      // WebServer getServer();
+      AutoConnect& getPortal();
+      // void setupServer();
     private:
-      WiFiServer server;
-      // Variable to store the HTTP request
-      String header;
-      String user_ssid;
-      String user_pass;
-      boolean wifiSetupCompleteFlag;
-    
+      WebServer server;
+      AutoConnect Portal;
 };
 
 #endif
