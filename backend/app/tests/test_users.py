@@ -1,54 +1,9 @@
 import pytest
-from fastapi_users.password import PasswordHelper
 from sqlalchemy import select
 
 from app.models import User
 from app.tests.conftest import get_db
-
-
-async def add_users():
-    async for session in get_db():
-        hashed_pwd = PasswordHelper().hash("password")
-        test_users = []
-        # id=1 and id=2 are already in use
-        test_users.append(
-            User(
-                id=3,
-                email="user1@test.com",
-                username="username1",
-                name="user",
-                hashed_password=hashed_pwd,
-                is_active=True,
-                is_superuser=False,
-            )
-        )
-        test_users.append(
-            User(
-                id=4,
-                email="user2@test.com",
-                username="username2",
-                name="name",
-                hashed_password=hashed_pwd,
-                is_active=True,
-                is_superuser=False,
-            )
-        )
-        test_users.append(
-            User(
-                id=5,
-                email="user3@test.com",
-                username="username3",
-                name="username",
-                hashed_password=hashed_pwd,
-                is_active=True,
-                is_superuser=False,
-            )
-        )
-
-        for test_user in test_users:
-            session.add(test_user)
-        await session.commit()
-        break
+from app.tests.populate_tests import add_users
 
 
 @pytest.mark.asyncio(scope="session")

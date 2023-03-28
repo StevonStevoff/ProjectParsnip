@@ -13,7 +13,17 @@ from sqlalchemy.orm import sessionmaker
 
 from app.api import app
 from app.database import get_async_session, get_user_db
-from app.models import Base, Sensor, User, Device, PlantProfile, Plant, PlantType, PlantData, GrowPropertyType
+from app.models import (
+    Base,
+    Device,
+    GrowPropertyType,
+    Plant,
+    PlantData,
+    PlantProfile,
+    PlantType,
+    Sensor,
+    User,
+)
 
 PWD = os.path.abspath(os.curdir)
 
@@ -138,7 +148,16 @@ async def setup():
 
 async def teardown():
     all_objects = []
-    tables = [User, Sensor, Device, Plant, PlantProfile, PlantType, PlantData, GrowPropertyType]
+    tables = [
+        User,
+        Sensor,
+        Device,
+        Plant,
+        PlantProfile,
+        PlantType,
+        PlantData,
+        GrowPropertyType,
+    ]
     for type in tables:
         all_objects += await get_all_objects(type)
     async for session in get_db():

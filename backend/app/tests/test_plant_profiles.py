@@ -1,87 +1,9 @@
 import pytest
 from sqlalchemy import or_, select
 
-from app.models import PlantProfile, PlantType, User
-from app.tests.conftest import get_all_objects, get_db, get_objects
-
-
-# create plant for testing here so that we are not
-# dependant on test_plant_types.py being called
-#
-# Tests simply need two plant types to exist, therefore it doesn't
-# matter if ID 1 and ID 2 are created in test_plant_types.py instead
-async def add_plant_types():
-    async for session in get_db():
-        test_plant_types = []
-        test_plant_types.append(
-            PlantType(
-                name="Test Admin Parsnip",
-                description="This is a Test Parsnip Type, not created by a user",
-                user_created=False,
-            )
-        )
-        test_plant_types.append(
-            PlantType(
-                name="Test Admin Potato",
-                description="This is a Test Potato Type, not created by a user",
-                user_created=False,
-            )
-        )
-        for test_plant_type in test_plant_types:
-            session.add(test_plant_type)
-        await session.commit()
-        break
-
-
-async def add_plant_profiles():
-    async for session in get_db():
-        user_1 = await session.get(User, 1)
-        user_2 = await session.get(User, 2)
-
-        test_plant_profiles = []
-        test_plant_profiles.append(
-            PlantProfile(
-                id=1,
-                name="First Test Profile",
-                description="Test Profile Description",
-                public=True,
-                grow_duration=10,
-                user_created=True,
-                plant_type_id=1,
-                creator_id=1,
-                users=[user_1, user_2],
-            )
-        )
-        test_plant_profiles.append(
-            PlantProfile(
-                id=2,
-                name="Private Test Profile",
-                description="Admin's Private Test Profile Description",
-                public=False,
-                grow_duration=19,
-                user_created=True,
-                plant_type_id=1,
-                creator_id=1,
-                users=[user_1],
-            )
-        )
-        test_plant_profiles.append(
-            PlantProfile(
-                id=3,
-                name="User's Private Test Profile",
-                description="Normal User's Private Test Profile Description",
-                public=False,
-                grow_duration=75,
-                user_created=True,
-                plant_type_id=1,
-                creator_id=2,
-                users=[user_2],
-            )
-        )
-        for test_plant_profile in test_plant_profiles:
-            session.add(test_plant_profile)
-        await session.commit()
-        break
+from app.models import PlantProfile
+from app.tests.conftest import get_all_objects, get_objects
+from app.tests.populate_tests import populate_db
 
 
 @pytest.mark.asyncio(scope="session")
@@ -104,8 +26,7 @@ async def test_get_all_no_plant_profiles(setup, client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_all_plant_profiles(setup, client, superuser_access_token):
-    await add_plant_types()
-    await add_plant_profiles()
+    await populate_db()
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/", headers=headers)
@@ -196,7 +117,9 @@ async def test_get_plant_profile_contains_exact_special_characters(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_contains_multiple(setup, client, superuser_access_token):
+async def test_get_plant_profile_contains_multiple(
+    setup, client, superuser_access_token
+):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/?contains=test", headers=headers)
 
@@ -378,7 +301,9 @@ async def test_register_incomplete_plant_profile(setup, client, user_access_toke
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_plant_profile_invalid_plant_type(setup, client, user_access_token):
+async def test_register_plant_profile_invalid_plant_type(
+    setup, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/plant_profiles/register",
@@ -400,7 +325,9 @@ async def test_register_plant_profile_invalid_plant_type(setup, client, user_acc
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_plant_profile_invalid_grow_duration(setup, client, user_access_token):
+async def test_register_plant_profile_invalid_grow_duration(
+    setup, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/plant_profiles/register",
@@ -543,7 +470,9 @@ async def test_patch_plant_profile_remove_self_not_manageable(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_profile_add_self_not_manageable(setup, client, user_access_token):
+async def test_patch_plant_profile_add_self_not_manageable(
+    setup, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
         "/plant_profiles/1", headers=headers, json={"user_ids": [1, 2]}
@@ -557,7 +486,9 @@ async def test_patch_plant_profile_add_self_not_manageable(setup, client, user_a
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_profile_change_users_invalid(setup, client, user_access_token):
+async def test_patch_plant_profile_change_users_invalid(
+    setup, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
         "/plant_profiles/1", headers=headers, json={"user_ids": [1, 2, 3]}

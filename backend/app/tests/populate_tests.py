@@ -1,6 +1,15 @@
-from app.tests.conftest import get_db
-from app.models import User, Device, Plant, PlantProfile, PlantType, Sensor, GrowPropertyType
 from fastapi_users.password import PasswordHelper
+
+from app.models import (
+    Device,
+    GrowPropertyType,
+    Plant,
+    PlantProfile,
+    PlantType,
+    Sensor,
+    User,
+)
+from app.tests.conftest import get_db
 
 
 async def populate_db():
@@ -30,32 +39,46 @@ async def add_grow_property_types():
 
 
 async def add_users():
-    #a single superuser and user are always present in the database for each test
     async for session in get_db():
+        hashed_pwd = PasswordHelper().hash("password")
         test_users = []
-        hashed_password = PasswordHelper().hash("password")
+        # id=1 and id=2 are already in use
         test_users.append(
             User(
-                name="New User",
-                username="newuser",
-                email="newuser@example.com",
-                hashed_password=hashed_password,
+                id=3,
+                email="user1@test.com",
+                username="username1",
+                name="user",
+                hashed_password=hashed_pwd,
                 is_active=True,
                 is_superuser=False,
             )
         )
         test_users.append(
             User(
-                name="New User 2",
-                username="newuser2",
-                email="newuser2@example.com",
-                hashed_password=hashed_password,
+                id=4,
+                email="user2@test.com",
+                username="username2",
+                name="name",
+                hashed_password=hashed_pwd,
                 is_active=True,
                 is_superuser=False,
             )
         )
-        for user in test_users:
-            session.add(user)
+        test_users.append(
+            User(
+                id=5,
+                email="user3@test.com",
+                username="username3",
+                name="username",
+                hashed_password=hashed_pwd,
+                is_active=True,
+                is_superuser=False,
+            )
+        )
+
+        for test_user in test_users:
+            session.add(test_user)
         await session.commit()
         break
 
@@ -128,6 +151,30 @@ async def add_plant_types():
                 name="Test Admin Potato",
                 description="This is a Test Potato Type, not created by a user",
                 user_created=False,
+            )
+        )
+        test_plant_types.append(
+            PlantType(
+                name="Test Tomato Type",
+                description="This is a Test Tomato Type, created by a user",
+                user_created=True,
+                creator_id=2,
+            )
+        )
+        test_plant_types.append(
+            PlantType(
+                name="Test Artichoke Type",
+                description="This is a Test Artichoke Type, created by a user",
+                user_created=True,
+                creator_id=2,
+            )
+        )
+        test_plant_types.append(
+            PlantType(
+                name="Test Basil",
+                description="This is a Test Basil Type",
+                user_created=True,
+                creator_id=3,
             )
         )
         for test_plant_type in test_plant_types:

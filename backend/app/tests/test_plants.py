@@ -1,77 +1,8 @@
 import pytest
 
-from app.models import Device, Plant, User
-from app.tests.conftest import get_all_objects, get_db
+from app.models import Plant
+from app.tests.conftest import get_all_objects
 from app.tests.populate_tests import populate_db
-
-
-async def add_devices():
-    async for session in get_db():
-        user_1 = await session.get(User, 1)
-        user_2 = await session.get(User, 2)
-        test_devices = []
-        test_devices.append(
-            Device(
-                name="Plant Test Device",
-                model_name="unit testing model",
-                owner_id=2,
-                users=[user_2],
-            )
-        )
-        test_devices.append(
-            Device(
-                name="Plant Admin Test Device",
-                model_name="unit testing model",
-                owner_id=1,
-                users=[user_1],
-            )
-        )
-        for test_device in test_devices:
-            session.add(test_device)
-        await session.commit()
-        break
-
-
-async def add_plants():
-    async for session in get_db():
-        test_plants = []
-        test_plants.append(
-            Plant(
-                name="My Precious Plant",
-                device_id=1,
-                plant_profile_id=1,
-                plant_type_id=2,
-                outdoor=True,
-                latitude=53.8067,
-                longitude=-1.5550,
-            )
-        )
-        test_plants.append(
-            Plant(
-                name="My Annoying Plant",
-                device_id=1,
-                plant_profile_id=2,
-                plant_type_id=2,
-                outdoor=False,
-                latitude=53.8067,
-                longitude=-1.5550,
-            )
-        )
-        test_plants.append(
-            Plant(
-                name="My Third Plant",
-                device_id=2,
-                plant_profile_id=2,
-                plant_type_id=2,
-                outdoor=True,
-                latitude=53.8067,
-                longitude=-1.5550,
-            )
-        )
-        for test_plant in test_plants:
-            session.add(test_plant)
-        await session.commit()
-        break
 
 
 @pytest.mark.asyncio(scope="session")
@@ -169,7 +100,9 @@ async def test_get_plants_contains_similar(setup, client, superuser_access_token
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plants_contains_multiple_similar(setup, client, superuser_access_token):
+async def test_get_plants_contains_multiple_similar(
+    setup, client, superuser_access_token
+):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plants/?contains=mY", headers=headers)
 

@@ -2,40 +2,8 @@ import pytest
 from sqlalchemy import select
 
 from app.models import PlantType
-from app.tests.conftest import get_all_objects, get_db, get_objects
-
-
-async def add_plant_types():
-    async for session in get_db():
-        test_plant_types = []
-        test_plant_types.append(
-            PlantType(
-                name="Test Tomato Type",
-                description="This is a Test Tomato Type, created by a user",
-                user_created=True,
-                creator_id=2,
-            )
-        )
-        test_plant_types.append(
-            PlantType(
-                name="Test Artichoke Type",
-                description="This is a Test Artichoke Type, created by a user",
-                user_created=True,
-                creator_id=2,
-            )
-        )
-        test_plant_types.append(
-            PlantType(
-                name="Test Basil",
-                description="This is a Test Basil Type",
-                user_created=True,
-                creator_id=3,
-            )
-        )
-        for test_plant_type in test_plant_types:
-            session.add(test_plant_type)
-        await session.commit()
-        break
+from app.tests.conftest import get_all_objects, get_objects
+from app.tests.populate_tests import populate_db
 
 
 @pytest.mark.asyncio(scope="session")
@@ -50,7 +18,7 @@ async def test_get_all_plant_types_without_token(setup, client):
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_all_plant_types(setup, client, user_access_token):
-    await add_plant_types()
+    await populate_db()
 
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/", headers=headers)
@@ -113,7 +81,9 @@ async def test_get_plant_types_contains_similar(setup, client, user_access_token
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_types_contains_multiple_similar(setup, client, user_access_token):
+async def test_get_plant_types_contains_multiple_similar(
+    setup, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_types/?contains=tYpE", headers=headers)
 
@@ -281,7 +251,7 @@ async def test_delete_plant_type_id_without_token(setup, client):
 @pytest.mark.asyncio(scope="session")
 async def test_delete_plant_type_id_forbidden(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.delete("/plant_types/3", headers=headers)
+    response = await client.delete("/plant_types/5", headers=headers)
 
     assert response.status_code == 403
     json_response = response.json()
@@ -290,9 +260,22 @@ async def test_delete_plant_type_id_forbidden(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_type_id(setup, client, superuser_access_token):
+async def test_delete_plant_type_id_superuser(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete("/plant_types/1", headers=headers)
+
+    assert response.status_code == 200
+
+    query = select(PlantType).where(PlantType.id == 1)
+    plant_type = await get_objects(query)
+
+    assert plant_type == []
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_delete_plant_type_id(setup, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.delete("/plant_types/3", headers=headers)
 
     assert response.status_code == 200
 
@@ -346,7 +329,7 @@ async def test_patch_plant_type_invalid_id(setup, client, user_access_token):
 async def test_patch_plant_type_forbidden(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
-        "/plant_types/3",
+        "/plant_types/5",
         headers=headers,
         json={"name": "Edited Plant Type", "description": "Edited Description"},
     )
@@ -361,7 +344,7 @@ async def test_patch_plant_type_forbidden(setup, client, user_access_token):
 async def test_patch_plant_type(setup, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
-        "/plant_types/2",
+        "/plant_types/4",
         headers=headers,
         json={"name": "Edited Plant Type", "description": "Edited Description"},
     )

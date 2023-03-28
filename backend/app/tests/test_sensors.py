@@ -1,50 +1,9 @@
 import pytest
 from sqlalchemy import select
 
-from app.models import GrowPropertyType, Sensor
-from app.tests.conftest import get_all_objects, get_db, get_objects
-
-
-async def add_grow_property_types():
-    async for session in get_db():
-        test_grow_property_types = []
-        test_grow_property_types.append(
-            GrowPropertyType(
-                name="Temperature",
-                description="Temperature Data values, stored in Degrees C",
-            )
-        )
-
-        for grow_property_type in test_grow_property_types:
-            session.add(grow_property_type)
-        await session.commit()
-        break
-
-
-async def add_sensors():
-    async for session in get_db():
-        test_sensors = []
-        test_sensors.append(
-            Sensor(
-                id=2,
-                name="sensor1",
-                description="this is a description",
-                grow_property_type_id=1,
-            )
-        )
-        test_sensors.append(
-            Sensor(
-                id=3,
-                name="sensor2",
-                description="this is also a description",
-                grow_property_type_id=1,
-            )
-        )
-
-        for sensor in test_sensors:
-            session.add(sensor)
-        await session.commit()
-        break
+from app.models import Sensor
+from app.tests.conftest import get_all_objects, get_objects
+from app.tests.populate_tests import add_grow_property_types, add_sensors
 
 
 @pytest.mark.asyncio(scope="session")
@@ -58,8 +17,75 @@ async def test_get_all_sensors_none(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_sensor(setup, client, superuser_access_token):
+async def test_get_all_sensors(setup, client, user_access_token):
     await add_grow_property_types()
+    await add_sensors()
+
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/sensors/", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    sensors = await get_all_objects(Sensor)
+
+    assert len(json_response) == len(sensors)
+    assert json_response[0]["id"] == sensors[0].id
+    assert json_response[1]["name"] == sensors[1].name
+    assert json_response[-1]["description"] == sensors[-1].description
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_all_sensors_contains(setup, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/sensors/?contains=sensor1", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert len(json_response) == 1
+    assert json_response[0]["id"] == 1
+    assert json_response[0]["name"] == "sensor1"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_all_sensors_contains_similar(setup, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/sensors/?contains=sor1", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert len(json_response) == 1
+    assert json_response[0]["id"] == 1
+    assert json_response[0]["name"] == "sensor1"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_all_sensors_contains_invalid(setup, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/sensors/?contains=notsensor", headers=headers)
+
+    assert response.status_code == 404
+    json_response = response.json()
+    assert json_response["detail"] == "No sensors found."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_all_sensors_contains_multiple(setup, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/sensors/?contains=sensor", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    assert len(json_response) == 2
+    assert json_response[0]["id"] == 1
+    assert json_response[1]["id"] == 2
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_register_sensor(setup, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
         "name": "new",
@@ -85,75 +111,11 @@ async def test_register_sensor(setup, client, superuser_access_token):
     assert json_response["description"] == sensors[0].description
 
 
-@pytest.mark.asyncio(scope="session")
-async def test_get_all_sensors(setup, client, user_access_token):
-    await add_sensors()
-    headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.get("/sensors/", headers=headers)
-
-    assert response.status_code == 200
-    json_response = response.json()
-
-    sensors = await get_all_objects(Sensor)
-
-    assert len(json_response) == len(sensors)
-    assert json_response[0]["id"] == sensors[0].id
-    assert json_response[1]["name"] == sensors[1].name
-    assert json_response[-1]["description"] == sensors[-1].description
-
-
-@pytest.mark.asyncio(scope="session")
-async def test_get_all_sensors_contains(setup, client, user_access_token):
-    headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.get("/sensors/?contains=sensor1", headers=headers)
-
-    assert response.status_code == 200
-    json_response = response.json()
-
-    assert len(json_response) == 1
-    assert json_response[0]["id"] == 2
-    assert json_response[0]["name"] == "sensor1"
-
-
-@pytest.mark.asyncio(scope="session")
-async def test_get_all_sensors_contains_similar(setup, client, user_access_token):
-    headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.get("/sensors/?contains=sor1", headers=headers)
-
-    assert response.status_code == 200
-    json_response = response.json()
-
-    assert len(json_response) == 1
-    assert json_response[0]["id"] == 2
-    assert json_response[0]["name"] == "sensor1"
-
-
-@pytest.mark.asyncio(scope="session")
-async def test_get_all_sensors_contains_invalid(setup, client, user_access_token):
-    headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.get("/sensors/?contains=notsensor", headers=headers)
-
-    assert response.status_code == 404
-    json_response = response.json()
-    assert json_response["detail"] == "No sensors found."
-
-
-@pytest.mark.asyncio(scope="session")
-async def test_get_all_sensors_contains_multiple(setup, client, user_access_token):
-    headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.get("/sensors/?contains=sensor", headers=headers)
-
-    assert response.status_code == 200
-    json_response = response.json()
-
-    assert len(json_response) == 2
-    assert json_response[0]["id"] == 2
-    assert json_response[1]["id"] == 3
-
-
 # at this point we allow sensors to be registered with the same name
 @pytest.mark.asyncio(scope="session")
-async def test_register_sensor_name_already_exists(setup, client, superuser_access_token):
+async def test_register_sensor_name_already_exists(
+    setup, client, superuser_access_token
+):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
         "name": "new",
