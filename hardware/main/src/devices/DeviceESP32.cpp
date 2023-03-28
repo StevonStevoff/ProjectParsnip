@@ -17,3 +17,5 @@ void DeviceESP32::rootPage() {
 AutoConnect& DeviceESP32::getPortal() {
   return Portal;
 }
+
+

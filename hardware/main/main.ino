@@ -20,4 +20,3 @@ void loop() {
     // read sensors values
     // send any requests needed
 }
-

@@ -13,6 +13,5 @@ void HTTPHandler::testApiRequest() {
     response = http.getString();
     Serial.println(response);
   }
-
   http.end();
 }
