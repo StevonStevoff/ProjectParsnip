@@ -2,6 +2,7 @@ import pytest
 
 from app.models import Device, Plant, User
 from app.tests.conftest import get_all_objects, get_db
+from app.tests.populate_tests import populate_db
 
 
 async def add_devices():
@@ -110,8 +111,7 @@ async def test_get_all_no_plants(setup, client, superuser_access_token):
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_all_plants(setup, client, superuser_access_token):
-    await add_devices()
-    await add_plants()
+    await populate_db()
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plants/", headers=headers)
