@@ -13,17 +13,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.api import app
 from app.database import get_async_session, get_user_db
-from app.models import (
-    Base,
-    Device,
-    GrowPropertyType,
-    Plant,
-    PlantData,
-    PlantProfile,
-    PlantType,
-    Sensor,
-    User,
-)
+from app.models import Base, User
 
 PWD = os.path.abspath(os.curdir)
 
@@ -112,11 +102,14 @@ async def create_user():
         break
 
 
-@pytest_asyncio.fixture(scope="session")
-async def create_test_database():
+@pytest_asyncio.fixture(scope="module")
+async def setup():
     # create database
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    await create_superuser()
+    await create_user()
 
     # run the tests
     yield
@@ -127,43 +120,13 @@ async def create_test_database():
 
 
 @pytest_asyncio.fixture(scope="session")
-async def client(create_test_database):
+async def client():
     app.dependency_overrides[get_async_session] = get_db
     app.dependency_overrides[get_user_db] = override_get_db
 
     async with LifespanManager(app):
         async with AsyncClient(app=app, base_url="http://test") as client:
             yield client
-
-
-@pytest_asyncio.fixture(scope="module")
-async def setup():
-    await create_superuser()
-    await create_user()
-
-    yield
-
-    await teardown()
-
-
-async def teardown():
-    all_objects = []
-    tables = [
-        User,
-        Sensor,
-        Device,
-        Plant,
-        PlantProfile,
-        PlantType,
-        PlantData,
-        GrowPropertyType,
-    ]
-    for type in tables:
-        all_objects += await get_all_objects(type)
-    async for session in get_db():
-        for i in range(len(all_objects)):
-            await session.delete(all_objects[i])
-        await session.commit()
 
 
 @pytest_asyncio.fixture(scope="module")
