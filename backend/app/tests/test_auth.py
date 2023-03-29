@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_create_user(setup, client):
+async def test_create_user(setup_db, client):
     # Register Valid User
     response = await client.post(
         "/auth/register",
@@ -29,7 +29,7 @@ async def test_create_user(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_username_already_exists(setup, client):
+async def test_username_already_exists(setup_db, client):
     # Attempt to re-register user created in previous test
     response = await client.post(
         "/auth/register",
@@ -50,7 +50,7 @@ async def test_username_already_exists(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_user_email_already_exists(setup, client):
+async def test_user_email_already_exists(setup_db, client):
     # Attempt to re-register user created in previous test
     response = await client.post(
         "/auth/register",
@@ -71,7 +71,7 @@ async def test_user_email_already_exists(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_user_by_email(setup, client):
+async def test_login_user_by_email(setup_db, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -86,7 +86,7 @@ async def test_login_user_by_email(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_user_by_username(setup, client):
+async def test_login_user_by_username(setup_db, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -101,7 +101,7 @@ async def test_login_user_by_username(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_superuser_by_email(setup, client):
+async def test_login_superuser_by_email(setup_db, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -114,7 +114,7 @@ async def test_login_superuser_by_email(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_login_superuser_by_username(setup, client):
+async def test_login_superuser_by_username(setup_db, client):
     # Log in as Created User
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(

@@ -7,7 +7,7 @@ from app.tests.populate_tests import add_users
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_access_user_info(setup, client, user_access_token):
+async def test_access_user_info(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/me", headers=headers)
 
@@ -15,7 +15,7 @@ async def test_access_user_info(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_access_superuser_info(setup, client, superuser_access_token):
+async def test_access_superuser_info(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/users/me", headers=headers)
 
@@ -23,7 +23,7 @@ async def test_access_superuser_info(setup, client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_users(setup, client, user_access_token):
+async def test_get_all_users(setup_db, client, user_access_token):
     await add_users()
 
     headers = {"Authorization": f"Bearer {user_access_token}"}
@@ -46,7 +46,7 @@ async def test_get_all_users(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_user_contains_exact(setup, client, user_access_token):
+async def test_get_user_contains_exact(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/?contains=TestAdmin", headers=headers)
 
@@ -60,7 +60,7 @@ async def test_get_user_contains_exact(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_user_contains_similar(setup, client, user_access_token):
+async def test_get_user_contains_similar(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/?contains=aDmin", headers=headers)
 
@@ -74,7 +74,7 @@ async def test_get_user_contains_similar(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_user_contains_multiple_similar(setup, client, user_access_token):
+async def test_get_user_contains_multiple_similar(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/?contains=username", headers=headers)
 
@@ -88,7 +88,7 @@ async def test_get_user_contains_multiple_similar(setup, client, user_access_tok
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_user_contains_different(setup, client, user_access_token):
+async def test_get_user_contains_different(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/?contains=adddmin", headers=headers)
 
@@ -98,7 +98,7 @@ async def test_get_user_contains_different(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_user_id(setup, client, user_access_token):
+async def test_get_user_id(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/1", headers=headers)
 
@@ -111,7 +111,7 @@ async def test_get_user_id(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_user_id_invalid(setup, client, user_access_token):
+async def test_get_user_id_invalid(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/users/999", headers=headers)
 

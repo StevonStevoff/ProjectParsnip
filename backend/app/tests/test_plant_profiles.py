@@ -7,7 +7,7 @@ from app.tests.populate_tests import populate_db
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_plant_profiles_without_token(setup, client):
+async def test_get_all_plant_profiles_without_token(setup_db, client):
     response = await client.get("/plant_profiles/")
     assert response.status_code == 401
     json_response = response.json()
@@ -15,7 +15,7 @@ async def test_get_all_plant_profiles_without_token(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_no_plant_profiles(setup, client, superuser_access_token):
+async def test_get_all_no_plant_profiles(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/", headers=headers)
 
@@ -25,7 +25,7 @@ async def test_get_all_no_plant_profiles(setup, client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_plant_profiles(setup, client, superuser_access_token):
+async def test_get_all_plant_profiles(setup_db, client, superuser_access_token):
     await populate_db()
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
@@ -58,7 +58,7 @@ async def test_get_all_plant_profiles(setup, client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_accessible_plant_profiles(setup, client, user_access_token):
+async def test_get_all_accessible_plant_profiles(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_profiles/", headers=headers)
 
@@ -86,7 +86,7 @@ async def test_get_all_accessible_plant_profiles(setup, client, user_access_toke
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_contains_exact(setup, client, user_access_token):
+async def test_get_plant_profile_contains_exact(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
         "/plant_profiles/?contains=First%20Test%20Profile", headers=headers
@@ -102,7 +102,7 @@ async def test_get_plant_profile_contains_exact(setup, client, user_access_token
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_plant_profile_contains_exact_special_characters(
-    setup, client, user_access_token
+    setup_db, client, user_access_token
 ):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
@@ -118,7 +118,7 @@ async def test_get_plant_profile_contains_exact_special_characters(
 
 @pytest.mark.asyncio(scope="session")
 async def test_get_plant_profile_contains_multiple(
-    setup, client, superuser_access_token
+    setup_db, client, superuser_access_token
 ):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/?contains=test", headers=headers)
@@ -133,7 +133,7 @@ async def test_get_plant_profile_contains_multiple(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_contains_similar(setup, client, user_access_token):
+async def test_get_plant_profile_contains_similar(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
         "/plant_profiles/?contains=fIrSt%20tESt", headers=headers
@@ -178,7 +178,9 @@ async def test_get_accessible_plant_profile_contains_mulitple_similar(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_contains_different(setup, client, user_access_token):
+async def test_get_plant_profile_contains_different(
+    setup_db, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_profiles/?contains=Teeest", headers=headers)
 
@@ -188,7 +190,7 @@ async def test_get_plant_profile_contains_different(setup, client, user_access_t
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_my_plant_profiles_without_token(setup, client):
+async def test_get_my_plant_profiles_without_token(setup_db, client):
     response = await client.get("/plant_profiles/me")
 
     assert response.status_code == 401
@@ -198,7 +200,7 @@ async def test_get_my_plant_profiles_without_token(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_my_plant_profiles(setup, client, user_access_token):
+async def test_get_my_plant_profiles(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_profiles/me", headers=headers)
 
@@ -211,7 +213,7 @@ async def test_get_my_plant_profiles(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_created_plant_profiles_without_token(setup, client):
+async def test_get_created_plant_profiles_without_token(setup_db, client):
     response = await client.get("/plant_profiles/created")
     assert response.status_code == 401
     json_response = response.json()
@@ -219,7 +221,7 @@ async def test_get_created_plant_profiles_without_token(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_created_plant_profiles(setup, client, user_access_token):
+async def test_get_created_plant_profiles(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_profiles/created", headers=headers)
 
@@ -231,7 +233,7 @@ async def test_get_created_plant_profiles(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_plant_profile_without_token(setup, client):
+async def test_register_plant_profile_without_token(setup_db, client):
     response = await client.post("/plant_profiles/register", json={})
     assert response.status_code == 401
     json_response = response.json()
@@ -239,7 +241,7 @@ async def test_register_plant_profile_without_token(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_valid_plant_profile(setup, client, user_access_token):
+async def test_register_valid_plant_profile(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/plant_profiles/register",
@@ -268,7 +270,7 @@ async def test_register_valid_plant_profile(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_invalid_plant_profile(setup, client, user_access_token):
+async def test_register_invalid_plant_profile(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/plant_profiles/register",
@@ -286,7 +288,7 @@ async def test_register_invalid_plant_profile(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_incomplete_plant_profile(setup, client, user_access_token):
+async def test_register_incomplete_plant_profile(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/plant_profiles/register",
@@ -302,7 +304,7 @@ async def test_register_incomplete_plant_profile(setup, client, user_access_toke
 
 @pytest.mark.asyncio(scope="session")
 async def test_register_plant_profile_invalid_plant_type(
-    setup, client, user_access_token
+    setup_db, client, user_access_token
 ):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
@@ -326,7 +328,7 @@ async def test_register_plant_profile_invalid_plant_type(
 
 @pytest.mark.asyncio(scope="session")
 async def test_register_plant_profile_invalid_grow_duration(
-    setup, client, user_access_token
+    setup_db, client, user_access_token
 ):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
@@ -349,7 +351,7 @@ async def test_register_plant_profile_invalid_grow_duration(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_id_without_token(setup, client):
+async def test_get_plant_profile_id_without_token(setup_db, client):
     response = await client.get("/plant_profiles/1")
 
     assert response.status_code == 401
@@ -359,7 +361,7 @@ async def test_get_plant_profile_id_without_token(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_id_forbidden(setup, client, user_access_token):
+async def test_get_plant_profile_id_forbidden(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get("/plant_profiles/1", headers=headers)
 
@@ -370,7 +372,7 @@ async def test_get_plant_profile_id_forbidden(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_id(setup, client, superuser_access_token):
+async def test_get_plant_profile_id(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/4", headers=headers)
 
@@ -382,7 +384,7 @@ async def test_get_plant_profile_id(setup, client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_plant_profile_id_invalid(setup, client, superuser_access_token):
+async def test_get_plant_profile_id_invalid(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/plant_profiles/9999", headers=headers)
 
@@ -393,7 +395,7 @@ async def test_get_plant_profile_id_invalid(setup, client, superuser_access_toke
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_profile_without_token(setup, client):
+async def test_delete_plant_profile_without_token(setup_db, client):
     response = await client.delete("/plant_profiles/1")
 
     assert response.status_code == 401
@@ -403,7 +405,7 @@ async def test_delete_plant_profile_without_token(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_profile(setup, client, user_access_token):
+async def test_delete_plant_profile(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.delete("/plant_profiles/4", headers=headers)
 
@@ -411,7 +413,7 @@ async def test_delete_plant_profile(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_profile_not_manageable(setup, client, user_access_token):
+async def test_delete_plant_profile_not_manageable(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.delete("/plant_profiles/1", headers=headers)
 
@@ -422,7 +424,9 @@ async def test_delete_plant_profile_not_manageable(setup, client, user_access_to
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_plant_profile_nonexistent(setup, client, superuser_access_token):
+async def test_delete_plant_profile_nonexistent(
+    setup_db, client, superuser_access_token
+):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete("/plant_profiles/4", headers=headers)
 
@@ -433,7 +437,7 @@ async def test_delete_plant_profile_nonexistent(setup, client, superuser_access_
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_profile_without_token(setup, client):
+async def test_patch_plant_profile_without_token(setup_db, client):
     response = await client.patch("/plant_profiles/3")
 
     assert response.status_code == 401
@@ -443,7 +447,7 @@ async def test_patch_plant_profile_without_token(setup, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_profile_not_manageable(setup, client, user_access_token):
+async def test_patch_plant_profile_not_manageable(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch("/plant_profiles/1", headers=headers, json={})
 
@@ -455,7 +459,7 @@ async def test_patch_plant_profile_not_manageable(setup, client, user_access_tok
 
 @pytest.mark.asyncio(scope="session")
 async def test_patch_plant_profile_remove_self_not_manageable(
-    setup, client, user_access_token
+    setup_db, client, user_access_token
 ):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
@@ -471,7 +475,7 @@ async def test_patch_plant_profile_remove_self_not_manageable(
 
 @pytest.mark.asyncio(scope="session")
 async def test_patch_plant_profile_add_self_not_manageable(
-    setup, client, user_access_token
+    setup_db, client, user_access_token
 ):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
@@ -487,7 +491,7 @@ async def test_patch_plant_profile_add_self_not_manageable(
 
 @pytest.mark.asyncio(scope="session")
 async def test_patch_plant_profile_change_users_invalid(
-    setup, client, user_access_token
+    setup_db, client, user_access_token
 ):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
@@ -501,7 +505,7 @@ async def test_patch_plant_profile_change_users_invalid(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_profile(setup, client, user_access_token):
+async def test_patch_plant_profile(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
         "/plant_profiles/3",
@@ -530,7 +534,9 @@ async def test_patch_plant_profile(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_plant_profile_make_private(setup, client, superuser_access_token):
+async def test_patch_plant_profile_make_private(
+    setup_db, client, superuser_access_token
+):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.patch(
         "/plant_profiles/3", headers=headers, json={"public": False}

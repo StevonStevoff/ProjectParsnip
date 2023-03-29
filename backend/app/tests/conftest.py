@@ -103,7 +103,7 @@ async def create_user():
 
 
 @pytest_asyncio.fixture(scope="module")
-async def setup():
+async def setup_db():
     # create database
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

@@ -5,7 +5,7 @@ from app.tests.conftest import get_all_objects
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_create_device(setup, client, user_access_token):
+async def test_create_device(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/devices/register",
@@ -29,7 +29,7 @@ async def test_create_device(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_create_device_no_token(setup, client, user_access_token):
+async def test_create_device_no_token(setup_db, client, user_access_token):
     headers = {"Authorization": "Bearer {}"}
     response = await client.post(
         "/devices/register",
@@ -46,7 +46,7 @@ async def test_create_device_no_token(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_owned_devices(setup, client, user_access_token):
+async def test_get_owned_devices(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
         "/devices/owned",
@@ -65,7 +65,7 @@ async def test_get_owned_devices(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_my_devices(setup, client, user_access_token):
+async def test_get_my_devices(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
         "/devices/me",
@@ -83,7 +83,7 @@ async def test_get_my_devices(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_my_devices_no_token(setup, client, user_access_token):
+async def test_get_my_devices_no_token(setup_db, client, user_access_token):
     headers = {"Authorization": "Bearer {}"}
     response = await client.get(
         "/devices/me",
@@ -94,7 +94,7 @@ async def test_get_my_devices_no_token(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_device_from_id_missing_token(setup, client, user_access_token):
+async def test_get_device_from_id_missing_token(setup_db, client, user_access_token):
     headers = {"Authorization": "Bearer {}"}
     response = await client.get(
         "/devices/1",
@@ -105,7 +105,7 @@ async def test_get_device_from_id_missing_token(setup, client, user_access_token
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_device_from_id_not_superuser(setup, client, user_access_token):
+async def test_get_device_from_id_not_superuser(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
         "/devices/1",
@@ -116,7 +116,9 @@ async def test_get_device_from_id_not_superuser(setup, client, user_access_token
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_device_from_id_invalid_device(setup, client, superuser_access_token):
+async def test_get_device_from_id_invalid_device(
+    setup_db, client, superuser_access_token
+):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get(
         "/devices/2",
@@ -127,7 +129,7 @@ async def test_get_device_from_id_invalid_device(setup, client, superuser_access
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_device_from_id(setup, client, superuser_access_token):
+async def test_get_device_from_id(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get(
         "/devices/1",
@@ -143,7 +145,7 @@ async def test_get_device_from_id(setup, client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_device_by_id_no_token(setup, client, user_access_token):
+async def test_delete_device_by_id_no_token(setup_db, client, user_access_token):
     headers = {"Authorization": "Bearer {}"}
     response = await client.delete(
         "/devices/1",
@@ -154,7 +156,7 @@ async def test_delete_device_by_id_no_token(setup, client, user_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_device_by_id_invalid(setup, client, superuser_access_token):
+async def test_delete_device_by_id_invalid(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete(
         "/devices/2",
@@ -165,7 +167,7 @@ async def test_delete_device_by_id_invalid(setup, client, superuser_access_token
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_device_by_id(setup, client, superuser_access_token):
+async def test_delete_device_by_id(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete(
         "/devices/1",
