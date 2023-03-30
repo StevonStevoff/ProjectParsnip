@@ -17,6 +17,10 @@ void setup() {
 
 void loop() {
     device->getPortal().handleClient();
-    // read sensors values
+    // read sensors values;
+    // device->readSensors().handSensor();
     // send any requests needed
+
+
+
 }
