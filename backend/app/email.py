@@ -1,23 +1,13 @@
 from typing import List
 
-import jwt
+# import jwt
 from dotenv import dotenv_values
-
-"""from fastapi import (
-    BackgroundTasks,
-    Depends,
-    File,
-    Form,
-    HTTPException,
-    UploadFile,
-    status,
-)"""
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 from pydantic import BaseModel, EmailStr
 
-from app.models import User
+# from app.models import User
 
-config_credentials = dotenv_values("../.env")
+config_credentials = dotenv_values(".env")
 
 config = ConnectionConfig(
     MAIL_USERNAME=config_credentials["USERNAME"],
@@ -25,8 +15,8 @@ config = ConnectionConfig(
     MAIL_FROM=config_credentials["EMAIL"],
     MAIL_PORT=587,
     MAIL_SERVER="sandbox.smtp.mailtrap.io",
-    MAIL_TLS=True,
-    MAIL_SSL=False,
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
     USE_CREDENTIALS=True,
 )
 
@@ -35,13 +25,15 @@ class EmailSchema(BaseModel):
     email: List[EmailStr]
 
 
-async def send_email(email: List, instance: User):
-    token_data = {
+async def send_verification_email(email: List, token: str):
+    # generate token
+    """token_data = {
         "id": instance.id,
         "username": instance.username,
     }
 
-    token = jwt.encode(token_data, config_credentials["SECRET"])
+    token = jwt.encode(token_data, config_credentials["SECRET"], algorithm="HS256")
+    """
 
     template = f"""
         <!DOCTYPE html>
@@ -56,14 +48,16 @@ async def send_email(email: List, instance: User):
                     <br>
 
                     <p>Thanks for signing up to Project Parsnip, please click the
-                     link provided to verify your account.</p>
+                     link below to verify your account.</p>
 
-                    <a style="margin-top: 1rem; padding: 1rem; border-radius: 0.5rem;
-                    font-size: 1rem; text-decoration: none;
-                    background: #0275d8; color: white;"
+                    <a
                     href="http://localhost:8000/users/verification/?token={token}">
                     Verify your email
                     </a>
+
+                    <p>Use full token to verify through the api: \n{token}"</p>
+
+                    <br>
 
                     <p>Please ignore this email if you did not create an account
                      with Project Parsnip, thankyou.</p>
