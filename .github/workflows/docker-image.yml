@@ -19,5 +19,7 @@ jobs:
 
       - name: Run pytest inside of Backend Docker image
         working-directory: ./backend
+        env:
+          BACKEND_SECRET_KEY: ${{ secrets.BACKEND_SECRET_KEY }}
         run: |
           docker run parsnip-backend:${{github.run_id}} pytest
