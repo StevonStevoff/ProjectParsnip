@@ -16,7 +16,6 @@ from app.database import get_async_session, get_user_db
 from app.models import Base, User
 
 TEST_PATH = os.path.dirname(__file__)
-# TEST_PATH = "/home/dev/uni/Year4/Comp5530-GP/ProjectParsnip/backend/app/tests"
 
 slashes = "///"
 if os.name != "nt":
