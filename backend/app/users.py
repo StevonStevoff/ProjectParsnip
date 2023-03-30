@@ -19,7 +19,6 @@ from app.models import User
 from app.schemas import UserCreate
 
 SECRET = settings.BACKEND_SECRET_KEY
-# SECRET = "SECRET"
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):

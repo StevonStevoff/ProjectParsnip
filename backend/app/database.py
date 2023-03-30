@@ -8,8 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.models import Base, User
 
-# BASE_PATH = os.path.dirname(__file__)
-BASE_PATH = "/home/dev/uni/Year4/Comp5530-GP/ProjectParsnip/backend/app/"
+BASE_PATH = os.path.dirname(__file__)
 
 slashes = "///"
 if os.name != "nt":
