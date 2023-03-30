@@ -14,7 +14,7 @@ from fastapi_users.exceptions import UserAlreadyExists, UserNotExists
 from sqlalchemy import func, select
 
 from app.database import get_async_session, get_user_db
-from app.email import send_verification_email
+from app.email import send_forgot_password_email, send_verification_email
 from app.models import User
 from app.schemas import UserCreate
 
@@ -80,6 +80,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         self, user: User, token: str, request: Optional[Request] = None
     ):
         print(f"User {user.username} has forgot their password. Reset token: {token}")
+        await send_forgot_password_email([user.email], token)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None

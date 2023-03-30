@@ -76,3 +76,47 @@ async def send_verification_email(email: List, token: str):
 
     fm = FastMail(config)
     await fm.send_message(message=message)
+
+
+async def send_forgot_password_email(email: List, token: str):
+
+    template = f"""
+    <!DOCTYPE html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <div style="display: flex; align-items: center;
+            justify-content:center; flex-direction: column">
+                <h3>Project Parsnip Account Verification</h3>
+                <br>
+
+                <p>Please click the link below to reset your password
+                 at Project Parsnip.</p>
+
+                <a
+                href="http://localhost:8000/users/verification/?token={token}">
+                Reset Password
+                </a>
+
+                <p>Use full token to reset through the api: \n{token}"</p>
+
+                <br>
+
+                <p>If you did not request to reset your password,
+                 please ignore this email, thankyou.</p>
+
+            </div>
+        </body>
+    </html>
+    """
+
+    message = MessageSchema(
+        subject="Project Parsnip Forgot Password",
+        recipients=email,  # list of email recipients (in our case only 1)
+        body=template,
+        subtype="html",
+    )
+
+    fm = FastMail(config)
+    await fm.send_message(message=message)
