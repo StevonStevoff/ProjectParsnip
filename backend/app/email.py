@@ -15,7 +15,7 @@ from dotenv import dotenv_values
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 from pydantic import BaseModel, EmailStr
 
-from .models import User
+from app.models import User
 
 config_credentials = dotenv_values("../.env")
 
@@ -61,7 +61,7 @@ async def send_email(email: List, instance: User):
                     <a style="margin-top: 1rem; padding: 1rem; border-radius: 0.5rem;
                     font-size: 1rem; text-decoration: none;
                     background: #0275d8; color: white;"
-                    href="http://localhost:8000/verification/?token={token}">
+                    href="http://localhost:8000/users/verification/?token={token}">
                     Verify your email
                     </a>
 
