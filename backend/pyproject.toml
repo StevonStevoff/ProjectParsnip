@@ -27,6 +27,7 @@ sqlalchemy = { extras = ["asyncio"], version = "^1.4.46" }
 asgi-lifespan = "^2.0.0"
 dependency = "^0.0.3"
 alembic = "^1.9.3"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0.0"
