@@ -13,13 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build the Backend Docker image
+        env:
+          BACKEND_SECRET_KEY: ${{ secrets.BACKEND_SECRET_KEY }}
         working-directory: ./backend
         run: |
           docker build . --file Dockerfile --tag parsnip-backend:${{github.run_id}}
 
       - name: Run pytest inside of Backend Docker image
         working-directory: ./backend
-        env:
-          BACKEND_SECRET_KEY: ${{ secrets.BACKEND_SECRET_KEY }}
         run: |
           docker run parsnip-backend:${{github.run_id}} pytest
