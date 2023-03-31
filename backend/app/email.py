@@ -10,9 +10,9 @@ from pydantic import BaseModel, EmailStr
 config_credentials = dotenv_values(".env")
 
 config = ConnectionConfig(
-    MAIL_USERNAME=config_credentials["USERNAME"],
-    MAIL_PASSWORD=config_credentials["PASSWORD"],
-    MAIL_FROM=config_credentials["EMAIL"],
+    MAIL_USERNAME=config_credentials["MAIL_USERNAME"],
+    MAIL_PASSWORD=config_credentials["MAIL_PASSWORD"],
+    MAIL_FROM=config_credentials["MAIL_EMAIL"],
     MAIL_PORT=587,
     MAIL_SERVER="sandbox.smtp.mailtrap.io",
     MAIL_STARTTLS=True,
