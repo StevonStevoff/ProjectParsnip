@@ -193,14 +193,14 @@ async def patch_plant(
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantRead:
     if plant_update.name:
-        plane.name = plate_update.name
+        plant.name = plant_update.name
 
     if plant_update.device_id:
         await update_plant_device(plant, plant_update.device_id, session)
-    
+
     if plant_update.plant_profile_id:
         await update_plant_profile(plant, plant_update.plant_profile_id, session)
-    
+
     if plant_update.plant_type_id:
         await update_plant_type(plant, plant_update.plant_type_id, session)
     if plant_update.outdoor:
@@ -218,6 +218,7 @@ async def patch_plant(
     await session.commit()
     await session.refresh(plant)
     return PlantRead.from_orm(plant)
+
 
 @router.get("/{id}/data", name="plants:plant_data", response_model=list[PlantDataRead])
 async def get_plant_data(
