@@ -34,12 +34,11 @@ jobs:
           poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. Flake max length is 88 following Black standards
           poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+      - name: Create env file
+        working-directory: ./backend
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
       - name: Test with pytest
-        env:
-          BACKEND_SECRET_KEY: ${{ secrets.BACKEND_SECRET_KEY }}
-          MAIL_EMAIL: ${{ secrets.MAIL_EMAIL }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         working-directory: ./backend
         run: |
           poetry run pytest -sv
