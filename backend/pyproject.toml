@@ -16,7 +16,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = "^0.88.0"
+fastapi = "^0.95.0"
 fastapi-users = { extras = ["sqlalchemy"], version = "^10.4.1" }
 gunicorn = "^20.0.4"
 uvicorn = "^0.20.0"
@@ -29,6 +29,7 @@ dependency = "^0.0.3"
 alembic = "^1.9.3"
 python-dotenv = "^1.0.0"
 pyjwt = "^2.6.0"
+fastapi-mail = "^1.2.7"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0.0"
