@@ -166,7 +166,8 @@ async def delete_plant(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> None:
-    pass
+    await session.delete(plant)
+    await session.commit()
 
 
 @router.patch(
@@ -191,8 +192,32 @@ async def patch_plant(
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantRead:
-    pass
+    if plant_update.name:
+        plane.name = plate_update.name
 
+    if plant_update.device_id:
+        await update_plant_device(plant, plant_update.device_id, session)
+    
+    if plant_update.plant_profile_id:
+        await update_plant_profile(plant, plant_update.plant_profile_id, session)
+    
+    if plant_update.plant_type_id:
+        await update_plant_type(plant, plant_update.plant_type_id, session)
+    if plant_update.outdoor:
+        plant.outdoor = plant_update.outdoor
+
+    if plant_update.latitude:
+        plant.latitude = plant_update.latitude
+
+    if plant_update.longitude:
+        plant.longitude = plant_update.longitude
+
+    if plant_update.time_planted:
+        plant.time_planted = plant_update.time_planted
+
+    await session.commit()
+    await session.refresh(plant)
+    return PlantRead.from_orm(plant)
 
 @router.get("/{id}/data", name="plants:plant_data", response_model=list[PlantDataRead])
 async def get_plant_data(
