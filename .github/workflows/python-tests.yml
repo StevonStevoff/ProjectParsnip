@@ -37,8 +37,8 @@ jobs:
       - name: Test with pytest
         env:
           BACKEND_SECRET_KEY: ${{ secrets.BACKEND_SECRET_KEY }}
-          MAIL_EMAIL: ${{ env.MAIL_EMAIL }}
-          MAIL_USERNAME: ${{ env.MAIL_USERNAME }}
+          MAIL_EMAIL: ${{ secrets.MAIL_EMAIL }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         working-directory: ./backend
         run: |
