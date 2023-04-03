@@ -13,12 +13,13 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.exceptions import UserAlreadyExists, UserNotExists
 from sqlalchemy import func, select
 
+import app.settings as settings
 from app.database import get_async_session, get_user_db
 from app.email import send_forgot_password_email, send_verification_email
 from app.models import User
 from app.schemas import UserCreate
 
-SECRET = "SECRET"
+SECRET = settings.BACKEND_SECRET_KEY
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):

@@ -22,6 +22,7 @@ docs.zip
 archive.zip
 poetry.lock
 .python-version
+.env
 
 # vim temporary files
 *~

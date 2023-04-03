@@ -8,22 +8,14 @@ from sqlalchemy.orm import sessionmaker
 
 from app.models import Base, User
 
-PWD = os.path.abspath(os.curdir)
+BASE_PATH = os.path.dirname(__file__)
 
-if "ProjectParsnip" in PWD:
-    WORK_PATH = PWD.rsplit("ProjectParsnip", 1)[0]
-
-    slashes = "///"
-    if os.name != "nt":
-        # nt means system is windows
-        # windows needs one less slash for sqlalchemy
-        slashes += "/"
-    DATABASE_URL = (
-        f"sqlite+aiosqlite:{slashes}{WORK_PATH}ProjectParsnip/backend/sql_app.db"
-    )
-else:
-    # For Docker
-    DATABASE_URL = "sqlite+aiosqlite:///./sql_app.db"
+slashes = "///"
+if os.name != "nt":
+    # nt means system is windows
+    # windows needs one less slash for sqlalchemy
+    slashes += "/"
+DATABASE_URL = f"sqlite+aiosqlite:{slashes}{BASE_PATH}/../sql_app.db"
 
 engine = create_async_engine(DATABASE_URL)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
