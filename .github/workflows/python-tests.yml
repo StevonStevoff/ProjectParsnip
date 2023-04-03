@@ -35,6 +35,11 @@ jobs:
           # exit-zero treats all errors as warnings. Flake max length is 88 following Black standards
           poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
       - name: Test with pytest
+        env:
+          BACKEND_SECRET_KEY: ${{ secrets.BACKEND_SECRET_KEY }}
+          MAIL_EMAIL: ${{ vars.MAIL_EMAIL }}
+          MAIL_USERNAME: ${{ vars.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         working-directory: ./backend
         run: |
           poetry run pytest -sv
