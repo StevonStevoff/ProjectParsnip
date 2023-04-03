@@ -42,5 +42,4 @@ jobs:
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         working-directory: ./backend
         run: |
-          echo $MAIL_EMAIL $MAIL_USERNAME $MAIL_PASSWORD
           poetry run pytest -sv

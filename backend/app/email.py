@@ -1,18 +1,14 @@
 from typing import List
 
-# import jwt
-from dotenv import dotenv_values
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 from pydantic import BaseModel, EmailStr
 
-# from app.models import User
-
-config_credentials = dotenv_values(".env")
+from app import settings
 
 config = ConnectionConfig(
-    MAIL_USERNAME=config_credentials["MAIL_USERNAME"],
-    MAIL_PASSWORD=config_credentials["MAIL_PASSWORD"],
-    MAIL_FROM=config_credentials["MAIL_EMAIL"],
+    MAIL_USERNAME=settings.MAIL_USERNAME,
+    MAIL_PASSWORD=settings.MAIL_PASSWORD,
+    MAIL_FROM=settings.MAIL_EMAIL,
     MAIL_PORT=587,
     MAIL_SERVER="sandbox.smtp.mailtrap.io",
     MAIL_STARTTLS=True,
