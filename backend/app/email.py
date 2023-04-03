@@ -1,5 +1,6 @@
 from typing import List
 
+# import jwt
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 from pydantic import BaseModel, EmailStr
 
