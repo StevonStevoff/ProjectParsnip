@@ -218,9 +218,9 @@ async def patch_plant(
 
     if plant_update.longitude:
         newLongtitude = plant_update.longitude
-    
+
     await update_plant_coordinates(plant, newLatitude, newLongtitude)
-    
+
     await session.commit()
     await session.refresh(plant)
     return PlantRead.from_orm(plant)
