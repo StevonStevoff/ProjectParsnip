@@ -203,18 +203,24 @@ async def patch_plant(
 
     if plant_update.plant_type_id:
         await update_plant_type(plant, plant_update.plant_type_id, session)
+
     if plant_update.outdoor:
         plant.outdoor = plant_update.outdoor
-
-    if plant_update.latitude:
-        plant.latitude = plant_update.latitude
-
-    if plant_update.longitude:
-        plant.longitude = plant_update.longitude
 
     if plant_update.time_planted:
         plant.time_planted = plant_update.time_planted
 
+    newLatitude = plant.latitude
+    newLongtitude = plant.longitude
+
+    if plant_update.latitude:
+        newLatitude = plant_update.latitude
+
+    if plant_update.longitude:
+        newLongtitude = plant_update.longitude
+    
+    await update_plant_coordinates(plant, newLatitude, newLongtitude)
+    
     await session.commit()
     await session.refresh(plant)
     return PlantRead.from_orm(plant)
