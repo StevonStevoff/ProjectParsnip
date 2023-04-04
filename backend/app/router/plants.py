@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -208,7 +209,8 @@ async def patch_plant(
         plant.outdoor = plant_update.outdoor
 
     if plant_update.time_planted:
-        plant.time_planted = plant_update.time_planted
+        if datetime.now() > lant_update.time_planted
+            plant.time_planted = plant_update.time_planted
 
     newLatitude = plant.latitude
     newLongtitude = plant.longitude
