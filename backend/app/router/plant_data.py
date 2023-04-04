@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
 from app.models import Device, Plant, PlantData, PlantProfile, Sensor, SensorReading
+from app.notifications import check_plant_properties
 from app.router.utils import get_object_or_404
 from app.schemas import PlantDataCreate, PlantDataRead, SensorReadingCreate
 
@@ -21,9 +22,10 @@ router = APIRouter()
 )
 async def create_plant_data(
     plant_data_create: PlantDataCreate,
+    background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantDataRead:
-    await get_object_or_404(
+    device = await get_object_or_404(
         plant_data_create.device_id, Device, session, "The device does not exist."
     )
     plant_data = PlantData()
@@ -48,6 +50,8 @@ async def create_plant_data(
     created_plant_data = await session.get(
         PlantData, plant_data.id, populate_existing=True
     )
+
+    background_tasks.add(check_plant_properties, device, plant, plant_data, session)
     return PlantDataRead.from_orm(created_plant_data)
 
 

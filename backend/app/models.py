@@ -235,3 +235,9 @@ class SensorReading(Base):
         "GrowPropertyRange",
         lazy="selectin",
     )
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+    id = Column(Integer, primary_key=True, nullable=False)
+    text = Column(String)
