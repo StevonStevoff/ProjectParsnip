@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -166,7 +168,8 @@ async def delete_plant(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> None:
-    pass
+    await session.delete(plant)
+    await session.commit()
 
 
 @router.patch(
@@ -191,7 +194,39 @@ async def patch_plant(
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantRead:
-    pass
+    if plant_update.name:
+        plant.name = plant_update.name
+
+    if plant_update.device_id:
+        await update_plant_device(plant, plant_update.device_id, session)
+
+    if plant_update.plant_profile_id:
+        await update_plant_profile(plant, plant_update.plant_profile_id, session)
+
+    if plant_update.plant_type_id:
+        await update_plant_type(plant, plant_update.plant_type_id, session)
+
+    if plant_update.outdoor:
+        plant.outdoor = plant_update.outdoor
+
+    if plant_update.time_planted:
+        if datetime.now() > plant_update.time_planted:
+            plant.time_planted = plant_update.time_planted
+
+    newLatitude = plant.latitude
+    newLongtitude = plant.longitude
+
+    if plant_update.latitude:
+        newLatitude = plant_update.latitude
+
+    if plant_update.longitude:
+        newLongtitude = plant_update.longitude
+
+    await update_plant_coordinates(plant, newLatitude, newLongtitude)
+
+    await session.commit()
+    await session.refresh(plant)
+    return PlantRead.from_orm(plant)
 
 
 @router.get("/{id}/data", name="plants:plant_data", response_model=list[PlantDataRead])
