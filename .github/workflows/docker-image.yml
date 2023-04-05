@@ -1,27 +1,45 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: ["main", "development", "backend"]
-  pull_request:
-    branches: ["main", "development", "backend"]
+  workflow_run:
+    workflows: [Python Unit Tests]
+    types:
+      - completed
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Create env file
         working-directory: ./backend
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
-      - name: Build the Backend Docker image
-        working-directory: ./backend
-        run: |
-          docker build . --file Dockerfile --tag parsnip-backend:${{github.run_id}}
 
-      - name: Run pytest inside of Backend Docker image
+      - name: Build the Backend Docker Image
         working-directory: ./backend
         run: |
-          docker run --env-file=.env parsnip-backend:${{github.run_id}} pytest
+          docker build . --file Dockerfile --tag projectparsnip.azurecr.io/parsnip-backend:${{ github.run_id }}
+
+      - name: Run pytest inside of Backend Docker Container
+        working-directory: ./backend
+        run: |
+          docker run --env-file=.env projectparsnip.azurecr.io/parsnip-backend:${{ github.run_id }} pytest
+
+      - uses: azure/docker-login@v1
+        with:
+          login-server: projectparsnip.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Push Docker to Azure Container Registry
+        working-directory: ./backend
+        run: |
+          docker push projectparsnip.azurecr.io/parsnip-backend:${{ github.run_id }}
+
+      - uses: azure/webapps-deploy@v2
+      - name: Deploy Azure Web App
+        with:
+          app-name: "ParsnipBackend"
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: "projectparsnip.azurecr.io/parsnip-backend:${{ github.run_id }}"
