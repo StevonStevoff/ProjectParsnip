@@ -35,7 +35,7 @@ jobs:
           # exit-zero treats all errors as warnings. Flake max length is 88 following Black standards
           poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
       - name: Create env file
-        working-directory: ./backend
+        working-directory: ./
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
       - name: Test with pytest
