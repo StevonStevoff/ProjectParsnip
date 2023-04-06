@@ -230,3 +230,13 @@ class PlantDataCreate(PlantDataBase):
 
 class PlantDataRead(BaseRead, PlantDataBase):
     sensor_readings: list[SensorReadingRead]
+
+
+class NotificationBase(BaseModel):
+    text: str
+    resolved: bool
+    timestamp: datetime
+
+
+class NotificationRead(BaseRead, NotificationBase):
+    plant: PlantRead
