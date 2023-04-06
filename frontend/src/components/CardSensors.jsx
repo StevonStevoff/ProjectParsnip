@@ -13,7 +13,7 @@ function CardSensors(sensors) {
           <Icon
             as={FontAwesome5}
             name="thermometer-half"
-            size="6"
+            size="5"
           />
         );
       case 'humidity':
@@ -21,7 +21,7 @@ function CardSensors(sensors) {
           <Icon
             as={MaterialCommunityIcons}
             name="water-percent"
-            size="28"
+            size="30"
           />
         );
       case 'soil moisture':
@@ -29,7 +29,7 @@ function CardSensors(sensors) {
           <Icon
             as={Ionicons}
             name="water-outline"
-            size="8"
+            size="5"
           />
         );
       case 'light sensor':
@@ -37,7 +37,7 @@ function CardSensors(sensors) {
           <Icon
             as={MaterialCommunityIcons}
             name="weather-sunny"
-            size="7"
+            size="8"
           />
         );
 

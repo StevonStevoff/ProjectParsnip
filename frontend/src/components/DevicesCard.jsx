@@ -14,13 +14,14 @@ function DevicesCard(device) {
   } = device.device;
   return (
     <View style={{
-      flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%',
+      flex: 1, justifyContent: 'center', alignItems: 'center', width: 350, height: 300,
     }}
     >
       <Box
+        maxHeight="90%"
         minHeight="90%"
-        minWidth="30%"
-        marginRight={10}
+        minWidth="33%"
+        marginRight={5}
         marginBottom={5}
         rounded="lg"
         overflow="hidden"
