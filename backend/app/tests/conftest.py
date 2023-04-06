@@ -7,7 +7,7 @@ from asgi_lifespan import LifespanManager
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.password import PasswordHelper
 from httpx import AsyncClient
-from sqlalchemy import select
+from sqlalchemy import Table, select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -15,22 +15,14 @@ from app.api import app
 from app.database import get_async_session, get_user_db
 from app.models import Base, User
 
-PWD = os.path.abspath(os.curdir)
+TEST_PATH = os.path.dirname(__file__)
 
-if "ProjectParsnip" in PWD:
-    WORK_PATH = PWD.rsplit("ProjectParsnip", 1)[0]
-
-    slashes = "///"
-    if os.name != "nt":
-        # nt means system is windows
-        # windows needs one less slash for sqlalchemy
-        slashes += "/"
-    SQLALCHEMY_DATABASE_URL = (
-        f"sqlite+aiosqlite:{slashes}{WORK_PATH}ProjectParsnip/backend/app/tests/test.db"
-    )
-else:
-    # For Docker
-    SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
+slashes = "///"
+if os.name != "nt":
+    # nt means system is windows
+    # windows needs one less slash for sqlalchemy
+    slashes += "/"
+SQLALCHEMY_DATABASE_URL = f"sqlite+aiosqlite:{slashes}{TEST_PATH}/test.db"
 
 engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
@@ -85,13 +77,31 @@ async def create_superuser():
         break
 
 
-@pytest_asyncio.fixture(scope="session")
-async def create_test_database():
+async def create_user():
+    async for session in get_db():
+        hashed_password = PasswordHelper().hash("password")
+        test_user = User(
+            id=2,
+            email="user@test.com",
+            username="TestUser",
+            name="Mr User Test",
+            hashed_password=hashed_password,
+            is_active=True,
+            is_superuser=False,
+        )
+        session.add(test_user)
+        await session.commit()
+        break
+
+
+@pytest_asyncio.fixture(scope="module")
+async def setup_db():
     # create database
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
     await create_superuser()
+    await create_user()
 
     # run the tests
     yield
@@ -102,7 +112,7 @@ async def create_test_database():
 
 
 @pytest_asyncio.fixture(scope="session")
-async def client(create_test_database):
+async def client():
     app.dependency_overrides[get_async_session] = get_db
     app.dependency_overrides[get_user_db] = override_get_db
 
@@ -111,7 +121,7 @@ async def client(create_test_database):
             yield client
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="module")
 async def user_access_token(client):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -124,7 +134,7 @@ async def user_access_token(client):
     return json_response["access_token"]
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="module")
 async def superuser_access_token(client):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = await client.post(
@@ -145,9 +155,10 @@ async def get_objects(query):
     return objects
 
 
-async def get_all_objects(model_type: Base):
+async def get_all_objects(model_type=Table):
     async for session in get_db():
-        query_result = await session.execute(select(model_type))
+        if model_type:
+            query_result = await session.execute(select(model_type))
         objects = query_result.scalars().all()
 
     return objects

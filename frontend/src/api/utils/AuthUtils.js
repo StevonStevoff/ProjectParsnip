@@ -44,7 +44,23 @@ const AuthUtils = {
       })
       .catch((error) => {
         this.handleAuthenticationError(error.response.data.detail);
-        return this.errorMessage;
+        return Promise.reject(this.errorMessage);
+      });
+  },
+
+  async getUserInfo() {
+    return API.getUserInfo()
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+
+  async updateUserInfo(name, email, username) {
+    return API.updateUserInfo({ name, email, username })
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
       });
   },
 

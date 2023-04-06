@@ -1,5 +1,4 @@
 import {
-  Text,
   View,
   TouchableOpacity,
   ActivityIndicator,
@@ -7,7 +6,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '@react-navigation/native';
+import { Text, Button } from 'native-base';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
 import CreatePlantForm from '../../components/CreatePlantForm';
@@ -15,7 +14,6 @@ import { Icon} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 
 function PlantsScreen({ navigation }) {
-  const { colors } = useTheme();
   const [userEmail, setUserEmail] = useState('');
   const [plants, setPlants] = useState([]);
   const [plantTypes, setPlantsTypes] = useState([]);
