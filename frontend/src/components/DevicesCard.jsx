@@ -18,15 +18,17 @@ function DevicesCard(device) {
     }}
     >
       <Box
-        width="100%"
-        minWidth="50%"
+        minHeight="90%"
+        minWidth="30%"
+        marginRight={10}
+        marginBottom={5}
         rounded="lg"
         overflow="hidden"
         borderColor="coolGray.200"
         borderWidth="1"
         _dark={{
           borderColor: '#18181b',
-          backgroundColor: '#18181b',
+          backgroundColor: '#2d2d30',
         }}
         _web={{
           shadow: 2,

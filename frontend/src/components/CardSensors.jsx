@@ -4,26 +4,43 @@ import {
 } from 'native-base';
 import React from 'react';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import TempIcon from './icons/TempIcon';
-import DewIcon from './icons/DewIcon';
-import SoilMoistureIcon from './icons/SoilMoistureIcon';
-import LightIcon from './icons/LightIcon';
 
 function CardSensors(sensors) {
   const getIconComponent = (name) => {
     switch (name.toLowerCase()) {
       case 'temperature':
         return (
-          <TempIcon />
+          <Icon
+            as={FontAwesome5}
+            name="thermometer-half"
+            size="6"
+          />
         );
       case 'humidity':
-        return <DewIcon />;
+        return (
+          <Icon
+            as={MaterialCommunityIcons}
+            name="water-percent"
+            size="28"
+          />
+        );
       case 'soil moisture':
         return (
-          <SoilMoistureIcon />
+          <Icon
+            as={Ionicons}
+            name="water-outline"
+            size="8"
+          />
         );
       case 'light sensor':
-        return <LightIcon />;
+        return (
+          <Icon
+            as={MaterialCommunityIcons}
+            name="weather-sunny"
+            size="7"
+          />
+        );
+
       default:
         return null;
     }

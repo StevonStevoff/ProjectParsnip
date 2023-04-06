@@ -15,13 +15,33 @@ function DevicesDetailsScreen(device) {
       flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%',
     }}
     >
-      <VStack size={4} width="90%" alignItem="center">
-        <VStack size={4} width="90%" alignItem="center">
-          <Center>
+    <Box
+    width="100%"
+    minWidth="50%"
+    rounded="sm"
+    alignItems='center'
+    overflow="hidden"
+    borderColor="coolGray.200"
+    borderWidth="1"
+    _dark={{
+      borderColor: '#18181b',
+      backgroundColor: '#18181b',
+    }}
+    _web={{
+      shadow: 2,
+      borderWidth: 0,
+    }}
+    _light={{
+      backgroundColor: 'gray.50',
+    }}
+  >
+      <VStack size={4} width="95%" alignItem="center">
+
+        <VStack size={4} width="95%" alignItem="center">
             <Heading size="xl" ml="-1" fontWeight={500} alignItems="center">Back Garden Peppers</Heading>
             <Text alignItem="center" color="coolGray.500">E8051 Series</Text>
-          </Center>
         </VStack>
+        
         <HStack justifyContent="space-between">
           <Heading size="md" ml="-1" fontWeight={500} color="primary.600">Sensors</Heading>
           <IconButton icon={<Icon as={MaterialIcons} name="add-circle" size="lg" />} />
@@ -87,6 +107,7 @@ function DevicesDetailsScreen(device) {
           <Text> Pepper Profile </Text>
         </VStack>
       </VStack>
+      </Box>
     </View>
   );
 }
