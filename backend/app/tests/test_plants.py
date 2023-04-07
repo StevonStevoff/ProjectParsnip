@@ -262,7 +262,7 @@ async def test_register_plant_invalid_latitude(setup_db, client, user_access_tok
     assert response.status_code == 400
     json_response = response.json()
 
-    assert json_response["detail"] == "Invalid coordinates."
+    assert json_response["detail"] == "Invalid Latitude."
 
 
 @pytest.mark.asyncio(scope="session")
@@ -285,7 +285,7 @@ async def test_register_plant_invalid_longitude(setup_db, client, user_access_to
     assert response.status_code == 400
     json_response = response.json()
 
-    assert json_response["detail"] == "Invalid coordinates."
+    assert json_response["detail"] == "Invalid Longitude."
 
 
 @pytest.mark.asyncio(scope="session")
