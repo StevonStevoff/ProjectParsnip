@@ -36,6 +36,7 @@ function LoginForm({ navigation }) {
             setIsLoading(false);
             setSubmitting(false);
             setFieldError('general', error);
+            console.log(error, 'login issues');
           });
       }}
     >

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
-import { View, Text, useWindowDimensions, StyleSheet, RefreshControl, FlatList } from 'react-native';
+import {
+  View, Text, useWindowDimensions, StyleSheet, RefreshControl, FlatList,
+} from 'react-native';
 import DevicesCard from '../../components/DevicesCard';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 
@@ -41,6 +43,21 @@ function DevicesScreen({ navigation }) {
       <DevicesCard device={item} onPress={() => navigation.navigate('DevicesDetails', { device: item })} />
     </View>
   );
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!devices || devices.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text>Add device through the device portal. Then refresh the page. </Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList

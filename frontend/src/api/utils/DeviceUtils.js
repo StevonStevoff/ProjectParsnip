@@ -2,8 +2,11 @@ import API from '../API';
 
 const DeviceUtils = {
   async getAllUserDevices() {
-    const response = await API.getUsersDevices();
-    return response.data;
+    return API.getUsersDevices()
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 
