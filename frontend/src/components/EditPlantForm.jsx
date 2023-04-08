@@ -7,46 +7,38 @@ import {
   TextInput
 } from 'react-native';
 import { Formik } from 'formik';
-import {Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon,FormControl,Input} from 'native-base';
+import {Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
-import RegisterPlantSchema from '../utils/validationSchema/CreatePlantSchema';
+import EditPlantSchema from '../utils/validationSchema/EditPlantSchema';
 import API from '../api/API';
 
-function CreatePlantForm(props) {
+function EditPlantForm(props) {
   const { plantTypes } = props;
   const { devices } = props;
   const { plantProfiles } = props;
+  const { plantID } = props;
   const statusArray = [{
     status: "success",
-    title: "Plant successfully created!"
+    title: "Plant successfully edited!"
   }, {
     status: "error",
     title: "An error has occured!"
   }];
   const [event, setEvent] = useState("");
-
-  const [filteredOptions, setFilteredOptions] = useState(devices);
-  const [searchTerm, setSearchTerm] = useState('');
-
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
 
   const handleClose = () => {
     setEvent("");
   };
 
-  const filterOptions = (text) => {
-    const filtered = devices.filter((option) =>
-      option.name.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredOptions(filtered);
-  };
-
-  const handleRegisterPlant = async (values, { setSubmitting }) => {
+  const handleEditPlant = async (values, { setSubmitting }) => {
       try {
-        await API.registerPlant(values);
+        await API.editPlant(values);
+        
         setEvent("success")
       } catch (error) {
         setEvent("error")
+        console.log(error)
         // handle the error
       } finally {
         setSubmitting(false);
@@ -58,14 +50,14 @@ function CreatePlantForm(props) {
     
     <Formik
     initialValues={{
+      id: plantID,
     name: '',
     device_id: '',
     plant_profile_id: '',
-    plant_type_id: '',
-    outdoor: false,
+    plant_type_id: ''
     }}
-    validationSchema={RegisterPlantSchema}
-    onSubmit={handleRegisterPlant}
+    validationSchema={EditPlantSchema}
+    onSubmit={handleEditPlant}
     >
     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
       <View style={styles.container}>
@@ -109,15 +101,6 @@ function CreatePlantForm(props) {
 
         <Text style={styles.label}>Device</Text>
         <View style={{width:"100%"}}>
-        <TextInput
-  value={searchTerm}
-  onChangeText={(text) => {
-    setSearchTerm(text);
-    filterOptions(text);
-  }}
-  placeholder="Search devices"
-/>
-
           <Select
             minWidth="100%"
             accessibilityLabel="Choose Device"
@@ -138,24 +121,9 @@ function CreatePlantForm(props) {
             onValueChange={(value) => handleChange('device_id')(value)}
             onBlur={handleBlur('device_id')}
           >
-            <Input
-              placeholder="Search"
-              variant="filled"
-              width="100%"
-              borderRadius="10"
-              py="1"
-              px="2"
-              borderWidth="0"
-              />
-
-                {filteredOptions.map((device) => (
-                  <Select.Item label={device.name} value={device.id.toString()} key={device.id}/>
-                ))}
-              
-
-            {/* {devices.map((device) => (
+            {devices.map((device) => (
               <Select.Item label={device.name} value={device.id.toString()} key={device.id}/>
-              ))} */}
+              ))}
           </Select>
         </View>
         {touched.device_id && errors.device_id && (
@@ -227,7 +195,7 @@ function CreatePlantForm(props) {
 
 
         <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
-        <Text style={styles.buttonText}>Register Plant</Text>
+        <Text style={styles.buttonText}>Update Plant</Text>
         </TouchableOpacity>
     </View>
     )}
@@ -271,5 +239,5 @@ const styles = StyleSheet.create({
       }
       });
 
-export default CreatePlantForm;
+export default EditPlantForm;
 

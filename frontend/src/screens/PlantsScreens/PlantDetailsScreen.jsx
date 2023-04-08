@@ -5,8 +5,8 @@ import React from 'react';
 function PlantDetailsScreen({ route }) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={colors.textFormat}>PlantProfileScreen</Text>
-      <Text style={colors.textFormat}>{route.params.itemID}</Text>
+      <Text >PlantProfileScreen</Text>
+      <Text >{route.params.itemID}</Text>
     </View>
   );
 }

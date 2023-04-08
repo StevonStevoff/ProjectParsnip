@@ -74,7 +74,7 @@ const API = {
 
     return response;
   },
-  async registerPlant({ name, device_id ,plant_profile_id,plant_type_id}, cancel = false) {
+  async registerPlant({ name, device_id ,plant_profile_id,plant_type_id,outdoor}, cancel = false) {
     const response = await api.request({
       url: '/plants/register',
       method: 'POST',
@@ -82,7 +82,8 @@ const API = {
         name,
          device_id ,
          plant_profile_id,
-         plant_type_id
+         plant_type_id,
+         outdoor
       },
       headers: {
         'Content-Type': 'application/json'
@@ -118,6 +119,25 @@ const API = {
       return response;
     },
 
+  async editPlant({id, name, device_id ,plant_profile_id,plant_type_id}, cancel = false) {
+    const response = await api.request({
+      url: '/plants/'+id,
+      method: 'PATCH',
+      data: {
+        name,
+         device_id ,
+         plant_profile_id,
+         plant_type_id,
+      },
+      headers: {
+        'Content-Type': 'application/json'
+
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+    return response;
+  },
 
   async getUserInfo(cancel = false) {
     const response = await api.request({
@@ -129,6 +149,7 @@ const API = {
 
     return response;
   },
+
 
   async updateUserInfo({ name, email, username }, cancel = false) {
     const response = await api.request({
