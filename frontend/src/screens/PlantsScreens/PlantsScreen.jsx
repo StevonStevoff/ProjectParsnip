@@ -122,7 +122,7 @@ function PlantsScreen({ navigation }) {
               <Text style={styles.createText}> Create Plant </Text>
           </TouchableOpacity>
         </View>
-        
+
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <Modal.Content maxWidth="400px">
           <Modal.CloseButton />

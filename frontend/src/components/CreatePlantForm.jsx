@@ -7,10 +7,11 @@ import {
   TextInput
 } from 'react-native';
 import { Formik } from 'formik';
-import {Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon,Modal,Input,Button,FormControl} from 'native-base';
+import {Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon,Modal,Input,Button,FormControl,Actionsheet} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 import RegisterPlantSchema from '../utils/validationSchema/CreatePlantSchema';
 import API from '../api/API';
+import MultiSelect from 'react-native-multiple-select';
 
 function CreatePlantForm(props) {
   const { plantTypes } = props;
@@ -28,6 +29,25 @@ function CreatePlantForm(props) {
   const [filteredOptions, setFilteredOptions] = useState(devices);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const [selectedDevice, setSelectedDevice] = useState([]);
+  const [selectedPlantProfile, setSelectedPlantProfile] = useState([]);
+  const [selectedPlantType, setSelectedPlantType] = useState([]);
+
+  const handleSelectedDeviceChange = (selectedItems) => {
+    setSelectedDevice(selectedItems);
+  }
+
+  const handleSelectedPlantProfileChange = (selectedItems) => {
+    setSelectedPlantProfile(selectedItems);
+  }
+
+  const handlePlantTypeChange= (selectedItems) => {
+    setSelectedPlantType(selectedItems);
+  }
+
+  // const handleSelectedItemsChange = (selectedItems) => {
+  //   setSelectedItems(selectedItems);
+  // }
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
 
   const handleClose = () => {
@@ -41,11 +61,7 @@ function CreatePlantForm(props) {
     setFilteredOptions(filtered);
   };
 
-  const handleSelect = (value) => {
-    setSelectedDevice(value);
-  };
-
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true);
 
   const handleRegisterPlant = async (values, { setSubmitting }) => {
       try {
@@ -114,40 +130,34 @@ function CreatePlantForm(props) {
         {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
 
       <Text style={styles.label}>Device</Text>
-      <TextInput
-        value={searchTerm}
-        onChangeText={(text) => {
-        setSearchTerm(text);
-        filterOptions(text);
-        }}
-        placeholder="Search devices"
-      />
-      
+
       <View style={{width:"100%"}}>
+ 
+      <MultiSelect
+        hideTags
+        items={devices}
+        uniqueKey="id"
+        selectText="Select Device"
+        selectedItems={selectedDevice}
+        onSelectedItemsChange={(selectedDevice) => {
+          handleSelectedDeviceChange(selectedDevice);
+          values.device_id = selectedDevice[0];
+          console.log(values.device_id);
+        }}
+        searchInputPlaceholderText="Search Devices..."
+        selectedItemTextColor="#CCC"
+        selectedItemIconColor="#CCC"
+        itemTextColor="#000"
+        displayKey="name"
+        searchInputStyle={{ color: '#CCC' ,padding:10 }}
+        styleDropdownMenuSubsection={{padding:10,backgroundColor:"#FFF",borderRadius:10}}
+        styleDropdownMenu={{}}
+        searchIcon={<MaterialIcons name="search" size={24} color="black" />}
+        submitButtonColor="#CCC"
+        submitButtonText="Submit"
+        single={true}
+      />
 
-        
-        <Select
-          minWidth="100%"
-          accessibilityLabel="Choose Device"
-          placeholder="Choose Device"
-          _selectedItem={{
-            bg: "teal.600",
-            endIcon: (<Icon as={MaterialIcons} name="check"  color="coolGray.800" _dark={{ color: "warmGray.50" }}/>)
-          }}
-          mt="1"
-          selectedValue={values.device_id}
-          onValueChange={(value) => handleChange('device_id')(value)}
-          onBlur={handleBlur('device_id')}
-
-          isOpen="true"
-        >
-          <Input placeholder="Search" variant="filled" width="100%" borderRadius="10" py="1" px="2" borderWidth="0"/>
-
-          {filteredOptions.map((device) => (
-            <Select.Item label={device.name} value={device.id.toString()} key={device.id}/>
-          ))}
-
-        </Select>
       </View>
       {touched.device_id && errors.device_id && (
         <Text style={styles.error}>{errors.device_id}</Text>
@@ -156,7 +166,7 @@ function CreatePlantForm(props) {
     {/* PLANT PROFILES */}
     <Text style={styles.label}>Plant Profile</Text>
     <View style={{width:"100%"}}> 
-      <Select
+      {/* <Select
         minWidth="100%"
         accessibilityLabel="Choose Plant Profile"
         placeholder="Choose Plant Profile"
@@ -179,7 +189,44 @@ function CreatePlantForm(props) {
         {plantProfiles.map((plantProfile) => (
         <Select.Item label={plantProfile.name} value={plantProfile.id.toString()} key={plantProfile.id}/>
         ))}
-      </Select>
+      </Select> */}
+
+      <MultiSelect
+        hideTags
+        items={plantProfiles}
+        uniqueKey="id"
+        selectText="Select Plant Profile"
+        selectedItems={selectedPlantProfile}
+        onSelectedItemsChange={(selectedPlantProfile) => {
+          handleSelectedPlantProfileChange(selectedPlantProfile);
+          values.plant_profile_id = selectedPlantProfile[0];
+          console.log(values.plant_profile_id);
+        }}
+        searchInputPlaceholderText="Search Plant Profiles..."
+        selectedItemTextColor="#CCC"
+        selectedItemIconColor="#CCC"
+        itemTextColor="#000"
+        displayKey="name"
+
+        searchInputStyle={{ color: '#CCC' ,backgroundColor:"#111",padding:20}}
+        styleDropdownMenuSubsection={{backgroundColor:"green",borderColor:"black",borderWidth:1,borderRadius:10}}//ss
+        styleDropdownMenu={{backgroundColor:"green"}}
+        searchIcon={<MaterialIcons name="search" size={24} color="black" style={{marginRight:5}}/>}
+        styleItemsContainer={{backgroundColor:"green"}}
+        styleListContainer={{backgroundColor:"green",borderRadius:10}}
+        styleMainWrapper={{backgroundColor:"green",borderRadius:10,padding:10}} //Main Padding
+        styleInputGroup={{backgroundColor:"green"}}
+        styleTextDropdown={{backgroundColor:"green"}}
+        style={{backgroundColor:"green",borderRadius:10,padding:10}}
+        styleSelectorContainer={{backgroundColor:"green"}}
+        styleTextDropdownSelected={{backgroundColor:"teal.600"}}
+        styleRowList={{backgroundColor:"green",borderRadius:10}}
+        styleIndicator={{backgroundColor:"green",borderRadius:10}}
+
+        submitButtonColor="#CCC"
+        submitButtonText="Submit"
+        single={true}
+      />
     </View>
     {touched.plant_profile_id && errors.plant_profile_id && (
       <Text style={styles.error}>{errors.plant_profile_id}</Text>
@@ -187,7 +234,7 @@ function CreatePlantForm(props) {
         
     <Text style={styles.label}>Plant Type</Text>
     <View style={{width:"100%"}}>
-      <Select
+      {/* <Select
         minWidth="100%"
         accessibilityLabel="Choose Plant Type"
         placeholder="Choose Plant Type"
@@ -212,7 +259,32 @@ function CreatePlantForm(props) {
           <Select.Item label={type.name} value={type.id.toString()} key={type.id}/>
         ))}
 
-      </Select>
+      </Select> */}
+
+<MultiSelect
+        hideTags
+        items={plantTypes}
+        uniqueKey="id"
+        selectText="Select Plant Type"
+        selectedItems={selectedPlantType}
+        onSelectedItemsChange={(selectedPlantType) => {
+          handlePlantTypeChange(selectedPlantType);
+          values.plant_type_id = selectedPlantType[0];
+          console.log(values.plant_type_id);
+        }}
+        searchInputPlaceholderText="Search Plant Types..."
+        selectedItemTextColor="#CCC"
+        selectedItemIconColor="#CCC"
+        itemTextColor="#000"
+        displayKey="name"
+        searchInputStyle={{ color: '#CCC' ,padding:10 }}
+        styleDropdownMenuSubsection={{padding:10,backgroundColor:"#FFF",borderRadius:10}}
+        styleDropdownMenu={{}}
+        searchIcon={<MaterialIcons name="search" size={24} color="black" />}
+        submitButtonColor="#CCC"
+        submitButtonText="Submit"
+        single={true}
+      />
     </View>
     {touched.plant_type_id && errors.plant_type_id && (
       <Text style={styles.error}>{errors.plant_type_id}</Text>
