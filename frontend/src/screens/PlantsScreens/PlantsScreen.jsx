@@ -6,12 +6,11 @@ import {
   ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Text, Button } from 'native-base';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
 import CreatePlantForm from '../../components/CreatePlantForm';
 import EditPlantForm from '../../components/EditPlantForm';
-import { Icon} from 'native-base';
+import {Text,Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon,Modal,Input,Button,FormControl} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 
 function PlantsScreen({ navigation }) {
@@ -22,6 +21,9 @@ function PlantsScreen({ navigation }) {
   const [plantProfiles, setPlantProfiles] = useState([]);
   const [isViewVisible, setIsViewVisible] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const [selectedPlantId, setSelectedPlantId] = useState(null);
 
   const handleButtonClick = () => {
     setIsViewVisible(!isViewVisible);
@@ -116,19 +118,20 @@ function PlantsScreen({ navigation }) {
       >
         <View style={{flexDirection:'row'}}>
           <Text style={{paddingTop:20,fontSize:20,fontWeight:'bold'}}>Your Plants</Text>  
-          <TouchableOpacity  style={styles.createPlantButton} onPress={() => handleButtonClick()} >
-            {isViewVisible ? 
-              <Text style={styles.createText} >Close</Text> : 
+          <TouchableOpacity  style={styles.createPlantButton} onPress={() => setShowModal(true)} >
               <Text style={styles.createText}> Create Plant </Text>
-            }
           </TouchableOpacity>
         </View>
-
-        {isViewVisible && (
-          <View style={{borderColor:'grey',borderWidth:3,width:"90%",borderRadius: 10,marginTop:10,padding:10}}>
+        
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header>Create Plant</Modal.Header>
+          <Modal.Body>
             <CreatePlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices}/> 
-          </View>
-        )}
+          </Modal.Body>
+          </Modal.Content>
+        </Modal>
 
         <View style={{width:"90%"}}>
           {plants.map((plant) => (
@@ -137,7 +140,8 @@ function PlantsScreen({ navigation }) {
             <View style={{borderColor:'grey',borderWidth:3,paddingBottom: 7,paddingLeft: 2,paddingRight: 2,width:"100%",marginBottom:10, borderRadius: 10}}>
                 <View style={{flexDirection:'row',flex:1,padding:10}}>
                   <Text style={{fontSize:20,color:'green', flex:3,fontWeight:'bold'}} key={plant.id}>{plant.plant_type.name}</Text>
-                  <TouchableOpacity  style={[styles.detailsButton,{fontSize:25,flex:1,flexDirection:'row',justifyContent: 'center',alignItems: 'center'}]} onPress={() => handleEditClick()}>
+                  <TouchableOpacity  style={[styles.detailsButton,{fontSize:25,flex:1,flexDirection:'row',justifyContent: 'center',alignItems: 'center'}]} onPress={() => setSelectedPlantId(plant.id)}>
+                  {/* <Button onPress={() => setShowModal(true)}>Button</Button> */}
                   <Text style={styles.createText}>Edit  </Text>
                     <Icon as={MaterialIcons} name="edit" color="white" _dark={{color: "white"}} />
                     
@@ -157,12 +161,20 @@ function PlantsScreen({ navigation }) {
                   </TouchableOpacity>
 
                 </View>
-
-                {isEditVisible && (
-                      <View style={{borderColor:'grey',borderWidth:3,width:"90%",borderRadius: 10,marginTop:10,padding:10}}>
-                        <EditPlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices} plantID={plant.id}/> 
-                      </View>
-                    )}
+                
+                <View>
+                    {/* <EditPlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices} plantID={plant.id}/>  */}
+                  <Modal isOpen={selectedPlantId === plant.id} onClose={() => setSelectedPlantId(null)}>
+                    <Modal.Content maxWidth="400px">
+                    <Modal.CloseButton />
+                    <Modal.Header>Edit Plant</Modal.Header>
+                    <Modal.Body>
+                      <EditPlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices} plant={plant}/>
+                    </Modal.Body>
+                    </Modal.Content>
+                  </Modal>
+                </View>
+                      
             </View>
             
             </>   

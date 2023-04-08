@@ -16,7 +16,7 @@ function EditPlantForm(props) {
   const { plantTypes } = props;
   const { devices } = props;
   const { plantProfiles } = props;
-  const { plantID } = props;
+  const { plant } = props;
   const statusArray = [{
     status: "success",
     title: "Plant successfully edited!"
@@ -34,7 +34,7 @@ function EditPlantForm(props) {
   const handleEditPlant = async (values, { setSubmitting }) => {
       try {
         await API.editPlant(values);
-        
+        console.log(values)
         setEvent("success")
       } catch (error) {
         setEvent("error")
@@ -50,11 +50,11 @@ function EditPlantForm(props) {
     
     <Formik
     initialValues={{
-      id: plantID,
-    name: '',
-    device_id: '',
-    plant_profile_id: '',
-    plant_type_id: ''
+      id: plant.id,
+    name: plant.name,
+    device_id: plant.device.id.toString(),
+    plant_profile_id: plant.plant_profile.id.toString(),
+    plant_type_id: plant.plant_type.id.toString(),
     }}
     validationSchema={EditPlantSchema}
     onSubmit={handleEditPlant}
