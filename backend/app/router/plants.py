@@ -198,26 +198,24 @@ async def patch_plant(
 ) -> PlantRead:
     await user_can_use_object(user, plant.device_id, Device, "device", session)
 
-    if plant_update.name:
+    if plant_update.name is not None:
         plant.name = plant_update.name
 
-    if plant_update.device_id:
+    if plant_update.device_id is not None:
         await update_plant_device(plant, user, plant_update.device_id, session)
 
-    if plant_update.plant_profile_id:
+    if plant_update.plant_profile_id is not None:
         await update_plant_profile(plant, user, plant_update.plant_profile_id, session)
 
-    if plant_update.plant_type_id:
-        await update_plant_type(plant, user, plant_update.plant_type_id, session)
+    if plant_update.plant_type_id is not None:
+        await update_plant_type(plant, plant_update.plant_type_id, session)
 
-    if plant_update.outdoor:
+    if plant_update.outdoor is not None:
         plant.outdoor = plant_update.outdoor
 
-    if plant_update.time_planted:
+    if plant_update.time_planted is not None:
         if datetime.now() > plant_update.time_planted:
             plant.time_planted = plant_update.time_planted
-
-    print(plant_update)
 
     if plant_update.longitude is not None or plant_update.latitude is not None:
         await update_plant_coordinates(

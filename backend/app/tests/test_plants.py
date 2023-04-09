@@ -1,7 +1,10 @@
+from datetime import datetime
+
 import pytest
+from sqlalchemy import select
 
 from app.models import Plant
-from app.tests.conftest import get_all_objects
+from app.tests.conftest import get_all_objects, get_objects
 from app.tests.populate_tests import populate_db
 
 
@@ -389,3 +392,130 @@ async def test_get_plant_invalid_id(setup_db, client, superuser_access_token):
     json_response = response.json()
 
     assert json_response["detail"] == "The plant does not exist."
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_by_id_forbidden(setup_db, client, user_access_token):
+    prev_plants = await get_all_objects(Plant)
+
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    body = {
+        "name": "patched",
+    }
+    response = await client.patch(
+        "/plants/3",
+        headers=headers,
+        json=body,
+    )
+
+    assert response.status_code == 403
+
+    curr_plants = await get_all_objects(Plant)
+    assert len(curr_plants) == len(prev_plants)
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_by_id_doenst_exist(setup_db, client, superuser_access_token):
+    query = select(Plant).where(Plant.id == 1)
+    prev_plants = await get_objects(query)
+
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    body = {
+        "name": "patched",
+    }
+    response = await client.patch(
+        "/plants/999",
+        headers=headers,
+        json=body,
+    )
+
+    assert response.status_code == 404
+    json_response = response.json()
+    assert json_response["detail"] == "The plant does not exist."
+
+    curr_plants = await get_objects(query)
+    assert len(prev_plants) == len(curr_plants)
+    assert prev_plants[0].name == curr_plants[0].name
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_by_id(setup_db, client, superuser_access_token):
+    current_date_time = datetime.now()
+    current_date_time_str = current_date_time.isoformat()
+    print(type(current_date_time_str))
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    body = {
+        "name": "patched",
+        "outdoor": False,
+        "latitude": -10.0,
+        "longitude": 10.0,
+        "plant_type_id": 1,
+        "plant_profile_id": 1,
+        "device_id": 2,
+        "time_planted": current_date_time_str,
+    }
+    response = await client.patch(
+        "/plants/3",
+        headers=headers,
+        json=body,
+    )
+
+    assert response.status_code == 200
+
+    query = select(Plant).where(Plant.id == 3)
+    plants = await get_objects(query)
+
+    assert len(plants) == 1
+    assert plants[0].name == "patched"
+    assert plants[0].outdoor is False
+    assert plants[0].latitude == -10
+    assert plants[0].longitude == 10.0
+    assert plants[0].plant_type_id == 1
+    assert plants[0].plant_profile_id == 1
+    assert plants[0].device_id == 2
+    assert plants[0].time_planted == current_date_time
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_delete_plant_by_id_doesnt_exist(
+    setup_db, client, superuser_access_token
+):
+    prev_plants = await get_all_objects(Plant)
+
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    response = await client.delete("/plants/999", headers=headers)
+
+    assert response.status_code == 404
+    json_response = response.json()
+    assert json_response["detail"] == "The plant does not exist."
+
+    curr_plants = await get_all_objects(Plant)
+    assert len(curr_plants) == len(prev_plants)
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_delete_plant_by_id_forbidden(setup_db, client, user_access_token):
+    prev_plants = await get_all_objects(Plant)
+
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.delete("/plants/3", headers=headers)
+
+    assert response.status_code == 403
+
+    curr_plants = await get_all_objects(Plant)
+    assert len(curr_plants) == len(prev_plants)
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_delete_plant_by_id(setup_db, client, superuser_access_token):
+    query = select(Plant).where(Plant.id == 3)
+    prev_plants = await get_objects(query)
+    assert len(prev_plants) > 0
+
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    response = await client.delete("/plants/3", headers=headers)
+
+    assert response.status_code == 200
+
+    curr_plants = await get_objects(query)
+    assert len(prev_plants) - len(curr_plants) == 1
