@@ -3,6 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StackActions } from '@react-navigation/native';
 import PlantsScreen from './PlantsScreen';
 import PlantDetailsScreen from './PlantDetailsScreen';
+import RegisterPlantScreen from './RegisterPlantScreen';
+import EditPlantScreen from './EditPlantScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +23,8 @@ function PlantsStackNavigation() {
       }}
     >
       <Stack.Screen name="PlantsRoot" component={PlantsScreen} />
+      <Stack.Screen name="RegisterPlantScreen" component={RegisterPlantScreen} />
+      <Stack.Screen name="EditPlantScreen" component={EditPlantScreen} />
       <Stack.Screen name="PlantDetails" component={PlantDetailsScreen} />
     </Stack.Navigator>
   );

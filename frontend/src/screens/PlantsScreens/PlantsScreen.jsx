@@ -8,9 +8,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
-import CreatePlantForm from '../../components/CreatePlantForm';
-import EditPlantForm from '../../components/EditPlantForm';
-import {Text,Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon,Modal,Input,Button,FormControl} from 'native-base';
+import {Text,Icon,Modal} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 
 function PlantsScreen({ navigation }) {
@@ -118,20 +116,11 @@ function PlantsScreen({ navigation }) {
       >
         <View style={{flexDirection:'row'}}>
           <Text style={{paddingTop:20,fontSize:20,fontWeight:'bold'}}>Your Plants</Text>  
-          <TouchableOpacity  style={styles.createPlantButton} onPress={() => setShowModal(true)} >
+          <TouchableOpacity   style={styles.createPlantButton} 
+             onPress={() => navigation.navigate('RegisterPlantScreen',{plantTypes:plantTypes, plantProfiles:plantProfiles, devices:devices})} >
               <Text style={styles.createText}> Create Plant </Text>
           </TouchableOpacity>
         </View>
-
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <Modal.Content maxWidth="400px">
-          <Modal.CloseButton />
-          <Modal.Header>Create Plant</Modal.Header>
-          <Modal.Body>
-            <CreatePlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices}/> 
-          </Modal.Body>
-          </Modal.Content>
-        </Modal>
 
         <View style={{width:"90%"}}>
           {plants.map((plant) => (
@@ -140,7 +129,9 @@ function PlantsScreen({ navigation }) {
             <View style={{borderColor:'grey',borderWidth:3,paddingBottom: 7,paddingLeft: 2,paddingRight: 2,width:"100%",marginBottom:10, borderRadius: 10}}>
                 <View style={{flexDirection:'row',flex:1,padding:10}}>
                   <Text style={{fontSize:20,color:'green', flex:3,fontWeight:'bold'}} key={plant.id}>{plant.plant_type.name}</Text>
-                  <TouchableOpacity  style={[styles.detailsButton,{fontSize:25,flex:1,flexDirection:'row',justifyContent: 'center',alignItems: 'center'}]} onPress={() => setSelectedPlantId(plant.id)}>
+                  <TouchableOpacity  style={[styles.detailsButton,{fontSize:25,flex:1,flexDirection:'row',justifyContent: 'center',alignItems: 'center'}]} 
+                    onPress={() => navigation.navigate('EditPlantScreen',{plantTypes:plantTypes, plantProfiles:plantProfiles, devices:devices ,plant:plant})}
+                  >
                   {/* <Button onPress={() => setShowModal(true)}>Button</Button> */}
                   <Text style={styles.createText}>Edit  </Text>
                     <Icon as={MaterialIcons} name="edit" color="white" _dark={{color: "white"}} />
@@ -163,16 +154,6 @@ function PlantsScreen({ navigation }) {
                 </View>
                 
                 <View>
-                    {/* <EditPlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices} plantID={plant.id}/>  */}
-                  <Modal isOpen={selectedPlantId === plant.id} onClose={() => setSelectedPlantId(null)}>
-                    <Modal.Content maxWidth="400px">
-                    <Modal.CloseButton />
-                    <Modal.Header>Edit Plant</Modal.Header>
-                    <Modal.Body>
-                      <EditPlantForm plantTypes={plantTypes} plantProfiles={plantProfiles} devices={devices} plant={plant}/>
-                    </Modal.Body>
-                    </Modal.Content>
-                  </Modal>
                 </View>
                       
             </View>

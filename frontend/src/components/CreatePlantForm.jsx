@@ -26,9 +26,6 @@ function CreatePlantForm(props) {
   }];
   const [event, setEvent] = useState("");
 
-  const [filteredOptions, setFilteredOptions] = useState(devices);
-  const [searchTerm, setSearchTerm] = useState('');
-
   const [selectedDevice, setSelectedDevice] = useState([]);
   const [selectedPlantProfile, setSelectedPlantProfile] = useState([]);
   const [selectedPlantType, setSelectedPlantType] = useState([]);
@@ -45,23 +42,11 @@ function CreatePlantForm(props) {
     setSelectedPlantType(selectedItems);
   }
 
-  // const handleSelectedItemsChange = (selectedItems) => {
-  //   setSelectedItems(selectedItems);
-  // }
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
 
   const handleClose = () => {
     setEvent("");
   };
-
-  const filterOptions = (text) => {
-    const filtered = devices.filter((option) =>
-      option.name.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredOptions(filtered);
-  };
-
-  const [showModal, setShowModal] = useState(true);
 
   const handleRegisterPlant = async (values, { setSubmitting }) => {
       try {
