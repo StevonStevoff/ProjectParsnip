@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  TextInput
+  TextInput,
+  ScrollView,
 } from 'react-native';
 import { Formik } from 'formik';
 import {Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon,Modal,Input,Button,FormControl,Actionsheet} from 'native-base';
@@ -26,21 +27,21 @@ function CreatePlantForm(props) {
   }];
   const [event, setEvent] = useState("");
 
-  const [selectedDevice, setSelectedDevice] = useState([]);
-  const [selectedPlantProfile, setSelectedPlantProfile] = useState([]);
-  const [selectedPlantType, setSelectedPlantType] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showPTDropdown, setShowPTDropdown] = useState(false);
+  const [showPPDropdown, setShowPPDropdown] = useState(false);
 
-  const handleSelectedDeviceChange = (selectedItems) => {
-    setSelectedDevice(selectedItems);
-  }
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchPTTerm, setSearchPTTerm] = useState("");
+  const [searchPPTerm, setSearchPPTerm] = useState("");
 
-  const handleSelectedPlantProfileChange = (selectedItems) => {
-    setSelectedPlantProfile(selectedItems);
-  }
+  const [selectedDevice, setSelectedDevice] = useState("");
+  const [selectedPlantType, setSelectedPlantType] = useState("");
+  const [selectedPlantProfile, setSelectedPlantProfile] = useState("");
 
-  const handlePlantTypeChange= (selectedItems) => {
-    setSelectedPlantType(selectedItems);
-  }
+  const [foundDLength, setfoundDLength] = useState("");
+  const [foundPTLength, setfoundPTLength] = useState("");
+  const [foundPPLength, setfoundPPLength] = useState("");
 
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
 
@@ -61,6 +62,29 @@ function CreatePlantForm(props) {
 
   };
   
+  const filterDevices = (searchTerm) => {
+    const filtered = devices.filter((device) =>
+      device.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setfoundDLength(filtered.length);
+    return filtered;
+  };
+
+  const filterPlantTypes = (searchTerm) => {
+    const filtered = plantTypes.filter((plantT) =>
+    plantT.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setfoundPTLength(filtered.length);
+    return filtered;
+  };
+
+  const filterPlantProfiles= (searchTerm) => {
+    const filtered = plantProfiles.filter((plantp) =>
+    plantp.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setfoundPPLength(filtered.length);
+    return filtered;
+  };
   return (
     <View>
     <Formik
@@ -114,166 +138,184 @@ function CreatePlantForm(props) {
         />
         {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
 
-      <Text style={styles.label}>Device</Text>
+        <Text style={styles.label}>Device</Text>
+        <View style={{width:"100%"}}>    
+      {/* Devices search and select Dropdown */}
+      <View> 
+        <View style={{ flexDirection: 'row', alignItems: 'center',borderColor:"black" ,borderRadius:10,borderWidth:1,padding:5}}>
+          {showDropdown ? 
+            <><Icon as={MaterialIcons} name='search' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6}/>
+            <TextInput  placeholder="Search for a device"  value={searchTerm}  
+            onChangeText={(text) => { 
+            setSearchTerm(text);  
+            }}
+            style={{ flex: 1 }}
+            /></> : 
+            selectedDevice?<Text style={{width:"100%", flex: 1}} >{selectedDevice}</Text>:<Text style={{width:"100%", flex: 1}} >Choose Device</Text>
+          }
 
-      <View style={{width:"100%"}}>
- 
-      <MultiSelect
-        hideTags
-        items={devices}
-        uniqueKey="id"
-        selectText="Select Device"
-        selectedItems={selectedDevice}
-        onSelectedItemsChange={(selectedDevice) => {
-          handleSelectedDeviceChange(selectedDevice);
-          values.device_id = selectedDevice[0];
-          console.log(values.device_id);
-        }}
-        searchInputPlaceholderText="Search Devices..."
-        selectedItemTextColor="#CCC"
-        selectedItemIconColor="#CCC"
-        itemTextColor="#000"
-        displayKey="name"
-        searchInputStyle={{ color: '#CCC' ,padding:10 }}
-        styleDropdownMenuSubsection={{padding:10,backgroundColor:"#FFF",borderRadius:10}}
-        styleDropdownMenu={{}}
-        searchIcon={<MaterialIcons name="search" size={24} color="black" />}
-        submitButtonColor="#CCC"
-        submitButtonText="Submit"
-        single={true}
-      />
+          <TouchableOpacity onPress={() => {
+          setSearchTerm('');
+          setShowDropdown(!showDropdown);
+          }}
+          >
+            <Icon as={MaterialIcons} name={showDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: "warmGray.50" }} size={showDropdown ? 8 : 8}/>
+          </TouchableOpacity>
+        </View>
+        {showDropdown && (
+          <ScrollView style={{ maxHeight: 100 }}>
+            {searchTerm ? 
+              filterDevices(searchTerm).map((device) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.device_id=device.id 
+                  setSelectedDevice(device.name); setSearchTerm(device.name); setShowDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{device.name}</Text>
+                  </TouchableOpacity>
+                  {selectedDevice=== device.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              )): 
+              devices.map((device) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.device_id=device.id
+                  setSelectedDevice(device.name); setSearchTerm(device.name); setShowDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{device.name}</Text>   
+                  </TouchableOpacity>
+                  {selectedDevice=== device.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              ))
+            }
+          </ScrollView>
+        )}
+        {searchTerm.length > 0 && foundDLength<1 && showDropdown && <Text style={styles.error}>No results found</Text>}
+      </View>
 
       </View>
       {touched.device_id && errors.device_id && (
         <Text style={styles.error}>{errors.device_id}</Text>
       )}
 
-    {/* PLANT PROFILES */}
-    <Text style={styles.label}>Plant Profile</Text>
-    <View style={{width:"100%"}}> 
-      {/* <Select
-        minWidth="100%"
-        accessibilityLabel="Choose Plant Profile"
-        placeholder="Choose Plant Profile"
-        _selectedItem={{
-        bg: "teal.600",
-        endIcon: (
-        <Icon
-        as={MaterialIcons}
-        name="check"
-        color="coolGray.800"
-        _dark={{ color: "warmGray.50" }}
-        />
-        )
-        }}
-        mt="1"
-        selectedValue={values.plant_profile_id}
-        onValueChange={(value) => handleChange('plant_profile_id')(value)}
-        onBlur={handleBlur('plant_profile_id')}
-      >
-        {plantProfiles.map((plantProfile) => (
-        <Select.Item label={plantProfile.name} value={plantProfile.id.toString()} key={plantProfile.id}/>
-        ))}
-      </Select> */}
+          {/* Plant Profiles search and select Dropdown */}
+        <Text style={styles.label}>Plant Profile</Text>
+        <View style={{width:"100%"}}> 
+          <View> 
+        <View style={{ flexDirection: 'row', alignItems: 'center',borderColor:"black" ,borderRadius:10,borderWidth:1,padding:5}}>
+          {showPPDropdown ? 
+            <><Icon as={MaterialIcons} name='search' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6}/>
+            <TextInput  placeholder="Search for a plant profile"  value={searchPPTerm}  
+            onChangeText={(text) => { 
+              setSearchPPTerm(text);  
+            }}
+            style={{ flex: 1 }}
+            /></> : 
+            selectedPlantProfile?<Text style={{width:"100%", flex: 1}} >{selectedPlantProfile}</Text>:<Text style={{width:"100%", flex: 1}} >Choose Plant Profile</Text>
+          }
 
-      <MultiSelect
-        hideTags
-        items={plantProfiles}
-        uniqueKey="id"
-        selectText="Select Plant Profile"
-        selectedItems={selectedPlantProfile}
-        onSelectedItemsChange={(selectedPlantProfile) => {
-          handleSelectedPlantProfileChange(selectedPlantProfile);
-          values.plant_profile_id = selectedPlantProfile[0];
-          console.log(values.plant_profile_id);
-        }}
-        searchInputPlaceholderText="Search Plant Profiles..."
-        selectedItemTextColor="#CCC"
-        selectedItemIconColor="#CCC"
-        itemTextColor="#000"
-        displayKey="name"
-
-        searchInputStyle={{ color: '#CCC' ,backgroundColor:"#111",padding:20}}
-        styleDropdownMenuSubsection={{backgroundColor:"green",borderColor:"black",borderWidth:1,borderRadius:10}}//ss
-        styleDropdownMenu={{backgroundColor:"green"}}
-        searchIcon={<MaterialIcons name="search" size={24} color="black" style={{marginRight:5}}/>}
-        styleItemsContainer={{backgroundColor:"green"}}
-        styleListContainer={{backgroundColor:"green",borderRadius:10}}
-        styleMainWrapper={{backgroundColor:"green",borderRadius:10,padding:10}} //Main Padding
-        styleInputGroup={{backgroundColor:"green"}}
-        styleTextDropdown={{backgroundColor:"green"}}
-        style={{backgroundColor:"green",borderRadius:10,padding:10}}
-        styleSelectorContainer={{backgroundColor:"green"}}
-        styleTextDropdownSelected={{backgroundColor:"teal.600"}}
-        styleRowList={{backgroundColor:"green",borderRadius:10}}
-        styleIndicator={{backgroundColor:"green",borderRadius:10}}
-
-        submitButtonColor="#CCC"
-        submitButtonText="Submit"
-        single={true}
-      />
-    </View>
-    {touched.plant_profile_id && errors.plant_profile_id && (
-      <Text style={styles.error}>{errors.plant_profile_id}</Text>
-    )}
+          <TouchableOpacity onPress={() => {
+          setSearchPPTerm('');
+          setShowPPDropdown(!showPPDropdown);
+          }}
+          >
+            <Icon as={MaterialIcons} name={showPPDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: "warmGray.50" }} size={showPPDropdown ? 8 : 8}/>
+          </TouchableOpacity>
+        </View>
+        {showPPDropdown && (
+          <ScrollView style={{ maxHeight: 100 }}>
+            {searchPPTerm ? 
+              filterPlantProfiles(searchPPTerm).map((plantProfile) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_profile_id=plantProfile.id 
+                  setSelectedPlantProfile(plantProfile.name); setSearchPPTerm(plantProfile.name); setShowPPDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantProfile.name}</Text>
+                  </TouchableOpacity>
+                  {selectedPlantProfile=== plantProfile.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              )): 
+              plantProfiles.map((plantProfile) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_profile_id=plantProfile.id
+                  setSelectedPlantProfile(plantProfile.name); setSearchPPTerm(plantProfile.name); setShowPPDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantProfile.name}</Text>   
+                  </TouchableOpacity>
+                  {selectedPlantProfile=== plantProfile.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              ))
+            }
+          </ScrollView>
+        )}
+        {searchPPTerm.length > 0 && foundPPLength<1 && showPPDropdown && <Text style={styles.error}>No results found</Text>}
+      </View>
+        </View>
+        {touched.plant_profile_id && errors.plant_profile_id && (
+          <Text style={styles.error}>{errors.plant_profile_id}</Text>
+        )}
         
-    <Text style={styles.label}>Plant Type</Text>
-    <View style={{width:"100%"}}>
-      {/* <Select
-        minWidth="100%"
-        accessibilityLabel="Choose Plant Type"
-        placeholder="Choose Plant Type"
-        _selectedItem={{
-        bg: "teal.600",
-        endIcon: (
-        <Icon
-        as={MaterialIcons}
-        name="check"
-        color="coolGray.800"
-        _dark={{ color: "warmGray.50" }}
-        />
-        )
-        }}
-        mt="1"
-        selectedValue={values.plant_type_id}
-        onValueChange={(value) => handleChange('plant_type_id')(value)}
-        onBlur={handleBlur('plant_type_id')}
-      >
 
-        {plantTypes.map((type) => (
-          <Select.Item label={type.name} value={type.id.toString()} key={type.id}/>
-        ))}
+        {/* Plant Types search and select Dropdown */}
+        <Text style={styles.label}>Plant Type</Text>
+        <View style={{width:"100%"}}>
+        <View> 
+        <View style={{ flexDirection: 'row', alignItems: 'center',borderColor:"black" ,borderRadius:10,borderWidth:1,padding:5}}>
+          {showPTDropdown ? 
+            <><Icon as={MaterialIcons} name='search' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6}/>
+            <TextInput  placeholder="Search for a plant type"  value={searchPTTerm}  
+            onChangeText={(text) => { 
+              setSearchPTTerm(text);  
+            }}
+            style={{ flex: 1 }}
+            /></> : 
+            selectedPlantType?<Text style={{width:"100%", flex: 1}} >{selectedPlantType}</Text>:<Text style={{width:"100%", flex: 1}} >Choose Plant Type</Text>
+          }
 
-      </Select> */}
-
-<MultiSelect
-        hideTags
-        items={plantTypes}
-        uniqueKey="id"
-        selectText="Select Plant Type"
-        selectedItems={selectedPlantType}
-        onSelectedItemsChange={(selectedPlantType) => {
-          handlePlantTypeChange(selectedPlantType);
-          values.plant_type_id = selectedPlantType[0];
-          console.log(values.plant_type_id);
-        }}
-        searchInputPlaceholderText="Search Plant Types..."
-        selectedItemTextColor="#CCC"
-        selectedItemIconColor="#CCC"
-        itemTextColor="#000"
-        displayKey="name"
-        searchInputStyle={{ color: '#CCC' ,padding:10 }}
-        styleDropdownMenuSubsection={{padding:10,backgroundColor:"#FFF",borderRadius:10}}
-        styleDropdownMenu={{}}
-        searchIcon={<MaterialIcons name="search" size={24} color="black" />}
-        submitButtonColor="#CCC"
-        submitButtonText="Submit"
-        single={true}
-      />
-    </View>
-    {touched.plant_type_id && errors.plant_type_id && (
-      <Text style={styles.error}>{errors.plant_type_id}</Text>
-    )}
+          <TouchableOpacity onPress={() => {
+          setSearchPTTerm('');
+          setShowPTDropdown(!showPTDropdown);
+          }}
+          >
+            <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: "warmGray.50" }} size={showPTDropdown ? 8 : 8}/>
+          </TouchableOpacity>
+        </View>
+        {showPTDropdown && (
+          <ScrollView style={{ maxHeight: 100 }}>
+            {searchPTTerm ? 
+              filterPlantTypes(searchPTTerm).map((plantType) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_type_id=plantType.id 
+                  setSelectedPlantType(plantType.name); setSearchPTTerm(plantType.name); setShowPTDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantType.name}</Text>
+                  </TouchableOpacity>
+                  {selectedPlantType=== plantType.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              )): 
+              plantTypes.map((plantType) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_type_id=plantType.id
+                  setSelectedPlantType(plantType.name); setSearchPTTerm(plantType.name); setShowPTDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantType.name}</Text>   
+                  </TouchableOpacity>
+                  {selectedPlantType=== plantType.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              ))
+            }
+          </ScrollView>
+        )}
+        {searchPTTerm.length > 0 && foundPTLength<1 && showPTDropdown && <Text style={styles.error}>No results found</Text>}
+      </View>
+        </View>
+        {touched.plant_type_id && errors.plant_type_id && (
+          <Text style={styles.error}>{errors.plant_type_id}</Text>
+        )}
         
 
 

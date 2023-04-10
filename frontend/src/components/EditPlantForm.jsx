@@ -4,7 +4,9 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  TextInput
+  TextInput,
+  FlatList,
+  ScrollView,
 } from 'react-native';
 import { Formik } from 'formik';
 import {Icon,Select,VStack,HStack,Alert,IconButton,CloseIcon} from 'native-base';
@@ -25,6 +27,24 @@ function EditPlantForm(props) {
     title: "An error has occured!"
   }];
   const [event, setEvent] = useState("");
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showPTDropdown, setShowPTDropdown] = useState(false);
+  const [showPPDropdown, setShowPPDropdown] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchPTTerm, setSearchPTTerm] = useState("");
+  const [searchPPTerm, setSearchPPTerm] = useState("");
+
+  const [selectedDevice, setSelectedDevice] = useState(plant.device.name);
+  const [selectedPlantType, setSelectedPlantType] = useState(plant.plant_type.name);
+  const [selectedPlantProfile, setSelectedPlantProfile] = useState(plant.plant_profile.name);
+
+  const [foundDLength, setfoundDLength] = useState("");
+  const [foundPTLength, setfoundPTLength] = useState("");
+  const [foundPPLength, setfoundPPLength] = useState("");
+
+
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
 
   const handleClose = () => {
@@ -45,16 +65,40 @@ function EditPlantForm(props) {
       }
 
   };
+
+  const filterDevices = (searchTerm) => {
+    const filtered = devices.filter((device) =>
+      device.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setfoundDLength(filtered.length);
+    return filtered;
+  };
+
+  const filterPlantTypes = (searchTerm) => {
+    const filtered = plantTypes.filter((plantT) =>
+    plantT.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setfoundPTLength(filtered.length);
+    return filtered;
+  };
+
+  const filterPlantProfiles= (searchTerm) => {
+    const filtered = plantProfiles.filter((plantp) =>
+    plantp.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setfoundPPLength(filtered.length);
+    return filtered;
+  };
   
   return (
     
     <Formik
     initialValues={{
       id: plant.id,
-    name: plant.name,
-    device_id: plant.device.id.toString(),
-    plant_profile_id: plant.plant_profile.id.toString(),
-    plant_type_id: plant.plant_type.id.toString(),
+      name: plant.name,
+      device_id: plant.device.id.toString(),
+      plant_profile_id: plant.plant_profile.id.toString(),
+      plant_type_id: plant.plant_type.id.toString(),
     }}
     validationSchema={EditPlantSchema}
     onSubmit={handleEditPlant}
@@ -100,93 +144,179 @@ function EditPlantForm(props) {
         {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
 
         <Text style={styles.label}>Device</Text>
-        <View style={{width:"100%"}}>
-          <Select
-            minWidth="100%"
-            accessibilityLabel="Choose Device"
-            placeholder="Choose Device"
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: (
-                <Icon
-                  as={MaterialIcons}
-                  name="check"
-                  color="coolGray.800"
-                  _dark={{ color: "warmGray.50" }}
-                />
-              )
+        <View style={{width:"100%"}}>    
+      {/* Devices search and select Dropdown */}
+      <View> 
+        <View style={{ flexDirection: 'row', alignItems: 'center',borderColor:"black" ,borderRadius:10,borderWidth:1,padding:5}}>
+          {showDropdown ? 
+            <><Icon as={MaterialIcons} name='search' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6}/>
+            <TextInput  placeholder="Search for a device"  value={searchTerm}  
+            onChangeText={(text) => { 
+            setSearchTerm(text);  
             }}
-            mt="1"
-            selectedValue={values.device_id}
-            onValueChange={(value) => handleChange('device_id')(value)}
-            onBlur={handleBlur('device_id')}
-          >
-            {devices.map((device) => (
-              <Select.Item label={device.name} value={device.id.toString()} key={device.id}/>
-              ))}
-          </Select>
-        </View>
-        {touched.device_id && errors.device_id && (
-          <Text style={styles.error}>{errors.device_id}</Text>
-        )}
+            style={{ flex: 1 }}
+            /></> : 
+            selectedDevice?<Text style={{width:"100%", flex: 1}} >{selectedDevice}</Text>:<Text style={{width:"100%"}}>{plant.device.name}</Text>
+          }
 
+          <TouchableOpacity onPress={() => {
+          setSearchTerm('');
+          setShowDropdown(!showDropdown);
+          }}
+          >
+            <Icon as={MaterialIcons} name={showDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: "warmGray.50" }} size={showDropdown ? 8 : 8}/>
+          </TouchableOpacity>
+        </View>
+        {showDropdown && (
+          <ScrollView style={{ maxHeight: 100 }}>
+            {searchTerm ? 
+              filterDevices(searchTerm).map((device) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.device_id=device.id 
+                  setSelectedDevice(device.name); setSearchTerm(device.name); setShowDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{device.name}</Text>
+                  </TouchableOpacity>
+                  {selectedDevice=== device.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              )): 
+              devices.map((device) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.device_id=device.id
+                  setSelectedDevice(device.name); setSearchTerm(device.name); setShowDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{device.name}</Text>   
+                  </TouchableOpacity>
+                  {selectedDevice=== device.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              ))
+            }
+          </ScrollView>
+        )}
+        {searchTerm.length > 0 && foundDLength<1 && showDropdown && <Text style={styles.error}>No results found</Text>}
+      </View>
+
+      </View>
+      {touched.device_id && errors.device_id && (
+        <Text style={styles.error}>{errors.device_id}</Text>
+      )}
+
+          {/* Plant Profiles search and select Dropdown */}
         <Text style={styles.label}>Plant Profile</Text>
         <View style={{width:"100%"}}> 
-          <Select
-            minWidth="100%"
-            accessibilityLabel="Choose Plant Profile"
-            placeholder="Choose Plant Profile"
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: (
-                <Icon
-                  as={MaterialIcons}
-                  name="check"
-                  color="coolGray.800"
-                  _dark={{ color: "warmGray.50" }}
-                />
-              )
+          <View> 
+        <View style={{ flexDirection: 'row', alignItems: 'center',borderColor:"black" ,borderRadius:10,borderWidth:1,padding:5}}>
+          {showPPDropdown ? 
+            <><Icon as={MaterialIcons} name='search' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6}/>
+            <TextInput  placeholder="Search for a plant profile"  value={searchPPTerm}  
+            onChangeText={(text) => { 
+              setSearchPPTerm(text);  
             }}
-            mt="1"
-            selectedValue={values.plant_profile_id}
-            onValueChange={(value) => handleChange('plant_profile_id')(value)}
-            onBlur={handleBlur('plant_profile_id')}
+            style={{ flex: 1 }}
+            /></> : 
+            selectedPlantProfile?<Text style={{width:"100%", flex: 1}} >{selectedPlantProfile}</Text>:<Text style={{width:"100%"}}>{plant.plant_profile.name}</Text>
+          }
+
+          <TouchableOpacity onPress={() => {
+          setSearchPPTerm('');
+          setShowPPDropdown(!showPPDropdown);
+          }}
           >
-            {plantProfiles.map((plantProfile) => (
-              <Select.Item label={plantProfile.name} value={plantProfile.id.toString()} key={plantProfile.id}/>
-              ))}
-          </Select>
+            <Icon as={MaterialIcons} name={showPPDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: "warmGray.50" }} size={showPPDropdown ? 8 : 8}/>
+          </TouchableOpacity>
+        </View>
+        {showPPDropdown && (
+          <ScrollView style={{ maxHeight: 100 }}>
+            {searchPPTerm ? 
+              filterPlantProfiles(searchPPTerm).map((plantProfile) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_profile_id=plantProfile.id 
+                  setSelectedPlantProfile(plantProfile.name); setSearchPPTerm(plantProfile.name); setShowPPDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantProfile.name}</Text>
+                  </TouchableOpacity>
+                  {selectedPlantProfile=== plantProfile.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              )): 
+              plantProfiles.map((plantProfile) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_profile_id=plantProfile.id
+                  setSelectedPlantProfile(plantProfile.name); setSearchPPTerm(plantProfile.name); setShowPPDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantProfile.name}</Text>   
+                  </TouchableOpacity>
+                  {selectedPlantProfile=== plantProfile.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              ))
+            }
+          </ScrollView>
+        )}
+        {searchPPTerm.length > 0 && foundPPLength<1 && showPPDropdown && <Text style={styles.error}>No results found</Text>}
+      </View>
         </View>
         {touched.plant_profile_id && errors.plant_profile_id && (
           <Text style={styles.error}>{errors.plant_profile_id}</Text>
         )}
         
+
+        {/* Plant Types search and select Dropdown */}
         <Text style={styles.label}>Plant Type</Text>
         <View style={{width:"100%"}}>
-          <Select
-            minWidth="100%"
-            accessibilityLabel="Choose Plant Type"
-            placeholder="Choose Plant Type"
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: (
-                <Icon
-                  as={MaterialIcons}
-                  name="check"
-                  color="coolGray.800"
-                  _dark={{ color: "warmGray.50" }}
-                />
-              )
+        <View> 
+        <View style={{ flexDirection: 'row', alignItems: 'center',borderColor:"black" ,borderRadius:10,borderWidth:1,padding:5}}>
+          {showPTDropdown ? 
+            <><Icon as={MaterialIcons} name='search' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6}/>
+            <TextInput  placeholder="Search for a plant type"  value={searchPTTerm}  
+            onChangeText={(text) => { 
+              setSearchPTTerm(text);  
             }}
-            mt="1"
-            selectedValue={values.plant_type_id}
-            onValueChange={(value) => handleChange('plant_type_id')(value)}
-            onBlur={handleBlur('plant_type_id')}
+            style={{ flex: 1 }}
+            /></> : 
+            selectedPlantType?<Text style={{width:"100%", flex: 1}} >{selectedPlantType}</Text>:<Text style={{width:"100%"}}>{plant.plant_type.name}</Text>
+          }
+
+          <TouchableOpacity onPress={() => {
+          setSearchPTTerm('');
+          setShowPTDropdown(!showPTDropdown);
+          }}
           >
-            {plantTypes.map((type) => (
-              <Select.Item label={type.name} value={type.id.toString()} key={type.id}/>
-              ))}
-          </Select>
+            <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: "warmGray.50" }} size={showPTDropdown ? 8 : 8}/>
+          </TouchableOpacity>
+        </View>
+        {showPTDropdown && (
+          <ScrollView style={{ maxHeight: 100 }}>
+            {searchPTTerm ? 
+              filterPlantTypes(searchPTTerm).map((plantType) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_type_id=plantType.id 
+                  setSelectedPlantType(plantType.name); setSearchPTTerm(plantType.name); setShowPTDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantType.name}</Text>
+                  </TouchableOpacity>
+                  {selectedPlantType=== plantType.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              )): 
+              plantTypes.map((plantType) => (
+                <View style={{ flexDirection: 'row', alignItems: 'left' ,width:"100%",borderBottomWidth:1,padding:5}}>
+                  <TouchableOpacity onPress={() => { values.plant_type_id=plantType.id
+                  setSelectedPlantType(plantType.name); setSearchPTTerm(plantType.name); setShowPTDropdown(false);
+                  }} style={{ flex: 9 }}
+                  >
+                    <Text  style={{width:"100%"}}>{plantType.name}</Text>   
+                  </TouchableOpacity>
+                  {selectedPlantType=== plantType.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
+                </View>
+              ))
+            }
+          </ScrollView>
+        )}
+        {searchPTTerm.length > 0 && foundPTLength<1 && showPTDropdown && <Text style={styles.error}>No results found</Text>}
+      </View>
         </View>
         {touched.plant_type_id && errors.plant_type_id && (
           <Text style={styles.error}>{errors.plant_type_id}</Text>
