@@ -5,25 +5,29 @@ import {
 } from 'native-base';
 import React from 'react';
 import { Entypo } from '@expo/vector-icons';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import CardSensors from './CardSensors';
 
 function DevicesCard(device) {
+  const { width, height } = useWindowDimensions();
   const {
     name, model_name, users, sensors,
   } = device.device;
   return (
-    <View style={{
-      flex: 1, justifyContent: 'center', alignItems: 'center', width: 350, height: 300,
-    }}
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: width > 768 ? 350 : 250,
+        height: height > 1024 ? 240 : 200,
+      }}
     >
       <Box
-        maxHeight="90%"
-        minHeight="90%"
-        minWidth="33%"
-        marginRight={5}
-        marginBottom={5}
+        width="90%"
+        height="90%"
         rounded="lg"
+        paddingBottom={2}
         overflow="hidden"
         borderColor="coolGray.200"
         borderWidth="1"
@@ -41,7 +45,11 @@ function DevicesCard(device) {
       >
         <Stack p="4" space={3}>
           <Stack space={2}>
-            <HStack space={7} alignItems="center" justifyContent="space-between">
+            <HStack
+              space={7}
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Heading size="sm" ml="-1">
                 {name}
               </Heading>
@@ -63,7 +71,7 @@ function DevicesCard(device) {
             </HStack>
             <HStack space={3}>
               <Text
-                fontSize={10}
+                fontSize={11}
                 _light={{
                   color: 'primary.500',
                 }}
@@ -74,12 +82,9 @@ function DevicesCard(device) {
               >
                 {model_name}
               </Text>
-              <Icon
-                as={Entypo}
-                name="dot-single"
-              />
+              <Icon as={Entypo} name="dot-single" />
               <Text
-                fontSize={10}
+                fontSize={11}
                 noOfLines={1}
                 _light={{
                   color: 'primary.500',
@@ -91,12 +96,9 @@ function DevicesCard(device) {
               >
                 Pepper Plant
               </Text>
-              <Icon
-                as={Entypo}
-                name="dot-single"
-              />
+              <Icon as={Entypo} name="dot-single" />
               <Text
-                fontSize={10}
+                fontSize={11}
                 _light={{
                   color: 'primary.500',
                 }}

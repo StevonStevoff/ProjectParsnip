@@ -106,14 +106,21 @@ const API = {
   },
 
   async getUsersDevices(cancel = false) {
-    const response = await api.request({
-      url: '/devices/me',
-      method: 'GET',
-      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
-        : undefined,
-    });
+    try {
+      const response = await api.request({
+        url: '/devices/me',
+        method: 'GET',
+        signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+          : undefined,
+      });
 
-    return response;
+      return response;
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return { response: { data: [] } };
+      }
+      throw error;
+    }
   },
 };
 

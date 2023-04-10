@@ -1,7 +1,9 @@
+/* eslint-disable no-use-before-define */
 import React, { useEffect } from 'react';
 import {
-  View, Text, useWindowDimensions, StyleSheet, RefreshControl, FlatList,
+  View, useWindowDimensions, StyleSheet, RefreshControl, FlatList, ScrollView,
 } from 'react-native';
+import { Text, Box } from 'native-base';
 import DevicesCard from '../../components/DevicesCard';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 
@@ -13,12 +15,14 @@ function DevicesScreen({ navigation }) {
   const cardWidth = 350;
   const margin = 10;
   const numCols = Math.floor((width - margin * 2) / cardWidth);
+  const screenWidth = useWindowDimensions().width;
 
   const fetchDevices = () => {
     setIsLoading(true);
     DeviceUtils.getAllUserDevices()
       .then((devicesObj) => {
         setDevices(devicesObj);
+        console.log(devicesObj);
       })
       .catch((error) => {
         console.error(error);
@@ -59,15 +63,33 @@ function DevicesScreen({ navigation }) {
     );
   }
 
+  if (screenWidth > 750) {
+    return (
+      <View style={styles.webContainer}>
+        <FlatList
+          key={numCols}
+          data={devices}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={numCols}
+          contentContainerStyle={styles.container}
+          refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
+        />
+      </View>
+    );
+  }
   return (
-    <FlatList
-      data={devices}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id.toString()}
-      numColumns={numCols}
-      contentContainerStyle={styles.container}
-      refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
-    />
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+    >
+      {devices.map((device) => (
+        <Box key={device.id} mb={4}>
+          <DevicesCard device={device} />
+        </Box>
+      ))}
+    </ScrollView>
   );
 }
 
@@ -75,6 +97,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+  },
+  webContainer: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
   },
   cardContainer: {
     alignItems: 'center',
