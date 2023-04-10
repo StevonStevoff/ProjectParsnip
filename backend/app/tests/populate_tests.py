@@ -27,8 +27,14 @@ async def add_grow_property_types():
         test_grow_property_types = []
         test_grow_property_types.append(
             GrowPropertyType(
-                name="Temperature",
+                name="Test Temperature",
                 description="Temperature Data values, stored in Degrees C",
+            )
+        )
+        test_grow_property_types.append(
+            GrowPropertyType(
+                name="Test Moisture",
+                description="Moisture description",
             )
         )
 
