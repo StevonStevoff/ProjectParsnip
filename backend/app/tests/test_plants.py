@@ -44,6 +44,17 @@ async def test_get_all_no_plants(setup_db, client, superuser_access_token):
 
 
 @pytest.mark.asyncio(scope="session")
+async def test_get_my_plants_none(setup_db, client, superuser_access_token):
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    response = await client.get("/plants/me", headers=headers)
+
+    assert response.status_code == 404
+    json_response = response.json()
+
+    assert json_response["detail"] == "No plants found."
+
+
+@pytest.mark.asyncio(scope="session")
 async def test_get_all_plants(setup_db, client, superuser_access_token):
     await populate_db()
 
@@ -149,19 +160,6 @@ async def test_get_my_plants(setup_db, client, user_access_token):
     assert len(json_response) == 2
     assert json_response[0]["name"] == "My Precious Plant"
     assert json_response[1]["name"] == "My Annoying Plant"
-
-
-# enable test once we fix dependencies
-@pytest.mark.skip(reason="Need to fix dependencies")
-@pytest.mark.asyncio(scope="session")
-async def test_get_my_plants_none(setup_db, client, superuser_access_token):
-    headers = {"Authorization": f"Bearer {superuser_access_token}"}
-    response = await client.get("/plants/me", headers=headers)
-
-    assert response.status_code == 404
-    json_response = response.json()
-
-    assert json_response["detail"] == "No plants found."
 
 
 @pytest.mark.asyncio(scope="session")
