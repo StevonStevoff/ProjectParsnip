@@ -196,7 +196,8 @@ async def patch_plant(
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantRead:
-    await user_can_use_object(user, plant.device_id, Device, "device", session)
+    local_user = await session.merge(user)
+    await user_can_use_object(local_user, plant.device_id, Device, "device", session)
 
     if plant_update.name is not None:
         plant.name = plant_update.name
@@ -224,7 +225,8 @@ async def patch_plant(
 
     await session.commit()
     await session.refresh(plant)
-    return PlantRead.from_orm(plant)
+    updated_plant = await session.get(Plant, plant.id, populate_existing=True)
+    return PlantRead.from_orm(updated_plant)
 
 
 @router.get(
@@ -270,6 +272,7 @@ async def update_plant_device(
     plant: Plant, user: User, device_id: int, session: AsyncSession
 ) -> None:
     await user_can_use_object(user, device_id, Device, "device", session)
+    await get_object_or_404(device_id, Device, session, "The device does not exist.")
     plant.device_id = device_id
 
 
@@ -278,6 +281,9 @@ async def update_plant_profile(
 ) -> None:
     await user_can_use_object(
         user, plant_profile_id, PlantProfile, "plant profile", session
+    )
+    await get_object_or_404(
+        plant_profile_id, PlantProfile, session, "The plant profile does not exist."
     )
     plant.plant_profile_id = plant_profile_id
 
