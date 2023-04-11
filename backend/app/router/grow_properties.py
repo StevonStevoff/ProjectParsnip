@@ -42,8 +42,8 @@ async def get_grow_property_or_404(
     },
 )
 async def get_all_grow_properties(
-    session: AsyncSession = Depends(get_async_session)
-) -> list[GrowPropertyRead]:   
+    session: AsyncSession = Depends(get_async_session),
+) -> list[GrowPropertyRead]:
     grow_properties_query = select(GrowPropertyRange)
     results = await session.execute(grow_properties_query)
     grow_properties = results.scalars().all()
@@ -58,6 +58,7 @@ async def get_all_grow_properties(
     name="grow_properties:register_grow_property",
     response_model=GrowPropertyRead,
     dependencies=[Depends(current_active_user)],
+    status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_400_BAD_REQUEST: {
             "description": "Range max cannot be less than min",
@@ -237,10 +238,10 @@ async def update_property_profile(
     plant_profile_id: int,
     session: AsyncSession,
 ) -> None:
-    await get_object_or_404(
+    plant_profile = await get_object_or_404(
         plant_profile_id, PlantProfile, session, "The plant profile does not exist."
     )
-    await user_can_manage_object(user, plant_profile_id)
+    await user_can_manage_object(user, plant_profile.creator_id)
     grow_property.plant_profile_id = plant_profile_id
 
 

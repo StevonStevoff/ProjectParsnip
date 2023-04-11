@@ -328,7 +328,7 @@ async def test_patch_grow_property_type_by_id(setup_db, client, superuser_access
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_grow_property_type_by_id_doesnt_exist(
+async def test_patch_grow_property_type_by_id_doesnt_exist(
     setup_db, client, superuser_access_token
 ):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}

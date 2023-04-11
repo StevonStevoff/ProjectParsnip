@@ -17,8 +17,19 @@ async def test_get_all_grow_properties_no_token(setup_db, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_grow_properties_none(setup_db, client, user_access_token):
+async def test_get_all_grow_properties_forbidden(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/grow_properties/", headers=headers)
+
+    assert response.status_code == 403
+    json_response = response.json()
+
+    assert json_response["detail"] == "Forbidden"
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_all_grow_properties_none(setup_db, client, superuser_access_token):
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/grow_properties/", headers=headers)
 
     assert response.status_code == 404
@@ -28,10 +39,10 @@ async def test_get_all_grow_properties_none(setup_db, client, user_access_token)
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_all_grow_properties(setup_db, client, user_access_token):
+async def test_get_all_grow_properties(setup_db, client, superuser_access_token):
     await populate_db()
 
-    headers = {"Authorization": f"Bearer {user_access_token}"}
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.get("/grow_properties/", headers=headers)
 
     assert response.status_code == 200
@@ -43,7 +54,9 @@ async def test_get_all_grow_properties(setup_db, client, user_access_token):
     assert json_response[0]["max"] == 50
     assert json_response[1]["sensor_id"] == 2
     assert json_response[1]["grow_property_type"]["name"] == "Test Moisture"
-    assert json_response[1]["grow_property_type"]["description"] == "Moisture description"
+    assert (
+        json_response[1]["grow_property_type"]["description"] == "Moisture description"
+    )
 
 
 @pytest.mark.asyncio(scope="session")
@@ -59,9 +72,7 @@ async def test_get_grow_properies_by_id_no_token(setup_db, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_grow_properties_by_id_forbidden(
-    setup_db, client, user_access_token
-):
+async def test_get_grow_properties_by_id_forbidden(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.get(
         "/grow_properties/1",
@@ -82,11 +93,11 @@ async def test_get_grow_properties_by_id(setup_db, client, superuser_access_toke
     assert response.status_code == 200
     json_response = response.json()
 
-    assert json_response[0]["min"] == 50
-    assert json_response[0]["max"] == 100
-    assert json_response[1]["sensor_id"] == 2
-    assert json_response[1]["grow_property_type"]["name"] == "Test Moisture"
-    assert json_response[1]["grow_property_type"]["description"] == "Moisture description"
+    assert json_response["min"] == 50
+    assert json_response["max"] == 100
+    assert json_response["sensor_id"] == 2
+    assert json_response["grow_property_type"]["name"] == "Test Moisture"
+    assert json_response["grow_property_type"]["description"] == "Moisture description"
 
 
 @pytest.mark.asyncio(scope="session")
@@ -99,7 +110,7 @@ async def test_get_grow_property_by_id_invalid(
     assert response.status_code == 404
     json_response = response.json()
 
-    assert json_response["detail"] == "The grow property does not exist"
+    assert "The grow property does not exist" in json_response["detail"]
 
 
 @pytest.mark.asyncio(scope="session")
@@ -109,7 +120,7 @@ async def test_register_grow_property_no_token(setup_db, client):
         json={
             "min": 1,
             "max": 2,
-            "sensor_id": 1,
+            "sensor_id": 2,
             "grow_property_type_id": 2,
             "plant_profile_id": 3,
         },
@@ -122,9 +133,7 @@ async def test_register_grow_property_no_token(setup_db, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_grow_property(
-    setup_db, client, user_access_token
-):
+async def test_register_grow_property(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/grow_properties/register",
@@ -132,7 +141,7 @@ async def test_register_grow_property(
         json={
             "min": 1,
             "max": 2,
-            "sensor_id": 1,
+            "sensor_id": 2,
             "grow_property_type_id": 2,
             "plant_profile_id": 3,
         },
@@ -144,16 +153,18 @@ async def test_register_grow_property(
     query = select(GrowPropertyRange).where(GrowPropertyRange.id == 3)
     grow_property = await get_objects(query)
 
-    assert grow_property[0]["min"] == json_response["min"]
-    assert grow_property[0]["max"] == json_response["max"]
-    assert grow_property[0]["sensor_id"] == json_response["sensor_id"]
-    assert grow_property[0]["grow_property_type_id"] == 2
-    assert grow_property[0]["plant_profile_id"] == 3
+    assert grow_property[0].min == json_response["min"]
+    assert grow_property[0].max == json_response["max"]
+    assert grow_property[0].sensor_id == json_response["sensor_id"]
+    assert grow_property[0].grow_property_type_id == 2
+    assert grow_property[0].plant_profile_id == 3
     assert json_response["grow_property_type"]["name"] == "Test Moisture"
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_grow_property_invalid_minmax(setup_db, client, user_access_token):
+async def test_register_grow_property_invalid_minmax(
+    setup_db, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/grow_properties/register",
@@ -161,7 +172,7 @@ async def test_register_grow_property_invalid_minmax(setup_db, client, user_acce
         json={
             "min": 3,
             "max": 2,
-            "sensor_id": 1,
+            "sensor_id": 2,
             "grow_property_type_id": 2,
             "plant_profile_id": 3,
         },
@@ -195,7 +206,9 @@ async def test_register_grow_property_invalid_type(setup_db, client, user_access
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_grow_property_invalid_profile_forbidden(setup_db, client, user_access_token):
+async def test_register_grow_property_invalid_profile_forbidden(
+    setup_db, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/grow_properties/register",
@@ -205,7 +218,7 @@ async def test_register_grow_property_invalid_profile_forbidden(setup_db, client
             "max": 2,
             "sensor_id": 1,
             "grow_property_type_id": 2,
-            "plant_profile_id": 1,
+            "plant_profile_id": 2,
         },
     )
 
@@ -216,7 +229,9 @@ async def test_register_grow_property_invalid_profile_forbidden(setup_db, client
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_grow_property_invalid_profile(setup_db, client, user_access_token):
+async def test_register_grow_property_invalid_profile(
+    setup_db, client, user_access_token
+):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.post(
         "/grow_properties/register",
@@ -237,8 +252,10 @@ async def test_register_grow_property_invalid_profile(setup_db, client, user_acc
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_register_grow_property_invalid_sensor(setup_db, client, user_access_token):
-    headers = {"Authorization": f"Bearer {user_access_token}"}
+async def test_register_grow_property_invalid_sensor(
+    setup_db, client, superuser_access_token
+):
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.post(
         "/grow_properties/register",
         headers=headers,
@@ -314,9 +331,7 @@ async def test_delete_grow_property_by_id_superuser(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_grow_property_by_id(
-    setup_db, client, superuser_access_token
-):
+async def test_delete_grow_property_by_id(setup_db, client, superuser_access_token):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.delete("/grow_properties/2", headers=headers)
 
@@ -329,15 +344,13 @@ async def test_delete_grow_property_by_id(
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_grow_property_by_id_invalid(
-    setup_db, client, user_access_token
-):
+async def test_delete_grow_property_by_id_invalid(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.delete("/grow_properties/10", headers=headers)
 
     assert response.status_code == 404
     json_response = response.json()
-    assert json_response["detail"] == "The grow property type does not exist"
+    assert json_response["detail"] == "The grow property does not exist."
 
 
 @pytest.mark.asyncio(scope="session")
@@ -345,7 +358,7 @@ async def test_patch_grow_property_by_id_no_token(setup_db, client):
     response = await client.patch(
         "/grow_properties/3",
         json={
-            "min": 5, 
+            "min": 5,
             "max": 10,
             "sensor_id": 2,
             "grow_property_type": 1,
@@ -360,15 +373,13 @@ async def test_patch_grow_property_by_id_no_token(setup_db, client):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_patch_grow_property_by_id(
-    setup_db, client, user_access_token
-):
+async def test_patch_grow_property_by_id(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
     response = await client.patch(
         "/grow_properties/3",
         headers=headers,
         json={
-            "min": 5, 
+            "min": 5,
             "max": 10,
             "sensor_id": 2,
             "grow_property_type_id": 1,
@@ -382,16 +393,16 @@ async def test_patch_grow_property_by_id(
     query = select(GrowPropertyRange).where(GrowPropertyRange.id == 3)
     grow_property = await get_objects(query)
 
-    assert grow_property[0]["min"] == json_response["min"]
-    assert grow_property[0]["max"] == json_response["max"]
-    assert grow_property[0]["sensor_id"] == json_response["sensor_id"]
-    assert grow_property[0]["grow_property_type_id"] == 1
-    assert grow_property[0]["plant_profile_id"] == 3
+    assert grow_property[0].min == json_response["min"]
+    assert grow_property[0].max == json_response["max"]
+    assert grow_property[0].sensor_id == json_response["sensor_id"]
+    assert grow_property[0].grow_property_type_id == 1
+    assert grow_property[0].plant_profile_id == 3
     assert json_response["grow_property_type"]["name"] == "Test Temperature"
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_delete_grow_property_by_id_doesnt_exist(
+async def test_patch_grow_property_by_id_doesnt_exist(
     setup_db, client, superuser_access_token
 ):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
@@ -399,7 +410,7 @@ async def test_delete_grow_property_by_id_doesnt_exist(
         "/grow_properties/4",
         headers=headers,
         json={
-            "min": 5, 
+            "min": 5,
             "max": 10,
             "sensor_id": 2,
             "grow_property_type_id": 1,
@@ -409,7 +420,7 @@ async def test_delete_grow_property_by_id_doesnt_exist(
 
     assert response.status_code == 404
     json_response = response.json()
-    assert json_response["detail"] == "The grow property does not exist"
+    assert json_response["detail"] == "The grow property does not exist."
 
 
 @pytest.mark.asyncio(scope="session")
@@ -418,7 +429,7 @@ async def test_patch_grow_property_by_id_partial(
 ):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     response = await client.patch(
-        "/grow_property_types/2",
+        "/grow_properties/3",
         headers=headers,
         json={
             "max": 100,
@@ -432,9 +443,9 @@ async def test_patch_grow_property_by_id_partial(
     query = select(GrowPropertyRange).where(GrowPropertyRange.id == 3)
     grow_property = await get_objects(query)
 
-    assert grow_property[0]["min"] == json_response["min"]
-    assert grow_property[0]["max"] == 100
-    assert grow_property[0]["sensor_id"] == 1
-    assert grow_property[0]["grow_property_type_id"] == 1
-    assert grow_property[0]["plant_profile_id"] == 3
+    assert grow_property[0].min == json_response["min"]
+    assert grow_property[0].max == 100
+    assert grow_property[0].sensor_id == 1
+    assert grow_property[0].grow_property_type_id == 1
+    assert grow_property[0].plant_profile_id == 3
     assert json_response["grow_property_type"]["name"] == "Test Temperature"
