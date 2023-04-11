@@ -42,14 +42,9 @@ async def get_grow_property_or_404(
     },
 )
 async def get_all_grow_properties(
-    session: AsyncSession = Depends(get_async_session), contains: str | None = None
-) -> list[GrowPropertyRead]:
-    if contains:
-        grow_properties_query = select(GrowPropertyRange).where(
-            GrowPropertyRange.name.ilike(f"%{contains}%")
-        )
-    else:
-        grow_properties_query = select(GrowPropertyRange)
+    session: AsyncSession = Depends(get_async_session)
+) -> list[GrowPropertyRead]:   
+    grow_properties_query = select(GrowPropertyRange)
     results = await session.execute(grow_properties_query)
     grow_properties = results.scalars().all()
 
@@ -65,7 +60,7 @@ async def get_all_grow_properties(
     dependencies=[Depends(current_active_user)],
     responses={
         status.HTTP_400_BAD_REQUEST: {
-            "description": "Property maximum must be less than minimum.",
+            "description": "Range max cannot be less than min",
         },
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",

@@ -143,7 +143,7 @@ async def test_get_grow_property_type_by_id(setup_db, client, superuser_access_t
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_get_grow_property_by_id_invalid(
+async def test_get_grow_property_type_by_id_invalid(
     setup_db, client, superuser_access_token
 ):
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
@@ -206,8 +206,11 @@ async def test_register_grow_property_type(setup_db, client, superuser_access_to
     assert response.status_code == 201
     json_response = response.json()
 
-    assert json_response["name"] == "New GP"
-    assert json_response["description"] == "New GP description"
+    query = select(GrowPropertyType).where(GrowPropertyType.id == 3)
+    grow_property_type = await get_objects(query)
+
+    assert json_response["name"] == grow_property_type[0].name
+    assert json_response["description"] == grow_property_type[0].description
 
 
 @pytest.mark.asyncio(scope="session")

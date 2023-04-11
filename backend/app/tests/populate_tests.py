@@ -3,6 +3,7 @@ from fastapi_users.password import PasswordHelper
 from app.models import (
     Device,
     GrowPropertyType,
+    GrowPropertyRange,
     Plant,
     PlantProfile,
     PlantType,
@@ -20,6 +21,30 @@ async def populate_db():
     await add_plant_types()
     await add_plant_profiles()
     await add_plants()
+    await add_grow_properties()
+
+
+async def add_grow_properties():
+    async for session in get_db():
+        test_grow_properties = []
+        test_grow_properties.append(
+            GrowPropertyRange(
+                min=10,
+                max=50,
+                grow_property_type_id=1,
+                plant_profile_id=3,
+                sensor_id=1,
+            )
+        )
+        test_grow_properties.append(
+            GrowPropertyRange(
+                min=50,
+                max=100,
+                grow_property_type_id=2,
+                plant_profile_id=3,
+                sensor_id=2,
+            )
+        )
 
 
 async def add_grow_property_types():
