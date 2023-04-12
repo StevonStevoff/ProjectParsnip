@@ -8,11 +8,16 @@ import { Entypo } from '@expo/vector-icons';
 import { View, useWindowDimensions } from 'react-native';
 import CardSensors from './CardSensors';
 
-function DevicesCard(device) {
+function DevicesCard(device, plant) {
   const { width, height } = useWindowDimensions();
   const {
     name, model_name, users, sensors,
-  } = device.device;
+  } = function displayLinkedOrUnlinkedDevice() {
+    if (device.device) {
+      return device.device;
+    }
+    return plant.device;
+  };
   return (
     <View
       style={{
@@ -82,32 +87,35 @@ function DevicesCard(device) {
               >
                 {model_name}
               </Text>
-              <Icon as={Entypo} name="dot-single" />
-              <Text
-                fontSize={11}
-                noOfLines={1}
-                _light={{
-                  color: 'primary.500',
-                }}
-                _dark={{
-                  color: 'primary.400',
-                }}
-                fontWeight="500"
-              >
-                Pepper Plant
-              </Text>
-              <Icon as={Entypo} name="dot-single" />
-              <Text
-                fontSize={11}
-                _light={{
-                  color: 'primary.500',
-                }}
-                _dark={{
-                  color: 'primary.400',
-                }}
-              >
-                Pepper Profile
-              </Text>
+              if(plant)
+              <>
+                <Icon as={Entypo} name="dot-single" />
+                <Text
+                  fontSize={11}
+                  noOfLines={1}
+                  _light={{
+                    color: 'primary.500',
+                  }}
+                  _dark={{
+                    color: 'primary.400',
+                  }}
+                  fontWeight="500"
+                >
+                  {plant.name}
+                </Text>
+                <Icon as={Entypo} name="dot-single" />
+                <Text
+                  fontSize={11}
+                  _light={{
+                    color: 'primary.500',
+                  }}
+                  _dark={{
+                    color: 'primary.400',
+                  }}
+                >
+                  {plant.plant_profile.name}
+                </Text>
+              </>
             </HStack>
             <CardSensors sensors={sensors} />
           </Stack>

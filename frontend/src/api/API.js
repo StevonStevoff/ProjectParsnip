@@ -122,6 +122,19 @@ const API = {
       throw error;
     }
   },
+  async getUserPlants(cancel = false) {
+    const response = await api.request({
+      url: '/plants/me',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
 };
 
 // defining the cancel API object for ProductAPI
