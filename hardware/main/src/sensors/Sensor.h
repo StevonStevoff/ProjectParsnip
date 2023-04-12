@@ -1,14 +1,13 @@
 #ifndef Sensor_h
 #define Sensor_h
 
-#include "Arduino.h"
+class Sensor
+{
+public:
+    virtual int getId() const = 0;
+    virtual float read() const = 0;
 
-class Sensor {
-    public:
-        virtual void read();
-        virtual void structureData();
-    private:
+private:
 };
-
 
 #endif
