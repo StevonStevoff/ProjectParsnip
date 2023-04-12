@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -166,7 +168,9 @@ async def delete_plant(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> None:
-    pass
+    await user_can_use_object(user, plant.device_id, Device, "device", session)
+    await session.delete(plant)
+    await session.commit()
 
 
 @router.patch(
@@ -188,13 +192,60 @@ async def delete_plant(
 )
 async def patch_plant(
     plant_update: PlantUpdate,
+    user: User = Depends(current_active_user),
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantRead:
-    pass
+    await user_can_use_object(user, plant.device_id, Device, "device", session)
+
+    if plant_update.name:
+        plant.name = plant_update.name
+
+    if plant_update.device_id:
+        await update_plant_device(plant, user, plant_update.device_id, session)
+
+    if plant_update.plant_profile_id:
+        await update_plant_profile(plant, user, plant_update.plant_profile_id, session)
+
+    if plant_update.plant_type_id:
+        await update_plant_type(plant, user, plant_update.plant_type_id, session)
+
+    if plant_update.outdoor:
+        plant.outdoor = plant_update.outdoor
+
+    if plant_update.time_planted:
+        if datetime.now() > plant_update.time_planted:
+            plant.time_planted = plant_update.time_planted
+
+    print(plant_update)
+
+    if plant_update.longitude is not None or plant_update.latitude is not None:
+        await update_plant_coordinates(
+            plant, plant_update.latitude, plant_update.longitude
+        )
+
+    await session.commit()
+    await session.refresh(plant)
+    return PlantRead.from_orm(plant)
 
 
-@router.get("/{id}/data", name="plants:plant_data", response_model=list[PlantDataRead])
+@router.get(
+    "/{id}/data",
+    name="plants:plant_data",
+    response_model=list[PlantDataRead],
+    dependencies=[Depends(current_active_user)],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Missing token or inactive user.",
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "description": "Not superuser or associated device owner.",
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "description": "The plant does not exist",
+        },
+    },
+)
 async def get_plant_data(
     id: int,
     user: User = Depends(current_active_user),
@@ -243,13 +294,31 @@ async def update_plant_type(
 
 
 async def update_plant_coordinates(
-    plant: Plant, latitude: float, longitude: float
+    plant: Plant, latitude: float | None, longitude: float | None
 ) -> None:
-    valid_coordinate = abs(latitude) <= 90 and abs(longitude) <= 180
-    if not valid_coordinate:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid coordinates."
-        )
+    error_msg = "Invalid "
+    valid_latitude = True
+    valid_longitude = True
 
-    plant.latitude = latitude
-    plant.longitude = longitude
+    if latitude is not None:
+        valid_latitude = abs(latitude) <= 90
+
+    if longitude is not None:
+        valid_longitude = abs(longitude) <= 180
+
+    if not valid_latitude:
+        error_msg += "Latitude"
+
+    if not valid_longitude:
+        if len(error_msg) > 8:
+            error_msg += " and "
+        error_msg += "Longitude"
+    error_msg += "."
+
+    if not valid_longitude or not valid_latitude:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error_msg)
+
+    if latitude is not None:
+        plant.latitude = latitude
+    if longitude is not None:
+        plant.longitude = longitude

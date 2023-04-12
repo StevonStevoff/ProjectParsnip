@@ -60,6 +60,7 @@ async def get_all_grow_property_types(
     name="grow_property_types:register_grow_property_type",
     response_model=GrowPropertyTypeRead,
     dependencies=[Depends(current_active_superuser)],
+    status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",
@@ -91,7 +92,7 @@ async def register_grow_property_type(
     "/{id}",
     name="grow_property_types:grow_property_type",
     response_model=GrowPropertyTypeRead,
-    dependencies=[Depends(current_active_user)],
+    dependencies=[Depends(current_active_superuser)],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Missing token or inactive user.",
