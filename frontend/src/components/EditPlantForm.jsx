@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
-  FlatList,
   ScrollView,
+  Appearance
 } from 'react-native';
 import { Formik } from 'formik';
-import {Icon,Heading,VStack,HStack,Alert,IconButton,CloseIcon,Input,Pressable,Text} from 'native-base';
+import {Icon,Heading,VStack,HStack,Alert,IconButton,CloseIcon,Input,Pressable,Text,Switch} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 import EditPlantSchema from '../utils/validationSchema/EditPlantSchema';
 import API from '../api/API';
 
+import { Provider as PaperProvider } from 'react-native-paper';
+import { DatePickerInput  } from 'react-native-paper-dates';
+
+import { theme, darkTheme } from '../stylesheets/paperTheme';
 function EditPlantForm(props) {
   const { plantTypes } = props;
   const { devices } = props;
@@ -46,20 +49,25 @@ function EditPlantForm(props) {
 
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
 
+  const colorScheme = Appearance.getColorScheme();
+
   const handleClose = () => {
     setEvent("");
   };
 
   const handleEditPlant = async (values, { setSubmitting }) => {
       try {
+        if(values.latitude === "")values.latitude = 0;
+        if(values.longitude === "")values.longitude = 0;
+
         await API.editPlant(values);
-        console.log(values)
         setEvent("success")
       } catch (error) {
         setEvent("error")
         console.log(error)
         // handle the error
       } finally {
+        console.log(values)
         setSubmitting(false);
       }
 
@@ -101,8 +109,10 @@ function EditPlantForm(props) {
     }
   };
   
+  const [inputDate, setInputDate] = React.useState(undefined)
+
   return (
-    
+    <View >
     <Formik
     initialValues={{
       id: plant.id,
@@ -110,6 +120,10 @@ function EditPlantForm(props) {
       device_id: plant.device.id.toString(),
       plant_profile_id: plant.plant_profile.id.toString(),
       plant_type_id: plant.plant_type.id.toString(),
+      time_planted: plant.time_planted!==null?new Date(plant.time_planted):undefined,
+      outdoor: plant.outdoor,
+      latitude:plant.latitude,
+      longitude:plant.longitude,
     }}
     validationSchema={EditPlantSchema}
     onSubmit={handleEditPlant}
@@ -186,7 +200,7 @@ function EditPlantForm(props) {
                   setSelectedDevice(device.name); setSearchTerm(device.name); setShowDropdown(false);
                   }} style={{ flex: 9 }}
                   >
-                    <Text  style={{width:"100%"}}>{device.name}</Text>
+                    <Text fontSize={16} style={{width:"100%"}}>{device.name}</Text>
                   </TouchableOpacity>
                   {selectedDevice=== device.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
                 </View>
@@ -233,7 +247,7 @@ function EditPlantForm(props) {
                   setSelectedPlantProfile(plantProfile.name); setSearchPPTerm(plantProfile.name); setShowPPDropdown(false);
                   }} style={{ flex: 9 }}
                   >
-                    <Text  style={{width:"100%"}}>{plantProfile.name}</Text>
+                    <Text fontSize={16} style={{width:"100%"}}>{plantProfile.name}</Text>
                   </TouchableOpacity>
                   {selectedPlantProfile=== plantProfile.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
                 </View>
@@ -279,7 +293,7 @@ function EditPlantForm(props) {
                   setSelectedPlantType(plantType.name); setSearchPTTerm(plantType.name); setShowPTDropdown(false);
                   }} style={{ flex: 9 }}
                   >
-                    <Text  style={{width:"100%"}}>{plantType.name}</Text>
+                    <Text fontSize={16} style={{width:"100%"}}>{plantType.name}</Text>
                   </TouchableOpacity>
                   {selectedPlantType=== plantType.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
                 </View>
@@ -293,14 +307,73 @@ function EditPlantForm(props) {
           <Text style={styles.error}>{errors.plant_type_id}</Text>
         )}
         
+        <HStack space={2} alignItems="center" justifyContent="center" width={"80%"} paddingTop={10}>
+          <Heading style={{fontSize:16,marginRight:15}}>Outdoor</Heading>
+          {values.outdoor ? < Switch defaultIsChecked onValueChange={(value)=>values.outdoor=value} size="md" /> :  < Switch onValueChange={(value)=>values.outdoor=value} size="md" />}
+        </HStack>
 
+        <HStack space={4} alignItems="center" justifyContent="center" width={"80%"} paddingTop={10}>
 
-        <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
-        <Text style={styles.buttonText}>Update Plant</Text>
-        </TouchableOpacity>
+          <Heading style={{fontSize:14}}>Longitude</Heading>
+          <Input     
+           onChangeText={handleChange('longitude')}
+           onBlur={handleBlur('longitude')}
+           value={values.longitude}
+           style={{padding:5}}
+           w="20%"
+           size="2xl"
+           marginBottom="2%"
+          /> 
+
+          <Heading style={{fontSize:14}}>Latitude</Heading>
+          <Input  
+           onChangeText={handleChange('latitude')}
+           onBlur={handleBlur('latitude')}
+           value={values.latitude}
+           style={{padding:5}}
+           w="20%"
+           size="2xl"
+           marginBottom="2%"
+          />   
+        </HStack>
+        {touched.longitude && errors.longitude && (
+          <Text style={styles.error}>{errors.longitude}</Text>
+        )}
+
+        {touched.latitude && errors.latitude && (
+          <Text style={styles.error}>{errors.latitude}</Text>
+        )}
+          
+
+  <View style={{width:"100%" ,borderRadius:15,paddingTop:20}}>
+  <PaperProvider theme={colorScheme==='dark'? darkTheme:theme} darkTheme={darkTheme} >
+    <DatePickerInput
+    placeholder="Select a date"
+          locale="en-GB"
+          label="Time Planted"
+          value={values.time_planted!==undefined?new Date(values.time_planted):inputDate}
+          onChange={(d) => {setInputDate(d); values.time_planted=d.toISOString(); }}
+          onChangeText={handleChange('time_planted')}
+          inputMode="start"
+          width="100%"
+          underlineStyle={{ backgroundColor: 'white'}}
+          contentStyle={{ borderRadius:10}}  
+        />
+    </PaperProvider>
+
+</View>
+
+{touched.time_planted && errors.time_planted && (
+          <Text style={styles.error}>{errors.time_planted}</Text>
+        )}
+
+    <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
+      <Text style={styles.buttonText}>Update Plant</Text>
+    </TouchableOpacity>
     </View>
     )}
     </Formik>
+    </View>
    );
 }
 

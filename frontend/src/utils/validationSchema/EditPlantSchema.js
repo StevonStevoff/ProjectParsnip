@@ -5,6 +5,10 @@ const EditPlantSchema = yup.object().shape({
     device_id: yup.number().required('Device ID is required'),
     plant_profile_id: yup.number().required('Plant profile ID is required'),
     plant_type_id: yup.number().required('Plant type ID is required'),
+    time_planted: yup.date().optional('Time planted is required'),
+    outdoor: yup.boolean().required('Outdoor is required'),
+    longitude: yup.number().optional('Longitude is optional').nullable(true),
+    latitude: yup.number().optional('Latitude is optional').nullable(true),
   });
 
   export default EditPlantSchema;

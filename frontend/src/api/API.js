@@ -74,7 +74,7 @@ const API = {
 
     return response;
   },
-  async registerPlant({ name, device_id ,plant_profile_id,plant_type_id,outdoor}, cancel = false) {
+  async registerPlant({ name, device_id ,plant_profile_id,plant_type_id,outdoor,latitude,longitude}, cancel = false) {
     const response = await api.request({
       url: '/plants/register',
       method: 'POST',
@@ -83,7 +83,9 @@ const API = {
          device_id ,
          plant_profile_id,
          plant_type_id,
-         outdoor
+         outdoor,
+         latitude,
+         longitude,
       },
       headers: {
         'Content-Type': 'application/json'
@@ -119,7 +121,7 @@ const API = {
       return response;
     },
 
-  async editPlant({id, name, device_id ,plant_profile_id,plant_type_id}, cancel = false) {
+  async editPlant({id, name, device_id ,plant_profile_id,plant_type_id,time_planted,outdoor,latitude,longitude}, cancel = false) {
     const response = await api.request({
       url: '/plants/'+id,
       method: 'PATCH',
@@ -128,6 +130,9 @@ const API = {
          device_id ,
          plant_profile_id,
          plant_type_id,
+         time_planted,outdoor,
+         latitude,
+         longitude
       },
       headers: {
         'Content-Type': 'application/json'
