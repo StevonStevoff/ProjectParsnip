@@ -1,4 +1,4 @@
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View,ScrollView } from 'react-native';
 import React from 'react';
 import {
   VStack
@@ -8,13 +8,6 @@ import CreatePlantForm from '../../components/CreatePlantForm';
 
 function RegisterPlantScreen( {route,navigation} ) {
 
-  // const { plantTypes } =props;
-  // const { devices } =props;
-  // const { plantProfiles }=props;
-  
-  // console.log('plantTypes:', plantTypes);
-  // console.log('devices:', devices);
-  // console.log('plantProfiles:', plantProfiles);
   return (
     <View
       style={{
@@ -31,18 +24,18 @@ function RegisterPlantScreen( {route,navigation} ) {
           top: 0,
           left: 0,
           zIndex: 1,
-          padding: 25,
         }}
       >
         <CloseBtn navigation={navigation} />
       </View>
 
 
-      <VStack space={10} alignItems="center" width="70%">
+      <VStack space={10} alignItems="center" width="90%">
+      <ScrollView style={{ maxHeight: "100%",width:"100%" }}>
         <View style={{width:"100%",height:"100%", alignItems:"top"}}>  
           <CreatePlantForm plantTypes={route.params.plantTypes} plantProfiles={route.params.plantProfiles} devices={route.params.devices}/> 
         </View>
-        
+        </ScrollView>
       </VStack>
     </View>
   );

@@ -3,14 +3,19 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   ScrollView,
+  Appearance
 } from 'react-native';
 import { Formik } from 'formik';
-import {Icon,VStack,HStack,Alert,IconButton,CloseIcon,Input,Text,Heading,Pressable} from 'native-base';
+import {Icon,VStack,HStack,Alert,IconButton,CloseIcon,Input,Text,Heading,Pressable,Switch} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 import RegisterPlantSchema from '../utils/validationSchema/CreatePlantSchema';
 import API from '../api/API';
+
+import { Provider as PaperProvider } from 'react-native-paper';
+import { DatePickerInput  } from 'react-native-paper-dates';
+
+import { theme, darkTheme } from '../stylesheets/paperTheme';
 
 function CreatePlantForm(props) {
   const { plantTypes } = props;
@@ -35,7 +40,7 @@ function CreatePlantForm(props) {
 
   const [selectedDevice, setSelectedDevice] = useState("Choose a device");
   const [selectedPlantType, setSelectedPlantType] = useState("Choose a plant type");
-  const [selectedPlantProfile, setSelectedPlantProfile] = useState("choose a plant profile");
+  const [selectedPlantProfile, setSelectedPlantProfile] = useState("Choose a plant profile");
 
   const [foundDLength, setfoundDLength] = useState("");
   const [foundPTLength, setfoundPTLength] = useState("");
@@ -43,18 +48,24 @@ function CreatePlantForm(props) {
 
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
 
+  const colorScheme = Appearance.getColorScheme();
+
+  
   const handleClose = () => {
     setEvent("");
   };
 
   const handleRegisterPlant = async (values, { setSubmitting }) => {
       try {
+        if(values.latitude === "")values.latitude = 0;
+        if(values.longitude === "")values.longitude = 0;
         await API.registerPlant(values);
         setEvent("success")
       } catch (error) {
         setEvent("error")
         // handle the error
       } finally {
+        console.log(values);
         setSubmitting(false);
       }
 
@@ -83,8 +94,10 @@ function CreatePlantForm(props) {
     setfoundPPLength(filtered.length);
     return filtered;
   };
+
   return (
     <View>
+      
     <Formik
       initialValues={{
       name: '',
@@ -92,6 +105,8 @@ function CreatePlantForm(props) {
       plant_profile_id: '',
       plant_type_id: '',
       outdoor: false,
+      latitude:0,
+      longitude:0,
       }}
       validationSchema={RegisterPlantSchema}
       onSubmit={handleRegisterPlant}
@@ -168,7 +183,7 @@ function CreatePlantForm(props) {
                   setSelectedDevice(device.name); setSearchTerm(device.name); setShowDropdown(false);
                   }} style={{ flex: 9 }}
                   >
-                    <Text  style={{width:"100%"}}>{device.name}</Text>
+                    <Text fontSize={16} style={{width:"100%"}}>{device.name}</Text>
                   </TouchableOpacity>
                   {selectedDevice=== device.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
                 </View>
@@ -215,7 +230,7 @@ function CreatePlantForm(props) {
                   setSelectedPlantProfile(plantProfile.name); setSearchPPTerm(plantProfile.name); setShowPPDropdown(false);
                   }} style={{ flex: 9 }}
                   >
-                    <Text  style={{width:"100%"}}>{plantProfile.name}</Text>
+                    <Text fontSize={16} style={{width:"100%"}}>{plantProfile.name}</Text>
                   </TouchableOpacity>
                   {selectedPlantProfile=== plantProfile.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
                 </View>
@@ -261,7 +276,7 @@ function CreatePlantForm(props) {
                   setSelectedPlantType(plantType.name); setSearchPTTerm(plantType.name); setShowPTDropdown(false);
                   }} style={{ flex: 9 }}
                   >
-                    <Text  style={{width:"100%"}}>{plantType.name}</Text>
+                    <Text fontSize={16} style={{width:"100%"}}>{plantType.name}</Text>
                   </TouchableOpacity>
                   {selectedPlantType=== plantType.name && <Icon as={MaterialIcons} name='check' color="coolGray.800" _dark={{ color: "warmGray.50" }} size={6} />}
                 </View>
@@ -275,10 +290,47 @@ function CreatePlantForm(props) {
           <Text style={styles.error}>{errors.plant_type_id}</Text>
         )}
         
+        <HStack space={2} alignItems="center" justifyContent="center" width={"80%"} paddingTop={10}>
+        <Heading style={{fontSize:16,marginRight:15}}>Outdoor</Heading>
+        < Switch onValueChange={(value)=>values.outdoor=value} size="md" />
+        </HStack>
 
+        <HStack space={4} alignItems="center" justifyContent="center" width={"80%"} paddingTop={10}>
+          <Heading style={{fontSize:14}}>Longitude</Heading>
+          <Input     
+           onChangeText={handleChange('longitude')}
+           onBlur={handleBlur('longitude')}
+           value={values.longitude}
+          style={{padding:5}}
+          w="20%"
+          size="2xl"
+          marginBottom="2%"
+          /> 
 
-     
+         
 
+          <Heading style={{fontSize:14}}>Latitude</Heading>
+          <Input  
+           onChangeText={handleChange('latitude')}
+
+           onBlur={handleBlur('latitude')}
+           value={values.latitude}
+          style={{padding:5}}
+          w="20%"
+          size="2xl"
+          marginBottom="2%"
+          /> 
+
+           
+        </HStack>
+        {touched.longitude && errors.longitude && (
+          <Text style={styles.error}>{errors.longitude}</Text>
+        )}
+
+{touched.latitude && errors.latitude && (
+          <Text style={styles.error}>{errors.latitude}</Text>
+        )}
+          
 
     <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
       <Text style={styles.buttonText}>Register Plant</Text>
@@ -289,10 +341,6 @@ function CreatePlantForm(props) {
     </Formik>
 
     
-
-
-
-
 </View>
     
    );

@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
-import {Text,Icon,Modal} from 'native-base';
+import {Text,Icon} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
 
 function PlantsScreen({ navigation }) {
@@ -19,9 +19,6 @@ function PlantsScreen({ navigation }) {
   const [plantProfiles, setPlantProfiles] = useState([]);
   const [isViewVisible, setIsViewVisible] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-
-  const [selectedPlantId, setSelectedPlantId] = useState(null);
 
   const handleButtonClick = () => {
     setIsViewVisible(!isViewVisible);
@@ -127,12 +124,14 @@ function PlantsScreen({ navigation }) {
             <>
             <Text style={{fontSize:25,padding: 7}} key={plant.id}>{plant.name}</Text>
             <View style={{borderColor:'grey',borderWidth:3,paddingBottom: 7,paddingLeft: 2,paddingRight: 2,width:"100%",marginBottom:10, borderRadius: 10}}>
+              
                 <View style={{flexDirection:'row',flex:1,padding:10}}>
                   <Text style={{fontSize:20,color:'green', flex:3,fontWeight:'bold'}} key={plant.id}>{plant.plant_type.name}</Text>
+                  
                   <TouchableOpacity  style={[styles.detailsButton,{fontSize:25,flex:1,flexDirection:'row',justifyContent: 'center',alignItems: 'center'}]} 
                     onPress={() => navigation.navigate('EditPlantScreen',{plantTypes:plantTypes, plantProfiles:plantProfiles, devices:devices ,plant:plant})}
                   >
-                  {/* <Button onPress={() => setShowModal(true)}>Button</Button> */}
+
                   <Text style={styles.createText}>Edit  </Text>
                     <Icon as={MaterialIcons} name="edit" color="white" _dark={{color: "white"}} />
                     
