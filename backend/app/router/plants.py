@@ -169,6 +169,7 @@ async def delete_plant(
     session: AsyncSession = Depends(get_async_session),
 ) -> None:
     await user_can_use_object(user, plant.device_id, Device, "device", session)
+    user = await session.merge(user)
     await session.delete(plant)
     await session.commit()
 
