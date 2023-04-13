@@ -24,7 +24,7 @@ const DeviceUtils = {
       const allDevices = await this.getAllUserDevices();
       const linkedDevices = await this.getLinkedDevices();
 
-      const linkedDeviceIds = linkedDevices.map((plant) => plant.device_id);
+      const linkedDeviceIds = linkedDevices.map((plant) => plant.device.id);
       const unlinkedDevices = allDevices.filter((device) => !linkedDeviceIds.includes(device.id));
       console.log(unlinkedDevices);
       console.log(linkedDevices);
