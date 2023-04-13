@@ -8,7 +8,7 @@ import { Entypo } from '@expo/vector-icons';
 import { View, useWindowDimensions } from 'react-native';
 import CardSensors from './CardSensors';
 
-function DevicesCard({ device, plant }) {
+function DevicesCard({ navigation, device, plant }) {
   const { width, height } = useWindowDimensions();
 
   const {

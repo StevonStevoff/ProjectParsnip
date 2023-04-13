@@ -63,14 +63,14 @@ function DevicesScreen({ navigation }) {
   const renderDeviceItem = ({ item }) => (
     <View style={styles.cardContainer}>
       <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { device: item })}>
-        <DevicesCard device={item} />
+        <DevicesCard device={item} navigation={navigation} />
       </TouchableOpacity>
     </View>
   );
   const renderPlantItem = ({ item }) => (
     <View style={styles.cardContainer}>
       <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { plant: item })}>
-        <DevicesCard plant={item} />
+        <DevicesCard plant={item} navigation={navigation} />
       </TouchableOpacity>
     </View>
   );
@@ -132,7 +132,7 @@ function DevicesScreen({ navigation }) {
         {linkedDevices.map((plant) => (
           <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { plant })}>
             <Box key={plant.device.id} mb={4}>
-              <DevicesCard plant={plant} />
+              <DevicesCard plant={plant} navigation={navigation} />
             </Box>
           </TouchableOpacity>
         ))}
@@ -142,7 +142,7 @@ function DevicesScreen({ navigation }) {
         {unlinkedDevices.map((device) => (
           <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { device })}>
             <Box key={device.id} mb={4}>
-              <DevicesCard device={device} />
+              <DevicesCard device={device} navigation={navigation} />
             </Box>
           </TouchableOpacity>
         ))}

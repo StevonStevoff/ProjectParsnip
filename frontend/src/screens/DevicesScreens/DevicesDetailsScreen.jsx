@@ -5,10 +5,10 @@ import {
   Icon, Avatar, Button, Divider, ScrollView,
 } from 'native-base';
 import React from 'react';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
 
-function DevicesDetailsScreen({ route }) {
+function DevicesDetailsScreen({ navigation, route }) {
   const { device = {}, plant = {} } = route?.params || {};
   const {
     name = '',
@@ -52,6 +52,12 @@ function DevicesDetailsScreen({ route }) {
         _light={{ backgroundColor: 'gray.50' }}
       >
         <VStack width="90%">
+          <HStack justifyContent="space-between" width="100%">
+            <IconButton
+              icon={<Icon as={Ionicons} name="arrow-back" color="white" size="lg" />}
+              onPress={() => navigation.goBack()}
+            />
+          </HStack>
           <VStack height="10%">
             <Heading size="xl" fontWeight={500} textAlign="center">{name}</Heading>
             <Text
