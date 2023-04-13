@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import pytest
+import pytz
 from sqlalchemy import select
 
 from app.models import Plant
@@ -438,9 +439,8 @@ async def test_patch_plant_by_id_doenst_exist(setup_db, client, superuser_access
 
 @pytest.mark.asyncio(scope="session")
 async def test_patch_plant_by_id(setup_db, client, superuser_access_token):
-    current_date_time = datetime.now()
-    current_date_time_str = current_date_time.isoformat()
-    print(type(current_date_time_str))
+    time_planted_string = "2023-04-13T12:22:03.619Z"
+    datetime_planted = datetime.strptime(time_planted_string, "%Y-%m-%dT%H:%M:%S.%fZ")
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
     body = {
         "name": "patched",
@@ -450,6 +450,38 @@ async def test_patch_plant_by_id(setup_db, client, superuser_access_token):
         "plant_type_id": 1,
         "plant_profile_id": 1,
         "device_id": 2,
+        "time_planted": time_planted_string,
+    }
+    response = await client.patch(
+        "/plants/3",
+        headers=headers,
+        json=body,
+    )
+
+    assert response.status_code == 200
+
+    query = select(Plant).where(Plant.id == 3)
+    plants = await get_objects(query)
+
+    expected_datetime = datetime_planted.replace(tzinfo=None)
+
+    assert len(plants) == 1
+    assert plants[0].name == "patched"
+    assert plants[0].outdoor is False
+    assert plants[0].latitude == -10
+    assert plants[0].longitude == 10.0
+    assert plants[0].plant_type_id == 1
+    assert plants[0].plant_profile_id == 1
+    assert plants[0].device_id == 2
+    assert plants[0].time_planted == expected_datetime
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_alternate_timezone(setup_db, client, superuser_access_token):
+    current_date_time = datetime.now(pytz.timezone("America/New_York"))
+    current_date_time_str = current_date_time.isoformat()
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    body = {
         "time_planted": current_date_time_str,
     }
     response = await client.patch(
@@ -463,15 +495,32 @@ async def test_patch_plant_by_id(setup_db, client, superuser_access_token):
     query = select(Plant).where(Plant.id == 3)
     plants = await get_objects(query)
 
+    current_date_time_utc = current_date_time.astimezone(timezone.utc)
+    expected_datetime = current_date_time_utc.replace(tzinfo=None)
+
     assert len(plants) == 1
-    assert plants[0].name == "patched"
-    assert plants[0].outdoor is False
-    assert plants[0].latitude == -10
-    assert plants[0].longitude == 10.0
-    assert plants[0].plant_type_id == 1
-    assert plants[0].plant_profile_id == 1
-    assert plants[0].device_id == 2
-    assert plants[0].time_planted == current_date_time
+    assert plants[0].time_planted == expected_datetime
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_patch_plant_future_time_planted(
+    setup_db, client, superuser_access_token
+):
+    future_datetime = datetime.now(timezone.utc) + timedelta(minutes=30)
+    futre_time_string = future_datetime.isoformat()
+    headers = {"Authorization": f"Bearer {superuser_access_token}"}
+    body = {
+        "time_planted": futre_time_string,
+    }
+    response = await client.patch(
+        "/plants/3",
+        headers=headers,
+        json=body,
+    )
+
+    assert response.status_code == 400
+    json_response = response.json()
+    assert json_response["detail"] == "Time planted cannot be in the future."
 
 
 @pytest.mark.asyncio(scope="session")

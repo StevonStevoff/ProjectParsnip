@@ -30,6 +30,7 @@ alembic = "^1.9.3"
 python-dotenv = "^1.0.0"
 pyjwt = "^2.6.0"
 fastapi-mail = "^1.2.7"
+pytz = "^2023.3"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0.0"

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -196,8 +196,7 @@ async def patch_plant(
     plant: Plant = Depends(get_plant_or_404),
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantRead:
-    local_user = await session.merge(user)
-    await user_can_use_object(local_user, plant.device_id, Device, "device", session)
+    await user_can_use_object(user, plant.device_id, Device, "device", session)
 
     if plant_update.name is not None:
         plant.name = plant_update.name
@@ -215,8 +214,7 @@ async def patch_plant(
         plant.outdoor = plant_update.outdoor
 
     if plant_update.time_planted is not None:
-        if datetime.now() > plant_update.time_planted:
-            plant.time_planted = plant_update.time_planted
+        await update_time_planted(plant, plant_update.time_planted)
 
     if plant_update.longitude is not None or plant_update.latitude is not None:
         await update_plant_coordinates(
@@ -326,3 +324,15 @@ async def update_plant_coordinates(
         plant.latitude = latitude
     if longitude is not None:
         plant.longitude = longitude
+
+
+async def update_time_planted(plant: Plant, time_planted: datetime) -> None:
+    current_time = datetime.now(timezone.utc)
+    time_planted_utc = time_planted.astimezone(timezone.utc)
+    if current_time < time_planted_utc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Time planted cannot be in the future.",
+        )
+
+    plant.time_planted = time_planted_utc
