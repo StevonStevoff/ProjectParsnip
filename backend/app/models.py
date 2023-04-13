@@ -78,10 +78,7 @@ class Device(Base):
         lazy="selectin",
     )
     sensors = relationship(
-        "Sensor",
-        secondary=DeviceSensors,
-        back_populates="devices",
-        lazy="selectin",
+        "Sensor", secondary=DeviceSensors, back_populates="devices", lazy="selectin"
     )
 
 
@@ -121,8 +118,14 @@ class Plant(Base):
         back_populates="plants",
         lazy="selectin",
     )
-    plant_data = relationship("PlantData", back_populates="plant")
-    plant_profile = relationship("PlantProfile", lazy="selectin")
+    plant_data = relationship(
+        "PlantData",
+        back_populates="plant",
+    )
+    plant_profile = relationship(
+        "PlantProfile",
+        lazy="selectin",
+    )
     plant_type = relationship(
         "PlantType",
         lazy="selectin",

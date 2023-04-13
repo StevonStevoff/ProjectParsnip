@@ -227,7 +227,9 @@ async def update_device_owner(
     device: Device, new_owner_id: int, session: AsyncSession
 ) -> None:
     try:
-        user = await get_object_or_404(new_owner_id, User, session)
+        user = await get_object_or_404(
+            new_owner_id, User, session, "The user does not exist."
+        )
     except HTTPException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
