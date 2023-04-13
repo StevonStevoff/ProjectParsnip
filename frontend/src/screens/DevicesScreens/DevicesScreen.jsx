@@ -9,8 +9,8 @@ import DeviceUtils from '../../api/utils/DeviceUtils';
 
 function DevicesScreen({ navigation }) {
   const [isLoading, setIsLoading] = React.useState(true);
-  const [linkedDevices, setLinkedDevices] = React.useState();
-  const [unlinkedDevices, setUnlinkedDevices] = React.useState();
+  const [linkedDevices, setLinkedDevices] = React.useState([]);
+  const [unlinkedDevices, setUnlinkedDevices] = React.useState([]);
   const [refreshing, setRefreshing] = React.useState(false);
   const { width } = useWindowDimensions();
   const cardWidth = 350;
@@ -89,7 +89,7 @@ function DevicesScreen({ navigation }) {
 
   if (screenWidth > 750) {
     return (
-      <View style={styles.webContainer}>
+      <ScrollView style={styles.webContainer}>
         <View style={styles.container}>
           <Heading>Linked Devices</Heading>
           <FlatList
@@ -114,40 +114,32 @@ function DevicesScreen({ navigation }) {
             refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
           />
         </View>
-      </View>
+      </ScrollView>
     );
   }
   return (
-    <View>
-      <View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+    >
+      <Box mb={4}>
         <Heading>Linked Devices</Heading>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        >
-          {linkedDevices.map((plant) => (
-            <Box key={plant.device.id} mb={4}>
-              <DevicesCard plant={plant} />
-            </Box>
-          ))}
-        </ScrollView>
-      </View>
-      <View>
+        {linkedDevices.map((plant) => (
+          <Box key={plant.device.id} mb={4}>
+            <DevicesCard plant={plant} />
+          </Box>
+        ))}
+      </Box>
+      <Box mb={4}>
         <Heading>Unlinked Devices</Heading>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        >
-          {linkedDevices.map((device) => (
-            <Box key={device.id} mb={4}>
-              <DevicesCard device={device} />
-            </Box>
-          ))}
-        </ScrollView>
-      </View>
-    </View>
+        {unlinkedDevices.map((device) => (
+          <Box key={device.id} mb={4}>
+            <DevicesCard device={device} />
+          </Box>
+        ))}
+      </Box>
+    </ScrollView>
   );
 }
 
@@ -155,11 +147,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    paddingBottom: '5%',
   },
   webContainer: {
     flex: 1,
     padding: 10,
-    alignItems: 'center',
   },
   cardContainer: {
     alignItems: 'center',
