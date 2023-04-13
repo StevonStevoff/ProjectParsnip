@@ -27,15 +27,11 @@ function NavigationRoot() {
   return (
     <NavigationContainer theme={reactNavigationTheme}>
       <Stack.Navigator
-       // initialRouteName="LoginScreen"
+        initialRouteName="LoginScreen"
         screenOptions={{
           headerShown: false,
         }}
       >
-        <Stack.Screen
-          name="DevicesDetails"
-          component={DevicesDetailsScreen}
-        />
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
