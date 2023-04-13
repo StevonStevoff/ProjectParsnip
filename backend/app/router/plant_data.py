@@ -47,17 +47,12 @@ async def create_plant_data(
     )
 
     await session.commit()
-    # await session.refresh(plant_data)
-
-    # return PlantDataRead.from_orm(plant_data)
 
     created_plant_data = await session.get(
         PlantData, plant_data.id, populate_existing=True
     )
 
-    background_tasks.add_task(
-        check_plant_properties, device, plant, plant_data, session
-    )
+    background_tasks.add_task(check_plant_properties, device, plant, plant_data, session)
     return PlantDataRead.from_orm(created_plant_data)
 
 
@@ -67,17 +62,13 @@ async def add_sensor_readings(
     plant: Plant,
     session: AsyncSession,
 ) -> None:
-    sensor_to_property = await map_sensors_to_properties(
-        plant.plant_profile_id, session
-    )
+    sensor_to_property = await map_sensors_to_properties(plant.plant_profile_id, session)
 
     for reading in sensor_readings:
         created_reading = await create_sensor_reading(
             plant_data.id, reading, sensor_to_property, session
         )
         session.add(created_reading)
-
-    # await session.commit()
 
 
 async def create_sensor_reading(
