@@ -44,7 +44,9 @@ async def user_can_use_object(
     object_user_ids = [object_user.id for object_user in object.users]
     if user.id not in object_user_ids:
         if user.is_superuser:
-            object.users.append(user)
+            local_user = await session.merge(user)
+            object.users.append(local_user)
+            await session.flush()
         else:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

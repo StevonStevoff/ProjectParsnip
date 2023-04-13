@@ -197,6 +197,7 @@ async def patch_plant(
     session: AsyncSession = Depends(get_async_session),
 ) -> PlantRead:
     await user_can_use_object(user, plant.device_id, Device, "device", session)
+    user = await session.merge(user)
 
     if plant_update.name is not None:
         plant.name = plant_update.name
@@ -266,10 +267,15 @@ async def get_plant_data(
     )
 
 
+async def update_plant_name(plant: Plant, name: str) -> None:
+    plant.name = name
+
+
 async def update_plant_device(
     plant: Plant, user: User, device_id: int, session: AsyncSession
 ) -> None:
     await user_can_use_object(user, device_id, Device, "device", session)
+    user = await session.merge(user)
     await get_object_or_404(device_id, Device, session, "The device does not exist.")
     plant.device_id = device_id
 
@@ -280,6 +286,7 @@ async def update_plant_profile(
     await user_can_use_object(
         user, plant_profile_id, PlantProfile, "plant profile", session
     )
+    user = await session.merge(user)
     await get_object_or_404(
         plant_profile_id, PlantProfile, session, "The plant profile does not exist."
     )
