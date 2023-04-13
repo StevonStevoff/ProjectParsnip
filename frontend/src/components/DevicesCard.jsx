@@ -24,8 +24,8 @@ function DevicesCard({ device, plant }) {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        width: width > 768 ? 350 : 250,
-        height: height > 1024 ? 240 : 200,
+        width: width > 768 ? 360 : '100%',
+        height: height > 1024 ? 240 : 150,
       }}
     >
       <Box
@@ -74,11 +74,17 @@ function DevicesCard({ device, plant }) {
                 ))}
               </Avatar.Group>
             </HStack>
-            <HStack space={3}>
+            <HStack
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+              minHeight={5}
+            >
               <Text
-                fontSize={11}
+                fontSize={12}
+                noOfLines={1}
                 _light={{
-                  color: 'primary.500',
+                  color: 'primary.800',
                 }}
                 _dark={{
                   color: 'primary.400',
@@ -91,10 +97,10 @@ function DevicesCard({ device, plant }) {
                 <>
                   <Icon as={Entypo} name="dot-single" />
                   <Text
-                    fontSize={11}
+                    fontSize={12}
                     noOfLines={1}
                     _light={{
-                      color: 'primary.500',
+                      color: 'primary.800',
                     }}
                     _dark={{
                       color: 'primary.400',
@@ -105,9 +111,10 @@ function DevicesCard({ device, plant }) {
                   </Text>
                   <Icon as={Entypo} name="dot-single" />
                   <Text
-                    fontSize={11}
+                    fontSize={12}
+                    noOfLines={1}
                     _light={{
-                      color: 'primary.500',
+                      color: 'primary.800',
                     }}
                     _dark={{
                       color: 'primary.400',
