@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import React, { useEffect } from 'react';
 import {
-  View, useWindowDimensions, StyleSheet, RefreshControl, FlatList, ScrollView,
+  View, useWindowDimensions, StyleSheet, RefreshControl, FlatList, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { Text, Box, Heading } from 'native-base';
 import DevicesCard from '../../components/DevicesCard';
@@ -62,12 +62,16 @@ function DevicesScreen({ navigation }) {
 
   const renderDeviceItem = ({ item }) => (
     <View style={styles.cardContainer}>
-      <DevicesCard device={item} onPress={() => navigation.navigate('DevicesDetails', { device: item })} />
+      <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { device: item })}>
+        <DevicesCard device={item} />
+      </TouchableOpacity>
     </View>
   );
   const renderPlantItem = ({ item }) => (
     <View style={styles.cardContainer}>
-      <DevicesCard plant={item} onPress={() => navigation.navigate('DevicesDetails', { plant: item })} />
+      <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { plant: item })}>
+        <DevicesCard plant={item} />
+      </TouchableOpacity>
     </View>
   );
   if (isLoading) {
@@ -126,17 +130,21 @@ function DevicesScreen({ navigation }) {
       <Box mb={4}>
         <Heading>Linked Devices</Heading>
         {linkedDevices.map((plant) => (
-          <Box key={plant.device.id} mb={4}>
-            <DevicesCard plant={plant} />
-          </Box>
+          <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { plant })}>
+            <Box key={plant.device.id} mb={4}>
+              <DevicesCard plant={plant} />
+            </Box>
+          </TouchableOpacity>
         ))}
       </Box>
       <Box mb={4}>
         <Heading>Unlinked Devices</Heading>
         {unlinkedDevices.map((device) => (
-          <Box key={device.id} mb={4}>
-            <DevicesCard device={device} />
-          </Box>
+          <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { device })}>
+            <Box key={device.id} mb={4}>
+              <DevicesCard device={device} />
+            </Box>
+          </TouchableOpacity>
         ))}
       </Box>
     </ScrollView>

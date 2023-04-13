@@ -7,6 +7,7 @@ import ProfileScreen from '../screens/AuthScreens/ProfileScreen';
 import RegistrationScreen from '../screens/AuthScreens/RegistrationScreen';
 import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import ForgotPasswordScreen from '../screens/AuthScreens/ForgotPasswordScreen';
+import DevicesDetailsScreen from '../screens/DevicesScreens/DevicesDetailsScreen';
 
 const Stack = createStackNavigator();
 function NavigationRoot() {
@@ -26,11 +27,15 @@ function NavigationRoot() {
   return (
     <NavigationContainer theme={reactNavigationTheme}>
       <Stack.Navigator
-        initialRouteName="LoginScreen"
+       // initialRouteName="LoginScreen"
         screenOptions={{
           headerShown: false,
         }}
       >
+        <Stack.Screen
+          name="DevicesDetails"
+          component={DevicesDetailsScreen}
+        />
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
