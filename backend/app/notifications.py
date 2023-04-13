@@ -7,22 +7,29 @@ from app.models import Device, Notification, Plant, PlantData, User
 from app.router.utils import get_object_or_404
 
 
-# check if there is enough time between notifications for a plant
-async def check_recent_notification(plant: Plant, session: AsyncSession) -> bool:
-    time_now = datetime.now()
+async def get_recent_notification(
+    plant: Plant, session: AsyncSession
+) -> Notification | None:
     query = (
         select(Notification)
         .where(Notification.plant_id == plant.id)
         .order_by(Notification.timestamp.desc())
-        .first()
     )
-    notification = session.execute(query).scalars().first()
+    query_result = await session.execute(query)
+    notification = query_result.scalars().first()
+
+    return notification
+
+
+# check if there is enough time between notifications for a plant
+async def check_recent_notification(plant: Plant, session: AsyncSession) -> bool:
+    notification = await get_recent_notification(plant, session)
 
     if notification:
-        time_delta = time_now - notification.timestamp
+        time_delta = datetime.now() - notification.timestamp
         time_delta = time_delta.total_seconds() / 60
     else:
-        return False
+        return True
 
     # wait a day if notification did not resolve
     if (not notification.resolved) and (time_delta < 1440):
@@ -35,15 +42,11 @@ async def check_recent_notification(plant: Plant, session: AsyncSession) -> bool
 
 
 async def resolve_last_notification(plant: Plant, session: AsyncSession) -> None:
-    query = (
-        select(Notification)
-        .where(Notification.plant_id == plant.id)
-        .order_by(Notification.timestamp.desc())
-        .first()
-    )
-    notification = session.execute(query).scalars().first()
-    notification.resolved = True
-    await session.commit()
+    notification = await get_recent_notification(plant, session)
+
+    if notification:
+        notification.resolved = True
+        await session.commit()
 
 
 # returns a list of grow property names from plant data that
@@ -53,9 +56,9 @@ async def get_out_of_range_properties(plant_data: PlantData) -> list:
 
     for reading in plant_data.sensor_readings:
         if reading.value > reading.grow_property.max:
-            out_of_range.append(reading.grow_property.name)
+            out_of_range.append(reading.grow_property.grow_property_type.name)
         elif reading.value < reading.grow_property.min:
-            out_of_range.append(reading.grow_property.name)
+            out_of_range.append(reading.grow_property.grow_property_type.name)
 
     return out_of_range
 
@@ -67,35 +70,26 @@ async def check_plant_properties(
     # lookup device users
     # send notifications if needed to all users of device
 
-    should_send_notification = check_recent_notification(plant, session)
+    should_send_notification = await check_recent_notification(plant, session)
 
-    out_of_range = get_out_of_range_properties(plant_data)
+    out_of_range = await get_out_of_range_properties(plant_data)
 
     if len(out_of_range) > 0:
         if should_send_notification:
-            users = device.users
-            for user in users:
-                notification_data = {
-                    "plant_id": plant.id,
-                    "plant_name": plant.name,
-                    "device_name": device.name,
-                    "properties": out_of_range,
-                }
-                await create_user_notification(user, session, notification_data)
+            notification_data = {
+                "plant_id": plant.id,
+                "plant_name": plant.name,
+                "device_name": device.name,
+                "properties": out_of_range,
+            }
+            await create_user_notification(device.users, session, notification_data)
 
     else:
-        resolve_last_notification(plant, session)
-
-
-async def create_user_notification_by_id(user_id: int, session: AsyncSession) -> None:
-    user = await get_object_or_404(
-        user_id, User, AsyncSession, "The user does not exist"
-    )
-    await create_user_notification(user, session)
+        await resolve_last_notification(plant, session)
 
 
 async def create_user_notification(
-    user: User, session: AsyncSession, data: dict
+    users: list, session: AsyncSession, data: dict
 ) -> None:
     # Create notification here
     # Add to database and link to user
@@ -121,6 +115,9 @@ async def create_user_notification(
         timestamp=datetime.now(),
         plant_id=data["plant_id"],
     )
-
     session.add(notification)
+
+    for user in users:
+        user.notifications.append(notification)
+
     await session.commit()

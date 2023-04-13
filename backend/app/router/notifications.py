@@ -22,7 +22,7 @@ router = APIRouter()
             "description": "Missing token or inactive user.",
         },
         status.HTTP_404_NOT_FOUND: {
-            "description": "No notifcations found.",
+            "description": "User has no notifications",
         },
     },
 )
@@ -31,7 +31,10 @@ async def get_my_notifications(
     session: AsyncSession = Depends(get_async_session),
 ) -> list[NotificationRead]:
     notifications_query = await session.execute(
-        select(Notification).join(Notification.users).filter_by(id=user.id)
+        select(Notification)
+        .join(Notification.users)
+        .filter_by(id=user.id)
+        .order_by(Notification.timestamp.desc())
     )
     notifications = notifications_query.scalars().all()
 

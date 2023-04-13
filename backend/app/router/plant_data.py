@@ -14,6 +14,7 @@ router = APIRouter()
     "/",
     name="plant_data:send_plant_data",
     response_model=PlantDataRead,
+    status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_404_NOT_FOUND: {
             "description": "The plant/device does not exist",
@@ -46,12 +47,17 @@ async def create_plant_data(
     )
 
     await session.commit()
+    # await session.refresh(plant_data)
+
+    # return PlantDataRead.from_orm(plant_data)
 
     created_plant_data = await session.get(
         PlantData, plant_data.id, populate_existing=True
     )
 
-    background_tasks.add(check_plant_properties, device, plant, plant_data, session)
+    background_tasks.add_task(
+        check_plant_properties, device, plant, plant_data, session
+    )
     return PlantDataRead.from_orm(created_plant_data)
 
 
@@ -61,19 +67,23 @@ async def add_sensor_readings(
     plant: Plant,
     session: AsyncSession,
 ) -> None:
-    ids_dictionary = await map_sensors_to_properties(plant.plant_profile_id, session)
+    sensor_to_property = await map_sensors_to_properties(
+        plant.plant_profile_id, session
+    )
 
     for reading in sensor_readings:
         created_reading = await create_sensor_reading(
-            plant_data.id, reading, ids_dictionary, session
+            plant_data.id, reading, sensor_to_property, session
         )
         session.add(created_reading)
+
+    # await session.commit()
 
 
 async def create_sensor_reading(
     plant_data_id: int,
     sensor_reading: SensorReadingCreate,
-    ids_dictionary: dict,
+    sensor_to_property: dict,
     session: AsyncSession,
 ) -> SensorReading:
     await get_object_or_404(
@@ -85,7 +95,7 @@ async def create_sensor_reading(
     reading.sensor_id = sensor_reading.sensor_id
     reading.plant_data_id = plant_data_id
 
-    property_id = ids_dictionary.get(sensor_reading.sensor_id)
+    property_id = sensor_to_property.get(sensor_reading.sensor_id)
     if property_id:
         reading.grow_property_id = property_id
 
