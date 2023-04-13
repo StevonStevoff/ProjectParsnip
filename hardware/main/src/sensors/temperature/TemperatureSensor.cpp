@@ -41,11 +41,21 @@ std::tuple<float, float> TemperatureSensor::getTemperatureAndHumidity() const
     return std::make_tuple(this->getTemperature(), this->getHumidity());
 }
 
-float TemperatureSensor::read() const
+std::map<std::string, float> TemperatureSensor::read() const
 {
     // Override the read() function with a new implementation
     // This is just an example implementation, you can replace it with your own
-    return static_cast<float>(2.0);
+    // return static_cast<float>(analogRead(this->temperatureSensorPin));
+
+    const float temp = this->getTemperature();
+    const float hu = this->getHumidity();
+
+    std::map<std::string, float> sensorData;
+
+    sensorData["temperature"] = temp;
+    sensorData["humidity"] = hu;
+
+    return sensorData;
 }
 
 // void TemperatureSensor::read()

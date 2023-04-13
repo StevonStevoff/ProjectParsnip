@@ -1,17 +1,20 @@
-#include <WiFiClientSecure.h>
+// #ifndef HttpClient_h
+// #define HttpClient_h
 
-#ifdef ESP32 // Check if using ESP32 board
-#include <WiFiClientSecure.h>
-#endif
+// #ifdef ESP32 // Check if using ESP32 board
+// #include <WiFiClientSecure.h>
+// #endif
 
-class HttpClient
-{
-public:
-    HttpClient(const char *host, const uint16_t port);
-    bool post(const char *path, const char *data);
+// class HttpClients
+// {
+// public:
+//     HttpClient(const char *host, const uint16_t port);
+//     bool post(const char *path, const char *data);
 
-private:
-    WiFiClientSecure client_;
-    const char *host_;
-    const uint16_t port_;
-};
+// private:
+//     WiFiClientSecure client_;
+//     const char *host_;
+//     const uint16_t port_;
+// };
+
+// #endif

@@ -7,10 +7,9 @@ DeviceESP32::DeviceESP32() : Portal(server), sensors_()
     // if (Portal.begin()) {
     //     Serial.println("WiFi connected: " + WiFi.localIP().toString());
     // }
-    const char *host = "api.thingspeak.com";
-    const uint16_t port = 443;
-    this->httpClient_ = new HttpClient(host, port);
 #endif
+
+    this->deviceServerInterface = new DeviceServerInterface("https://parsnipbackend.azurewebsites.net");
 }
 
 void DeviceESP32::rootPage()
@@ -24,12 +23,14 @@ AutoConnect &DeviceESP32::getPortal()
     return Portal;
 }
 
-void DeviceESP32::readSensors()
+void DeviceESP32::handleClientRequest()
 {
-    for (const Sensor *sensor : this->sensors_)
-    {
-        sensor->read();
-    }
+    this->getPortal().handleClient();
+}
+
+void DeviceESP32::beginServer()
+{
+    this->getPortal().begin();
 }
 
 void DeviceESP32::addSensor(Sensor *sensor)
@@ -49,16 +50,25 @@ void DeviceESP32::removeSensor(int id)
     }
 }
 
-void DeviceESP32::takeReadings()
+void DeviceESP32::readSensors()
 {
     // Loop through each sensor and take a reading
     for (auto sensor : sensors_)
     {
-        float value = sensor->read();
+        std::map<std::string, float> value = sensor->read();
 
         // Send the sensor data to the server
-        char data[128];
-        sprintf(data, "{\"sensor_id\":%d,\"value\":%f}", sensor->getId(), value);
-        this->httpClient_->post("/api/sensor-data", data);
+        // char data[128];
+        // sprintf(data, "{\"sensor_id\":%d,\"value\":%f}", sensor->getId(), value);
+        Serial.println(value["temperature"]);
+        Serial.println(value["humidity"]);
+        // this->httpClient_->post("/api/sensor-data", data);
     }
+}
+
+// make a method that packages the data and sends it to the backend using the http client
+void DeviceESP32::sendSensorData()
+{
+    return;
+    char data[128];
 }

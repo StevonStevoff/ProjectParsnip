@@ -10,40 +10,44 @@
 DeviceESP32 *device = new DeviceESP32();
 TemperatureSensor *temperatureSensor = new TemperatureSensor(1);
 
+#include <HttpClient.h>
+HTTPClient client;
+
 void setup()
 {
-    delay(1000);
-    Serial.begin(9600);
-    Serial.println();
-    Serial.println(F("start"));
-    // add sensors
-    device->addSensor(temperatureSensor);
-    Serial.println(F("done"));
-    device->getPortal().begin();
-    // if (device->getPortal().begin())
-    // {
-    //     // Serial.println("WiFi connected: " + WiFi.localIP().toString());
-    //     Serial.println(F("WiFi connected: "));
-    //     device->handler.testApiRequest();
-    // }
-    Serial.println(F("done 2"));
+  delay(1000);
+  Serial.begin(9600);
+  Serial.println();
+  Serial.println(F("start"));
+  // add sensors
+  device->addSensor(temperatureSensor);
+
+  device->beginServer();
+  Serial.println(F("Connected to wifi"));
+
+  // client(device->server, 80);
+  // client.begin("https://parsnipbackend.azurewebsites.net");
 }
 
 void loop()
 {
   // delay(1000);
-  device->getPortal().handleClient();
+  device->handleClientRequest();
   delay(1000);
-  Serial.println(temperatureSensor->getTemperature());
+  device->readSensors();
+  Serial.println(F("looped"));
 
-  //handle sensor data and send it to backend - every minute, 5, 10, 30 or 1 hour
+  // device->sendSensorData()
 
-  
-
-  // Serial.println(F("yes"));
-    
-    // read sensors values;
-    // device->readSensors().handSensor();
-    // send any requests needed
-
+  // Serial.println(temperatureSensor->getTemperature());
+  // if (client.GET())
+  // {
+  //   // Read the response data
+  //   String response = client.getString();
+  //   Serial.println(response);
+  // }
+  // else
+  // {
+  //   Serial.println("HTTP request failed");
+  // }
 }

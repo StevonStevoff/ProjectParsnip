@@ -11,7 +11,7 @@ class TemperatureSensor : public Sensor
 public:
     TemperatureSensor(int id);
     int getId() const override;
-    float read() const override;
+    std::map<std::string, float> read() const override;
 
     float getTemperature() const;
     float getHumidity() const;
