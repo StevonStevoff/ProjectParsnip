@@ -75,6 +75,7 @@ class DeviceBase(BaseModel):
 
 class DeviceRead(BaseRead, DeviceBase):
     owner: UserRead
+    auth_token: Optional[str]
     users: list[UserRead]
     sensors: list[SensorRead]
 
