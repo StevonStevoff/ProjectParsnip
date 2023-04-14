@@ -260,6 +260,7 @@ async def get_plant_data(
         )
 
     await user_can_use_object(user, plant.device_id, Device, "device", session)
+    user = await session.merge(user)
 
     return await model_list_to_schema(
         plant.plant_data, PlantDataRead, "No plant data found."
