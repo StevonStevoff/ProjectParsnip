@@ -376,6 +376,14 @@ async def add_sensor_readings():
                 plant_data_id=1,
             )
         )
+        test_sensor_readings.append(
+            SensorReading(
+                value=11.5,
+                sensor_id=1,
+                grow_property_id=1,
+                plant_data_id=2,
+            )
+        )
         for test_sensor_reading in test_sensor_readings:
             session.add(test_sensor_reading)
         await session.commit()
