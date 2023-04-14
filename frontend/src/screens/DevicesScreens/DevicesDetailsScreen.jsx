@@ -4,12 +4,16 @@ import {
   Text, Box, Heading, HStack, VStack, IconButton,
   Icon, Avatar, Button, Divider, ScrollView,
 } from 'native-base';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
 import DeviceUtils from '../../api/utils/DeviceUtils';
+import AdditionDialog from '../../components/AdditionDialog';
 
 function DevicesDetailsScreen({ navigation, route }) {
+  const [sensortoAdd, setSensorToAdd] = useState(null);
+  const [additionDialogOpen, setAdditionDialogOpen] = useState(false);
+  const [selectionOptions, setSelectionOptions] = useState([]);
   const { device = {}, plant = {} } = route?.params || {};
 
   const {
@@ -23,7 +27,7 @@ function DevicesDetailsScreen({ navigation, route }) {
   const plantProfileName = plant?.plant_profile?.name || '';
   const plantType = plant?.plant_type?.name || '';
   const ownerID = plant?.device.owner?.id || device.owner?.id || '';
-
+  let allSensors;
   users.forEach((user) => {
     if (user.id === ownerID) {
       // eslint-disable-next-line no-param-reassign
@@ -31,12 +35,40 @@ function DevicesDetailsScreen({ navigation, route }) {
     }
   });
 
-  function handleSensorUpdate(updatedSensors) {
+  useEffect(() => {
+    DeviceUtils.getAllSensors()
+      .then((sensorResponse) => {
+        allSensors = sensorResponse;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const handleSensorUpdate = (updatedSensors) => {
     const currentDevice = (device && Object.keys(device).length > 0)
       ? device : (plant && plant.device) || {};
     DeviceUtils.updateSensorsInDevice(currentDevice, updatedSensors);
-  }
+  };
 
+  const handleAdditionClick = () => {
+    setAdditionDialogOpen(true);
+  };
+
+  const handleAdditionClose = () => {
+    setAdditionDialogOpen(false);
+    setSelectionOptions([]);
+  };
+
+  const handleAdditionConfirm = () => {
+    handleAdditionClose();
+  };
+
+  const addSensors = () => {
+    setSelectionOptions(allSensors);
+    console.log(allSensors);
+    handleAdditionClick();
+  };
   return (
     <ScrollView
       contentContainerStyle={{
@@ -61,6 +93,13 @@ function DevicesDetailsScreen({ navigation, route }) {
         _dark={{ borderColor: '#18181b', backgroundColor: '#18181b' }}
         _light={{ backgroundColor: 'gray.50' }}
       >
+        <AdditionDialog
+          isOpen={additionDialogOpen}
+          onClose={handleAdditionClose}
+          onConfirm={handleAdditionConfirm}
+          selectionOptions={selectionOptions}
+          actionBtnText="Add"
+        />
         <VStack width="90%">
           <HStack justifyContent="space-between" width="100%">
             <IconButton
@@ -116,7 +155,10 @@ function DevicesDetailsScreen({ navigation, route }) {
           >
             <HStack justifyContent="space-between">
               <Heading size="lg" fontWeight={500}>Sensors</Heading>
-              <IconButton icon={(
+              <Button
+                variant="unstyled"
+                onPress={() => addSensors()}
+              >
                 <Icon
                   as={MaterialIcons}
                   name="add-circle"
@@ -124,8 +166,7 @@ function DevicesDetailsScreen({ navigation, route }) {
                   _light={{ color: 'grey.200' }}
                   _dark={{ color: 'white' }}
                 />
-)}
-              />
+              </Button>
             </HStack>
             <Divider />
             <DevicesDetailsSensors sensors={sensors} handleSensorUpdate={handleSensorUpdate} />

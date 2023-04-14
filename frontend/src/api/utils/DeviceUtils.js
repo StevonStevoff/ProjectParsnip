@@ -27,8 +27,6 @@ const DeviceUtils = {
 
       const linkedDeviceIds = linkedDevices.map((plant) => plant.device.id);
       const unlinkedDevices = allDevices.filter((device) => !linkedDeviceIds.includes(device.id));
-      console.log(unlinkedDevices);
-      console.log(linkedDevices);
       return unlinkedDevices;
     } catch (error) {
       console.error(error);
@@ -66,8 +64,16 @@ const DeviceUtils = {
       sensor_ids,
       user_ids,
     };
-    console.log('deviced', deviceData);
     return deviceData;
+  },
+  async getAllSensors() {
+    try {
+      const response = await API.getSensors();
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of an error
+    }
   },
 };
 

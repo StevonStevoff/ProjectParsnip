@@ -4,7 +4,6 @@ import {
 } from 'native-base';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useWindowDimensions } from 'react-native';
-
 import WarningDialog from './WarningDialog';
 
 const keywordToIconComponent = {

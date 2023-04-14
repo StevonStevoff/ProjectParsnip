@@ -137,12 +137,24 @@ const API = {
   },
 
   async updateDevice({ data }, cancel = false) {
-    console.log('api device', data);
     const response = await api.request({
       // eslint-disable-next-line no-template-curly-in-string
       url: `devices/${data.id}`,
       method: 'PATCH',
       data,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+  async getSensors(cancel = false) {
+    const response = await api.request({
+      url: '/sensors',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
