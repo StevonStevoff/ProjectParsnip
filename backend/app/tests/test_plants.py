@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
-
 import pytest
 import pytz
+
 from sqlalchemy import select
 
 from app.models import Plant
