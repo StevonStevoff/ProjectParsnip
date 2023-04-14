@@ -108,6 +108,17 @@ const API = {
     return response;
   },
 
+  async getPlantData(id,cancel = false) {
+    const response = await api.request({
+      url:  `/plants/${id}/data`,
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
   async deletePlant(id,cancel = false) {
     const response = await api.request({ 
       url: `/plants/${id}`,
