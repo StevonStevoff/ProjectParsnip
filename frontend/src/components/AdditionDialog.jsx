@@ -7,10 +7,10 @@ function AdditionDialog({
   isOpen, onClose, onConfirm, actionBtnText, selectionOptions,
 }) {
   const [selection, setSelection] = useState('');
-  const [selectedID, setSelectedID] = useState('');
+  const [selectedItem, setSelectedItem] = useState('');
 
   const handleConfirm = () => {
-    onConfirm(selection);
+    onConfirm(selectedItem);
     onClose();
   };
 
@@ -41,7 +41,7 @@ function AdditionDialog({
                   // eslint-disable-next-line eqeqeq
                   const selected = selectionOptions.find((item) => item.id == itemValue);
                   if (selected) {
-                    setSelectedID(selected.id);
+                    setSelectedItem(selected);
                     setSelection(selected.id);
                   }
                 }}

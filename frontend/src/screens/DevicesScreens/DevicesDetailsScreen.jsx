@@ -28,6 +28,8 @@ function DevicesDetailsScreen({ navigation, route }) {
   const plantType = plant?.plant_type?.name || '';
   const ownerID = plant?.device.owner?.id || device.owner?.id || '';
   let allSensors;
+  const currentDevice = (device && Object.keys(device).length > 0)
+    ? device : (plant && plant.device) || {};
   users.forEach((user) => {
     if (user.id === ownerID) {
       // eslint-disable-next-line no-param-reassign
@@ -46,8 +48,6 @@ function DevicesDetailsScreen({ navigation, route }) {
   }, []);
 
   const handleSensorUpdate = (updatedSensors) => {
-    const currentDevice = (device && Object.keys(device).length > 0)
-      ? device : (plant && plant.device) || {};
     DeviceUtils.updateSensorsInDevice(currentDevice, updatedSensors);
   };
 
@@ -60,11 +60,14 @@ function DevicesDetailsScreen({ navigation, route }) {
     setSelectionOptions([]);
   };
 
-  const handleAdditionConfirm = () => {
+  // eslint-disable-next-line no-unused-vars
+  const handleAdditionConfirm = (newSensor = null, newUser = null) => {
+    const updateSensors = [...currentDevice.sensors, newSensor];
+    handleSensorUpdate(updateSensors);
     handleAdditionClose();
   };
 
-  const addSensors = () => {
+  const addSensorsClick = () => {
     setSelectionOptions(allSensors);
     console.log(allSensors);
     handleAdditionClick();
@@ -157,7 +160,7 @@ function DevicesDetailsScreen({ navigation, route }) {
               <Heading size="lg" fontWeight={500}>Sensors</Heading>
               <Button
                 variant="unstyled"
-                onPress={() => addSensors()}
+                onPress={() => addSensorsClick()}
               >
                 <Icon
                   as={MaterialIcons}
