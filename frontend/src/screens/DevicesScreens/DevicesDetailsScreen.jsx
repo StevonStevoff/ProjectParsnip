@@ -7,9 +7,11 @@ import {
 import React from 'react';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
+import DeviceUtils from '../../api/utils/DeviceUtils';
 
 function DevicesDetailsScreen({ navigation, route }) {
   const { device = {}, plant = {} } = route?.params || {};
+
   const {
     name = '',
     model_name = '',
@@ -28,6 +30,13 @@ function DevicesDetailsScreen({ navigation, route }) {
       user.isOwner = true;
     }
   });
+
+  function handleSensorUpdate(updatedSensors) {
+    const currentDevice = (device && Object.keys(device).length > 0)
+      ? device : (plant && plant.device) || {};
+    DeviceUtils.updateSensorsInDevice(currentDevice, updatedSensors);
+  }
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -37,6 +46,7 @@ function DevicesDetailsScreen({ navigation, route }) {
         paddingBottom: '5%',
       }}
     >
+
       <Box
         height="100%"
         minHeight="100%"
@@ -118,7 +128,7 @@ function DevicesDetailsScreen({ navigation, route }) {
               />
             </HStack>
             <Divider />
-            <DevicesDetailsSensors sensors={sensors} />
+            <DevicesDetailsSensors sensors={sensors} handleSensorUpdate={handleSensorUpdate} />
           </VStack>
           <VStack
             rounded="lg"
