@@ -224,7 +224,6 @@ class PlantDataBase(BaseModel):
 
 class PlantDataCreate(PlantDataBase):
     device_id: int
-    plant_ids: list[int]
     sensor_readings: list[SensorReadingCreate]
 
 

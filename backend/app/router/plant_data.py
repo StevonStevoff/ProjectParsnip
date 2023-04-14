@@ -1,5 +1,7 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.database import get_async_session
 from app.models import Device, Plant, PlantData, PlantProfile, Sensor, SensorReading
@@ -26,21 +28,23 @@ async def create_plant_data(
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_async_session),
 ) -> list[PlantDataRead]:
-    device = await get_object_or_404(
-        plant_data_create.device_id, Device, session, "The device does not exist."
+    # Grab device and associated plants
+    device_query = await session.execute(
+        select(Device)
+        .where(Device.id == plant_data_create.device_id)
+        .options(selectinload(Device.plants))
     )
+    device = device_query.scalars().first()
+    if device is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The device does not exist.")
 
     created_plant_data = []
 
-    for plant_id in plant_data_create.plant_ids:
+    for plant in device.plants:
         plant_data = PlantData()
 
         plant_data.timestamp = plant_data_create.timestamp
-
-        plant = await get_object_or_404(
-            plant_id, Plant, session, "The plant does not exist."
-        )
-        plant_data.plant_id = plant_id
+        plant_data.plant_id = plant.id
 
         session.add(plant_data)
 

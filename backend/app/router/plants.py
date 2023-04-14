@@ -255,9 +255,7 @@ async def get_plant_data(
     )
     plant = plant_query.scalars().first()
     if plant is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="The plant does not exist."
-        )
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The plant does not exist.")
 
     await user_can_use_object(user, plant.device_id, Device, "device", session)
     user = await session.merge(user)
