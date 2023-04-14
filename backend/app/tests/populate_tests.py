@@ -1,6 +1,7 @@
 from fastapi_users.password import PasswordHelper
 
 from app.models import (
+    Base,
     Device,
     GrowPropertyRange,
     GrowPropertyType,
@@ -13,15 +14,23 @@ from app.models import (
 from app.tests.conftest import get_db
 
 
-async def populate_db():
-    await add_users()
-    await add_grow_property_types()
-    await add_sensors()
-    await add_devices()
-    await add_plant_types()
-    await add_plant_profiles()
-    await add_plants()
-    await add_grow_properties()
+async def populate_db(exclude: list[Base] = []):
+    if User not in exclude:
+        await add_users()
+    if GrowPropertyType not in exclude:
+        await add_grow_property_types()
+    if Sensor not in exclude:
+        await add_sensors()
+    if Device not in exclude:
+        await add_devices()
+    if PlantType not in exclude:
+        await add_plant_types()
+    if PlantProfile not in exclude:
+        await add_plant_profiles()
+    if Plant not in exclude:
+        await add_plants()
+    if GrowPropertyRange not in exclude:
+        await add_grow_properties()
 
 
 async def add_grow_properties():
