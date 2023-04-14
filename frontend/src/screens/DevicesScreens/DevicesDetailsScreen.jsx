@@ -15,6 +15,7 @@ function DevicesDetailsScreen({ navigation, route }) {
   const [additionDialogOpen, setAdditionDialogOpen] = useState(false);
   const [selectionOptions, setSelectionOptions] = useState([]);
   const { device = {}, plant = {} } = route?.params || {};
+  const [deviceSensors, setDeviceSensors] = useState([]);
 
   const {
     name = '',
@@ -47,8 +48,24 @@ function DevicesDetailsScreen({ navigation, route }) {
       });
   }, []);
 
-  const handleSensorUpdate = (updatedSensors) => {
-    DeviceUtils.updateSensorsInDevice(currentDevice, updatedSensors);
+  useEffect(() => {
+    setDeviceSensors(sensors);
+  }, [sensors]);
+
+  const handleSensorUpdate = async (updatedSensors) => {
+    try {
+      const response = await DeviceUtils.updateSensorsInDevice(currentDevice, updatedSensors);
+
+      if (response.status === 200) {
+        const updatedDevice = await response.data;
+        setDeviceSensors(updatedDevice.sensors);
+      } else {
+        // Handle the error case (e.g., show an error message)
+        console.error('Failed to update sensors:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error updating sensors:', error);
+    }
   };
 
   const handleAdditionClick = () => {
@@ -172,7 +189,10 @@ function DevicesDetailsScreen({ navigation, route }) {
               </Button>
             </HStack>
             <Divider />
-            <DevicesDetailsSensors sensors={sensors} handleSensorUpdate={handleSensorUpdate} />
+            <DevicesDetailsSensors
+              sensors={deviceSensors}
+              handleSensorUpdate={handleSensorUpdate}
+            />
           </VStack>
           <VStack
             rounded="lg"

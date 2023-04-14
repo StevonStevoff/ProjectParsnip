@@ -40,7 +40,7 @@ const DeviceUtils = {
     try {
       const data = this.createDevicePostBodyFormat(device);
       const response = await API.updateDevice({ data });
-      return response.data;
+      return response;
     } catch (error) {
       console.error(error);
       return error;
