@@ -56,7 +56,7 @@ function DevicesDetailsSensors({ sensors, handleSensorUpdate }) {
         actionBtnText="Remove"
       />
       {sensors.map((sensor) => (
-        <HStack key={sensor.id} justifyContent="space-between" space={4} p={2} alignItems="center">
+        <HStack key={sensor.id} justifyContent="space-between" space={3} p={3} alignItems="center">
           <HStack space={4} minWidth="15%" alignItems="center">
             <Box alignSelf="center" backgroundColor="red">
               {getIconComponent(sensor.description)}
@@ -69,7 +69,15 @@ function DevicesDetailsSensors({ sensors, handleSensorUpdate }) {
             </HStack>
           )}
           <IconButton
-            icon={<Icon as={MaterialCommunityIcons} name="close" color="white" size="lg" />}
+            icon={(
+              <Icon
+                as={MaterialCommunityIcons}
+                name="close"
+                _dark={{ color: 'white' }}
+                _light={{ color: 'grey.200' }}
+                size="lg"
+              />
+)}
             onPress={() => handleRemoveClick(sensor)}
           />
         </HStack>

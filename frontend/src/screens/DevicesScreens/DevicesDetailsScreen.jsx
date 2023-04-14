@@ -42,7 +42,6 @@ function DevicesDetailsScreen({ navigation, route }) {
     DeviceUtils.getAllSensors()
       .then((sensorResponse) => {
         setAllSensors(sensorResponse);
-        console.log('sensors', allSensors);
       })
       .catch((error) => {
         console.error(error);
@@ -87,7 +86,6 @@ function DevicesDetailsScreen({ navigation, route }) {
 
   const addSensorsClick = () => {
     setSelectionOptions(allSensors);
-    console.log(allSensors);
     handleAdditionClick();
   };
   return (
@@ -97,6 +95,7 @@ function DevicesDetailsScreen({ navigation, route }) {
         justifyContent: 'center',
         alignItems: 'center',
         paddingBottom: '5%',
+        marginTop: '5%',
       }}
     >
 
@@ -123,12 +122,20 @@ function DevicesDetailsScreen({ navigation, route }) {
         />
         <VStack width="90%">
           <HStack justifyContent="space-between" width="100%">
-            <IconButton
-              icon={<Icon as={Ionicons} name="arrow-back" color="white" size="lg" />}
+            <Button
               onPress={() => navigation.goBack()}
-            />
+              variant="unstyled"
+            >
+              <Icon
+                as={Ionicons}
+                name="arrow-back"
+                _dark={{ color: 'white' }}
+                _light={{ color: 'grey.200' }}
+                size="lg"
+              />
+            </Button>
           </HStack>
-          <VStack height="10%">
+          <VStack height="7%">
             <Heading size="xl" fontWeight={500} textAlign="center">{name}</Heading>
             <Text
               textAlign="center"
@@ -172,7 +179,7 @@ function DevicesDetailsScreen({ navigation, route }) {
             rounded="lg"
             justifyContent="center"
             width="100%"
-            p={5}
+            p={4}
           >
             <HStack justifyContent="space-between">
               <Heading size="lg" fontWeight={500}>Sensors</Heading>
@@ -199,7 +206,7 @@ function DevicesDetailsScreen({ navigation, route }) {
             rounded="lg"
             justifyContent="center"
             width="100%"
-            p={5}
+            p={4}
             space={2}
           >
             <HStack justifyContent="space-between">
@@ -217,7 +224,7 @@ function DevicesDetailsScreen({ navigation, route }) {
             </HStack>
             <Divider />
             {users.map((user) => (
-              <HStack justifyContent="space-between" alignItems="center" space={3} p={2} key={user.id}>
+              <HStack justifyContent="space-between" alignItems="center" space={3} p={3} key={user.id}>
                 <HStack justifyContent="flex-start" alignItems="center" space={3}>
                   <Avatar size="md" source={{ uri: 'https://images.unsplash.com/photo-1510771463146-e89e6e86560e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80' }} />
                   <Text color="coolGray.500">

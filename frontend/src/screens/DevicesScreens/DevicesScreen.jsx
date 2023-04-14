@@ -1,9 +1,11 @@
 /* eslint-disable no-use-before-define */
 import React, { useEffect } from 'react';
 import {
-  View, useWindowDimensions, StyleSheet, RefreshControl, FlatList, ScrollView, TouchableOpacity,
+  View, useWindowDimensions, StyleSheet, RefreshControl, FlatList, TouchableOpacity,
 } from 'react-native';
-import { Text, Box, Heading } from 'native-base';
+import {
+  Text, Box, Heading, SectionList,
+} from 'native-base';
 import DevicesCard from '../../components/DevicesCard';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 
@@ -53,6 +55,33 @@ function DevicesScreen({ navigation }) {
     fetchUnlinkedDevices();
   }, []);
 
+  const renderSectionHeader = ({ section: { title } }) => (
+    <Heading>{title}</Heading>
+  );
+  const renderItem = ({ item, section }) => {
+    if (section.title === 'Linked Devices') {
+      return (
+        <TouchableOpacity key={item.device.id} onPress={() => navigation.navigate('DevicesDetails', { plant: item })}>
+          <Box mb={4}>
+            <DevicesCard plant={item} navigation={navigation} />
+          </Box>
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity key={item.id} onPress={() => navigation.navigate('DevicesDetails', { device: item })}>
+        <Box mb={4}>
+          <DevicesCard device={item} navigation={navigation} />
+        </Box>
+      </TouchableOpacity>
+    );
+  };
+
+  const sections = [
+    { title: 'Linked Devices', data: linkedDevices },
+    { title: 'Unlinked Devices', data: unlinkedDevices },
+  ];
+
   const onRefresh = () => {
     setRefreshing(true);
     fetchLinkedDevices();
@@ -82,8 +111,8 @@ function DevicesScreen({ navigation }) {
     );
   }
 
-  // eslint-disable-next-line max-len
-  if ((!linkedDevices || linkedDevices.length === 0) && (!unlinkedDevices || unlinkedDevices.length === 0)) {
+  if ((!linkedDevices || linkedDevices.length === 0)
+  && (!unlinkedDevices || unlinkedDevices.length === 0)) {
     return (
       <View style={styles.container}>
         <Text>Add device through the device portal. Then refresh the page.</Text>
@@ -93,7 +122,7 @@ function DevicesScreen({ navigation }) {
 
   if (screenWidth > 750) {
     return (
-      <ScrollView style={styles.webContainer}>
+      <View style={styles.webContainer}>
         <View style={styles.container}>
           <Heading>Linked Devices</Heading>
           <FlatList
@@ -118,36 +147,19 @@ function DevicesScreen({ navigation }) {
             refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
           />
         </View>
-      </ScrollView>
+      </View>
     );
   }
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-    >
-      <Box mb={4}>
-        <Heading>Linked Devices</Heading>
-        {linkedDevices.map((plant) => (
-          <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { plant })}>
-            <Box key={plant.device.id} mb={4}>
-              <DevicesCard plant={plant} navigation={navigation} />
-            </Box>
-          </TouchableOpacity>
-        ))}
-      </Box>
-      <Box mb={4}>
-        <Heading>Unlinked Devices</Heading>
-        {unlinkedDevices.map((device) => (
-          <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { device })}>
-            <Box key={device.id} mb={4}>
-              <DevicesCard device={device} navigation={navigation} />
-            </Box>
-          </TouchableOpacity>
-        ))}
-      </Box>
-    </ScrollView>
+    <View style={styles.container}>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item, index) => item.id + index}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      />
+    </View>
   );
 }
 
@@ -155,7 +167,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    marginBottom: '5%',
+    margin: '2%',
   },
   webContainer: {
     flex: 1,

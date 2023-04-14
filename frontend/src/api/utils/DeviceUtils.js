@@ -47,7 +47,6 @@ const DeviceUtils = {
     }
   },
   createDevicePostBodyFormat(device) {
-    console.log('device', device);
     const {
       id, name, model_name, sensors, owner, users,
     } = device;

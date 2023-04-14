@@ -14,10 +14,6 @@ function AdditionDialog({
     onClose();
   };
 
-  useEffect(() => {
-    console.log('selection', selection);
-  }, [selection]);
-
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
       <AlertDialog.Content>
