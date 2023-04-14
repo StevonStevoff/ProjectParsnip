@@ -12,11 +12,6 @@ import { MaterialIcons} from '@expo/vector-icons';
 import RegisterPlantSchema from '../utils/validationSchema/CreatePlantSchema';
 import API from '../api/API';
 
-import { Provider as PaperProvider } from 'react-native-paper';
-import { DatePickerInput  } from 'react-native-paper-dates';
-
-import { theme, darkTheme } from '../stylesheets/paperTheme';
-
 function CreatePlantForm(props) {
   const { plantTypes } = props;
   const { devices } = props;

@@ -110,7 +110,7 @@ const API = {
 
   async deletePlant(id,cancel = false) {
     const response = await api.request({ 
-      url: '/plants/'+id,
+      url: `/plants/${id}`,
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'},
@@ -123,7 +123,7 @@ const API = {
 
   async editPlant({id, name, device_id ,plant_profile_id,plant_type_id,time_planted,outdoor,latitude,longitude}, cancel = false) {
     const response = await api.request({
-      url: '/plants/'+id,
+      url: `/plants/${id}`,
       method: 'PATCH',
       data: {
         name,
