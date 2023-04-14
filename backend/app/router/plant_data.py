@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -43,7 +45,8 @@ async def create_plant_data(
     for plant in device.plants:
         plant_data = PlantData()
 
-        plant_data.timestamp = plant_data_create.timestamp
+        utc_timestamp = plant_data_create.timestamp.astimezone(timezone.utc)
+        plant_data.timestamp = utc_timestamp
         plant_data.plant_id = plant.id
 
         session.add(plant_data)
