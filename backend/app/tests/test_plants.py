@@ -398,9 +398,7 @@ async def test_patch_plant_by_id_forbidden(setup_db, client, user_access_token):
     prev_plants = await get_all_objects(Plant)
 
     headers = {"Authorization": f"Bearer {user_access_token}"}
-    body = {
-        "name": "patched",
-    }
+    body = {"name": "patched"}
     response = await client.patch(
         "/plants/3",
         headers=headers,
@@ -419,9 +417,7 @@ async def test_patch_plant_by_id_doenst_exist(setup_db, client, superuser_access
     prev_plants = await get_objects(query)
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
-    body = {
-        "name": "patched",
-    }
+    body = {"name": "patched"}
     response = await client.patch(
         "/plants/999",
         headers=headers,
@@ -481,9 +477,7 @@ async def test_patch_plant_alternate_timezone(setup_db, client, superuser_access
     current_date_time = datetime.now(pytz.timezone("America/New_York"))
     current_date_time_str = current_date_time.isoformat()
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
-    body = {
-        "time_planted": current_date_time_str,
-    }
+    body = {"time_planted": current_date_time_str}
     response = await client.patch(
         "/plants/3",
         headers=headers,
@@ -509,9 +503,7 @@ async def test_patch_plant_future_time_planted(
     future_datetime = datetime.now(timezone.utc) + timedelta(minutes=30)
     futre_time_string = future_datetime.isoformat()
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
-    body = {
-        "time_planted": futre_time_string,
-    }
+    body = {"time_planted": futre_time_string}
     response = await client.patch(
         "/plants/3",
         headers=headers,
