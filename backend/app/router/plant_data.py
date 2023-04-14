@@ -25,35 +25,45 @@ async def create_plant_data(
     plant_data_create: PlantDataCreate,
     background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_async_session),
-) -> PlantDataRead:
+) -> list[PlantDataRead]:
     device = await get_object_or_404(
         plant_data_create.device_id, Device, session, "The device does not exist."
     )
-    plant_data = PlantData()
-    plant_data.timestamp = plant_data_create.timestamp
 
-    plant = await get_object_or_404(
-        plant_data_create.plant_id, Plant, session, "The plant does not exist."
-    )
-    plant_data.plant_id = plant_data_create.plant_id
+    created_plant_data = []
 
-    session.add(plant_data)
+    for plant_id in plant_data_create.plant_ids:
+        plant_data = PlantData()
 
-    await session.commit()
-    await session.refresh(plant_data)
+        plant_data.timestamp = plant_data_create.timestamp
 
-    await add_sensor_readings(
-        plant_data, plant_data_create.sensor_readings, plant, session
-    )
+        plant = await get_object_or_404(
+            plant_id, Plant, session, "The plant does not exist."
+        )
+        plant_data.plant_id = plant_id
 
-    await session.commit()
+        session.add(plant_data)
 
-    created_plant_data = await session.get(
-        PlantData, plant_data.id, populate_existing=True
-    )
+        await session.commit()
+        await session.refresh(plant_data)
 
-    background_tasks.add_task(check_plant_properties, device, plant, plant_data, session)
-    return PlantDataRead.from_orm(created_plant_data)
+        await add_sensor_readings(
+            plant_data, plant_data_create.sensor_readings, plant, session
+        )
+
+        await session.commit()
+
+        created_plant_data = await session.get(
+            PlantData, plant_data.id, populate_existing=True
+        )
+
+        background_tasks.add_task(
+            check_plant_properties, device, plant, plant_data, session
+        )
+
+        created_plant_data.append(PlantDataRead.from_orm(created_plant_data))
+
+    return created_plant_data
 
 
 async def add_sensor_readings(
@@ -62,7 +72,9 @@ async def add_sensor_readings(
     plant: Plant,
     session: AsyncSession,
 ) -> None:
-    sensor_to_property = await map_sensors_to_properties(plant.plant_profile_id, session)
+    sensor_to_property = await map_sensors_to_properties(
+        plant.plant_profile_id, session
+    )
 
     for reading in sensor_readings:
         created_reading = await create_sensor_reading(

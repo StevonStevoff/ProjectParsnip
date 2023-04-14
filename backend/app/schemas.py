@@ -219,16 +219,17 @@ class PlantUpdate(PlantBase):
 
 
 class PlantDataBase(BaseModel):
-    plant_id: int
     timestamp: datetime
 
 
 class PlantDataCreate(PlantDataBase):
     device_id: int
+    plant_ids: list[int]
     sensor_readings: list[SensorReadingCreate]
 
 
 class PlantDataRead(BaseRead, PlantDataBase):
+    plant_id: int
     sensor_readings: list[SensorReadingRead]
 
 
