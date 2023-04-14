@@ -3,8 +3,7 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Device, Notification, Plant, PlantData, User
-from app.router.utils import get_object_or_404
+from app.models import Device, Notification, Plant, PlantData
 
 
 async def get_recent_notification(
