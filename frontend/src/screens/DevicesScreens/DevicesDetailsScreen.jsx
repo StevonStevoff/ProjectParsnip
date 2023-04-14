@@ -16,6 +16,7 @@ function DevicesDetailsScreen({ navigation, route }) {
   const [selectionOptions, setSelectionOptions] = useState([]);
   const { device = {}, plant = {} } = route?.params || {};
   const [deviceSensors, setDeviceSensors] = useState([]);
+  const [allSensors, setAllSensors] = useState([]);
 
   const {
     name = '',
@@ -28,7 +29,6 @@ function DevicesDetailsScreen({ navigation, route }) {
   const plantProfileName = plant?.plant_profile?.name || '';
   const plantType = plant?.plant_type?.name || '';
   const ownerID = plant?.device.owner?.id || device.owner?.id || '';
-  let allSensors;
   const currentDevice = (device && Object.keys(device).length > 0)
     ? device : (plant && plant.device) || {};
   users.forEach((user) => {
@@ -41,7 +41,8 @@ function DevicesDetailsScreen({ navigation, route }) {
   useEffect(() => {
     DeviceUtils.getAllSensors()
       .then((sensorResponse) => {
-        allSensors = sensorResponse;
+        setAllSensors(sensorResponse);
+        console.log('sensors', allSensors);
       })
       .catch((error) => {
         console.error(error);

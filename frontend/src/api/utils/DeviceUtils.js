@@ -69,6 +69,7 @@ const DeviceUtils = {
   async getAllSensors() {
     try {
       const response = await API.getSensors();
+      console.log('response', response);
       return response.data;
     } catch (error) {
       console.error(error);
