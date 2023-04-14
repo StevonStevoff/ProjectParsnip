@@ -224,8 +224,8 @@ async def update_property_ranges(
 
     if max < min:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Range max cannot be less than min.",
+            status.HTTP_400_BAD_REQUEST,
+            "Range max cannot be less than min.",
         )
 
     grow_property.min = min
