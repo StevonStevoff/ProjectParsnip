@@ -449,7 +449,7 @@ async def test_patch_plant_by_id(setup_db, client, superuser_access_token):
         "longitude": 10.0,
         "plant_type_id": 1,
         "plant_profile_id": 1,
-        "device_id": 2,
+        "device_id": 1,
         "time_planted": time_planted_string,
     }
     response = await client.patch(
@@ -472,7 +472,7 @@ async def test_patch_plant_by_id(setup_db, client, superuser_access_token):
     assert plants[0].longitude == 10.0
     assert plants[0].plant_type_id == 1
     assert plants[0].plant_profile_id == 1
-    assert plants[0].device_id == 2
+    assert plants[0].device_id == 1
     assert plants[0].time_planted == expected_datetime
 
 
@@ -545,7 +545,7 @@ async def test_delete_plant_by_id_forbidden(setup_db, client, user_access_token)
     prev_plants = await get_all_objects(Plant)
 
     headers = {"Authorization": f"Bearer {user_access_token}"}
-    response = await client.delete("/plants/3", headers=headers)
+    response = await client.delete("/plants/4", headers=headers)
 
     assert response.status_code == 403
 
@@ -555,12 +555,12 @@ async def test_delete_plant_by_id_forbidden(setup_db, client, user_access_token)
 
 @pytest.mark.asyncio(scope="session")
 async def test_delete_plant_by_id(setup_db, client, superuser_access_token):
-    query = select(Plant).where(Plant.id == 3)
+    query = select(Plant).where(Plant.id == 4)
     prev_plants = await get_objects(query)
     assert len(prev_plants) > 0
 
     headers = {"Authorization": f"Bearer {superuser_access_token}"}
-    response = await client.delete("/plants/3", headers=headers)
+    response = await client.delete("/plants/4", headers=headers)
 
     assert response.status_code == 200
 

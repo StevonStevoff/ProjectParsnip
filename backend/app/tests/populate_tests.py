@@ -306,6 +306,17 @@ async def add_plants():
                 longitude=-1.5550,
             )
         )
+        test_plants.append(
+            Plant(
+                name="We Need More Plants",
+                device_id=2,
+                plant_profile_id=2,
+                plant_type_id=2,
+                outdoor=False,
+                latitude=23.8067,
+                longitude=-19.5550,
+            )
+        )
         for test_plant in test_plants:
             session.add(test_plant)
         await session.commit()

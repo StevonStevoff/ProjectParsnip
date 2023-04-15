@@ -41,11 +41,9 @@ async def user_can_use_object(
         object_id, object_type, session, detail=f"The {object_name} does not exist."
     )
 
-    object_user_ids = [object_user.id for object_user in object.users]
-    if user.id not in object_user_ids:
-        if user.is_superuser:
-            object.users.append(user)
-        else:
+    if not user.is_superuser:
+        object_user_ids = [object_user.id for object_user in object.users]
+        if user.id not in object_user_ids:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Not owner or user of {object_name} with ID {object_id}",
