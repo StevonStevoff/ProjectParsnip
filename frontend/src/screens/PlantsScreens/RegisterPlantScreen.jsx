@@ -7,7 +7,7 @@ import CloseBtn from '../../components/CloseBtn';
 import CreatePlantForm from '../../components/CreatePlantForm';
 
 function RegisterPlantScreen( {route,navigation} ) {
-
+  
   return (
     <View
       style={{

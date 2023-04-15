@@ -6,8 +6,9 @@ import {
   ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import {Text,Icon, Heading} from 'native-base';
+import {Icon,Heading,VStack,HStack,Alert,IconButton,CloseIcon,Text} from 'native-base';
 import { MaterialIcons} from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
 
@@ -19,21 +20,52 @@ function PlantsScreen({ navigation }) {
   const [devices, setDevices] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
 
+  const statusArray = [{
+    status: "success",
+    title: "Plant successfully edited!"
+  }, {
+    status: "error",
+    title: "An error has occured!"
+  }];
+  const [event, setEvent] = useState("");
+
+  const filteredStatusArray = statusArray.filter((status) => status.status === event);
+
+  const handleClose = () => {
+    setEvent("");
+  };
+
   useEffect(() => {
     PlantUtils.getAuthenticatedUser().then((email) => {
       setUserEmail(email);
     });
   }, []);
 
-  useEffect(() => {
-    const fetchPlants = async () => {
-      try {
-        const response = await API.getCurrentUsersPlants();
-        setPlants(response.data);
-      } catch (error) { /* empty */ }
-    };
-    fetchPlants();
-  }, []);
+  // useEffect(() => {
+  //   const fetchPlants = async () => {
+  //     try {
+  //       const response = await API.getCurrentUsersPlants();
+  //       setPlants(response.data);
+  //     } catch (error) { /* empty */ }
+  //   };
+  //   fetchPlants();
+  // },[]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPlants = async () => {
+        try {
+          const response = await API.getCurrentUsersPlants();
+          setPlants(response.data);
+        } catch (error) { /* empty */ }
+      };
+      fetchPlants();
+
+      return () => {
+        console.log('Screen is unfocused');
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const fetchPlantsTypes = async () => {
@@ -74,15 +106,21 @@ function PlantsScreen({ navigation }) {
   }
 
   const handleDelete = async (id) => {
+    
     try {
         await API.deletePlant(id).then(() => {
-        // fetchPlants();
+          setPlants(plants.filter((plant) => plant.id !== id));
+          setEvent("success");
       });
-    } catch (error) { /* empty */ }
+    } catch (error) { setEvent("error");}
   };
 
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView  style={styles.scrollView}>
+
+
+
+
       <View
         style={{
           flex: 1,
@@ -91,6 +129,36 @@ function PlantsScreen({ navigation }) {
           color: '#fff'   
         }}
       >
+
+
+{filteredStatusArray.length !== 0 && (
+          <View style={{padding:5,width:"90%"}}>
+            <Alert w="100%" status={filteredStatusArray[0].status} >
+              <VStack space={2} flexShrink={1} w="100%">
+                <HStack flexShrink={1} space={2} justifyContent="space-between">
+                  <HStack space={2} flexShrink={1}>
+                    <Alert.Icon mt="1" />
+                    <Text fontSize="md" color="coolGray.800">
+                      {filteredStatusArray[0].title}
+                    </Text>
+                  </HStack>
+                  <IconButton
+                    variant="unstyled"
+                    _focus={{
+                    borderWidth: 0,
+                    }}
+                    icon={<CloseIcon size="3" />}
+                    _icon={{
+                    color: 'coolGray.600',
+                    }}
+                    onPress={handleClose}
+                  />
+                </HStack>
+              </VStack>
+            </Alert>
+          </View>
+      )}
+
         <View style={{flexDirection:'row'}}>
           <Heading >Your Plants</Heading>  
           <TouchableOpacity   style={styles.createPlantButton} 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -13,9 +13,11 @@ import RegisterPlantSchema from '../utils/validationSchema/CreatePlantSchema';
 import API from '../api/API';
 
 function CreatePlantForm(props) {
+  
   const { plantTypes } = props;
   const { devices } = props;
   const { plantProfiles } = props;
+
   const statusArray = [{
     status: "success",
     title: "Plant successfully created!"

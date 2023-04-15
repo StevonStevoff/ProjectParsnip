@@ -16,6 +16,7 @@ import API from '../api/API';
 import { theme, darkTheme } from '../stylesheets/paperTheme';
 
 function EditPlantForm(props) {
+
   const { plantTypes } = props;
   const { devices } = props;
   const { plantProfiles } = props;
@@ -58,7 +59,7 @@ function EditPlantForm(props) {
       try {
         if(values.latitude === "")values.latitude = 0;
         if(values.longitude === "")values.longitude = 0;
-
+        
         await API.editPlant(values);
         setEvent("success")
       } catch (error) {

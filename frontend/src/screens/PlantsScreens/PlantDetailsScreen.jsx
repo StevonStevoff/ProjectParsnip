@@ -75,7 +75,7 @@ const filteredValues = filteredElements.flatMap(element => element.sensor_readin
     <ScrollView>
       <View>
 
-        <View>
+        <View style={{justifyContent: 'center',alignItems: 'center'}}>
           <Text>Bezier Line Chart</Text>
           <LineChart
             data={{
@@ -86,24 +86,24 @@ const filteredValues = filteredElements.flatMap(element => element.sensor_readin
             }}
             width={500} // from react-native
             height={500}
-            yAxisLabel="$"
-            yAxisSuffix="k"
+            yAxisLabel=""
+            yAxisSuffix=""
             yAxisInterval={1} // optional, defaults to 1
             chartConfig={{
-            backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16
-            },
-            propsForDots: {
-              r: "6",
-              strokeWidth: "2",
-              stroke: "#ffa726"
-            }
+              backgroundColor: "#e26a00",
+              backgroundGradientFrom: "#fb8c00",
+              backgroundGradientTo: "#ffa726",
+              decimalPlaces: 2, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16
+              },
+              propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#ffa726"
+              }
             }}
             bezier
             style={{
@@ -114,11 +114,13 @@ const filteredValues = filteredElements.flatMap(element => element.sensor_readin
         </View>
 
 
-        <Text >PlantProfileScreen</Text>
         {/* <Text >{route.params.itemID}</Text> */}
+
+        {/* <Text >Picked From {range.startDate.toLocaleString} to {range.endDate.toLocaleString}</Text> */}
 
         {/* <SafeAreaProvider> */}
         <View style={{justifyContent: 'center', alignItems: 'center', width:"100%",height:"100%"}}>
+        <Text >Picked From {range.startDate.toLocaleDateString()} to {range.endDate.toLocaleDateString()}</Text>
           <TouchableOpacity  style={[styles.detailsButton,{fontSize:25,flex:1,flexDirection:'row',justifyContent: 'center',alignItems: 'center'}]} onPress={() =>setOpen(true)}>
             <Text style={styles.createText}>Pick range </Text>
           </TouchableOpacity>
