@@ -18,11 +18,15 @@ async def get_object_or_404(
 
 
 async def model_list_to_schema(
-    model_list: list[Base], schema: BaseRead, detail: str
+    model_list: list[Base], schema: BaseRead, detail: str, session: AsyncSession
 ) -> BaseRead:
     if not model_list:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail)
-    return [schema.from_orm(model) for model in model_list]
+    schema_list = []
+    for model in model_list:
+        await session.refresh(model)
+        schema_list.append(schema.from_orm(model))
+    return schema_list
 
 
 async def user_can_manage_object(user: User, object_manager_id: int) -> None:
