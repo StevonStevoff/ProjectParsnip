@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from app.database import get_async_session
 from app.models import Device, Plant, PlantData, PlantProfile, Sensor, SensorReading
 from app.notifications import check_plant_properties
-from app.router.utils import get_object_or_404
+from app.router.utils import get_object_or_404, model_list_to_schema
 from app.schemas import PlantDataCreate, PlantDataRead, SensorReadingCreate
 
 router = APIRouter()
@@ -17,7 +17,7 @@ router = APIRouter()
 @router.post(
     "/",
     name="plant_data:send_plant_data",
-    response_model=PlantDataRead,
+    response_model=list[PlantDataRead],
     status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_404_NOT_FOUND: {
@@ -40,8 +40,7 @@ async def create_plant_data(
     if device is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "The device does not exist.")
 
-    created_plant_data = []
-
+    plant_data_list = []
     for plant in device.plants:
         plant_data = PlantData()
 
@@ -50,27 +49,23 @@ async def create_plant_data(
         plant_data.plant_id = plant.id
 
         session.add(plant_data)
-
-        await session.commit()
-        await session.refresh(plant_data)
+        await session.flush()
 
         await add_sensor_readings(
             plant_data, plant_data_create.sensor_readings, plant, session
         )
-
         await session.commit()
-
-        created_plant_data = await session.get(
-            PlantData, plant_data.id, populate_existing=True
-        )
+        await session.refresh(plant_data)
+        await session.refresh(device)
 
         background_tasks.add_task(
             check_plant_properties, device, plant, plant_data, session
         )
+        plant_data_list.append(plant_data)
 
-        created_plant_data.append(PlantDataRead.from_orm(created_plant_data))
-
-    return created_plant_data
+    return await model_list_to_schema(
+        plant_data_list, PlantDataRead, "No plant data found.", session
+    )
 
 
 async def add_sensor_readings(
@@ -88,6 +83,7 @@ async def add_sensor_readings(
             plant_data.id, reading, sensor_to_property, session
         )
         session.add(created_reading)
+        await session.flush()
 
 
 async def create_sensor_reading(

@@ -42,7 +42,7 @@ async def get_all_sensors(
     results = await session.execute(sensors_query)
     sensors = results.scalars().all()
 
-    return await model_list_to_schema(sensors, SensorRead, "No sensors found.")
+    return await model_list_to_schema(sensors, SensorRead, "No sensors found.", session)
 
 
 @router.post(

@@ -49,7 +49,7 @@ async def get_all_plant_types(
     plant_types = results.scalars().all()
 
     return await model_list_to_schema(
-        plant_types, PlantTypeRead, "No plant types found."
+        plant_types, PlantTypeRead, "No plant types found.", session
     )
 
 
@@ -77,7 +77,7 @@ async def get_my_plant_types(
     plant_types = plant_types_query.scalars().all()
 
     return await model_list_to_schema(
-        plant_types, PlantTypeRead, "User has no created plant types."
+        plant_types, PlantTypeRead, "User has no created plant types.", session
     )
 
 

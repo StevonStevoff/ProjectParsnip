@@ -53,7 +53,7 @@ async def get_all_plants(
     results = await session.execute(plants_query)
     plants = results.scalars().all()
 
-    return await model_list_to_schema(plants, PlantRead, "No plants found.")
+    return await model_list_to_schema(plants, PlantRead, "No plants found.", session)
 
 
 @router.get(
@@ -80,7 +80,7 @@ async def get_my_plants(
     )
     plants = plants_query.scalars().all()
 
-    return await model_list_to_schema(plants, PlantRead, "No plants found.")
+    return await model_list_to_schema(plants, PlantRead, "No plants found.", session)
 
 
 @router.post(
@@ -261,7 +261,7 @@ async def get_plant_data(
     user = await session.merge(user)
 
     return await model_list_to_schema(
-        plant.plant_data, PlantDataRead, "No plant data found."
+        plant.plant_data, PlantDataRead, "No plant data found.", session
     )
 
 

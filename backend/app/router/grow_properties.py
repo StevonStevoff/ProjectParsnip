@@ -49,7 +49,7 @@ async def get_all_grow_properties(
     grow_properties = results.scalars().all()
 
     return await model_list_to_schema(
-        grow_properties, GrowPropertyRead, "No grow properties found."
+        grow_properties, GrowPropertyRead, "No grow properties found.", session
     )
 
 

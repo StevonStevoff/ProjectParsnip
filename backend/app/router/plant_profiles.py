@@ -64,7 +64,7 @@ async def get_all_plant_profiles(
     profiles = results.scalars().all()
 
     return await model_list_to_schema(
-        profiles, PlantProfileRead, "No plant profiles found."
+        profiles, PlantProfileRead, "No plant profiles found.", session
     )
 
 
@@ -95,7 +95,7 @@ async def get_user_profiles(
     profiles = profiles_query.scalars().all()
 
     return await model_list_to_schema(
-        profiles, PlantProfileRead, "User has no created plant profiles."
+        profiles, PlantProfileRead, "User has no created plant profiles.", session
     )
 
 

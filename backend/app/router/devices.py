@@ -45,7 +45,9 @@ async def get_user_devices(
     )
     devices = devices_query.scalars().all()
 
-    return await model_list_to_schema(devices, DeviceRead, "User has no devices")
+    return await model_list_to_schema(
+        devices, DeviceRead, "User has no devices", session
+    )
 
 
 @router.get(
@@ -71,7 +73,9 @@ async def get_owned_devices(
     )
     devices = devices_query.scalars().all()
 
-    return await model_list_to_schema(devices, DeviceRead, "User has no owned devices.")
+    return await model_list_to_schema(
+        devices, DeviceRead, "User has no owned devices.", session
+    )
 
 
 @router.post(
