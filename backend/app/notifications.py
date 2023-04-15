@@ -54,6 +54,9 @@ async def get_out_of_range_properties(plant_data: PlantData) -> list:
     out_of_range = []
 
     for reading in plant_data.sensor_readings:
+        if not reading.grow_property:
+            continue
+
         if reading.value > reading.grow_property.max:
             out_of_range.append(reading.grow_property.grow_property_type.name)
         elif reading.value < reading.grow_property.min:
