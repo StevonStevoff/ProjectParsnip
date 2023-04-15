@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from sqlalchemy import select
 
-from app.models import Plant, PlantData, SensorReading
+from app.models import Device, Plant, PlantData, SensorReading
 from app.tests.conftest import get_objects
 from app.tests.populate_tests import add_plant_data, add_sensor_readings, populate_db
 
@@ -67,6 +67,39 @@ async def test_get_plant_data(setup_db, client, user_access_token):
     assert len(plant_data[0].sensor_readings) == len(
         json_response[0]["sensor_readings"]
     )
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_send_plant_data_bad_device_id(setup_db, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    timestamp = datetime.now()
+    response = await client.post(
+        "/plant_data/",
+        headers=headers,
+        json={
+            "timestamp": timestamp.isoformat(),
+            "device_id": 999,
+            "sensor_readings": [
+                {
+                    "value": 55,
+                    "sensor_id": 1,
+                },
+                {
+                    "value": 60,
+                    "sensor_id": 2,
+                },
+            ],
+        },
+    )
+
+    assert response.status_code == 404
+    json_response = response.json()
+
+    device_query = select(Device).where(Device.id == 999)
+    device = await get_objects(device_query)
+
+    assert device == []
+    assert json_response["detail"] == "The device does not exist."
 
 
 # @pytest.mark.skip(reason="Greenlet error, also update populate db")
