@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -198,26 +198,23 @@ async def patch_plant(
 ) -> PlantRead:
     await user_can_use_object(user, plant.device_id, Device, "device", session)
 
-    if plant_update.name:
+    if plant_update.name is not None:
         plant.name = plant_update.name
 
-    if plant_update.device_id:
+    if plant_update.device_id is not None:
         await update_plant_device(plant, user, plant_update.device_id, session)
 
-    if plant_update.plant_profile_id:
+    if plant_update.plant_profile_id is not None:
         await update_plant_profile(plant, user, plant_update.plant_profile_id, session)
 
-    if plant_update.plant_type_id:
-        await update_plant_type(plant, user, plant_update.plant_type_id, session)
+    if plant_update.plant_type_id is not None:
+        await update_plant_type(plant, plant_update.plant_type_id, session)
 
-    if plant_update.outdoor:
+    if plant_update.outdoor is not None:
         plant.outdoor = plant_update.outdoor
 
-    if plant_update.time_planted:
-        if datetime.now() > plant_update.time_planted:
-            plant.time_planted = plant_update.time_planted
-
-    print(plant_update)
+    if plant_update.time_planted is not None:
+        await update_time_planted(plant, plant_update.time_planted)
 
     if plant_update.longitude is not None or plant_update.latitude is not None:
         await update_plant_coordinates(
@@ -226,7 +223,8 @@ async def patch_plant(
 
     await session.commit()
     await session.refresh(plant)
-    return PlantRead.from_orm(plant)
+    updated_plant = await session.get(Plant, plant.id, populate_existing=True)
+    return PlantRead.from_orm(updated_plant)
 
 
 @router.get(
@@ -257,11 +255,10 @@ async def get_plant_data(
     )
     plant = plant_query.scalars().first()
     if plant is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="The plant does not exist."
-        )
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The plant does not exist.")
 
     await user_can_use_object(user, plant.device_id, Device, "device", session)
+    user = await session.merge(user)
 
     return await model_list_to_schema(
         plant.plant_data, PlantDataRead, "No plant data found."
@@ -272,6 +269,7 @@ async def update_plant_device(
     plant: Plant, user: User, device_id: int, session: AsyncSession
 ) -> None:
     await user_can_use_object(user, device_id, Device, "device", session)
+    await get_object_or_404(device_id, Device, session, "The device does not exist.")
     plant.device_id = device_id
 
 
@@ -280,6 +278,9 @@ async def update_plant_profile(
 ) -> None:
     await user_can_use_object(
         user, plant_profile_id, PlantProfile, "plant profile", session
+    )
+    await get_object_or_404(
+        plant_profile_id, PlantProfile, session, "The plant profile does not exist."
     )
     plant.plant_profile_id = plant_profile_id
 
@@ -316,9 +317,21 @@ async def update_plant_coordinates(
     error_msg += "."
 
     if not valid_longitude or not valid_latitude:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error_msg)
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, error_msg)
 
     if latitude is not None:
         plant.latitude = latitude
     if longitude is not None:
         plant.longitude = longitude
+
+
+async def update_time_planted(plant: Plant, time_planted: datetime) -> None:
+    current_time = datetime.now(timezone.utc)
+    time_planted_utc = time_planted.astimezone(timezone.utc)
+    if current_time < time_planted_utc:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            "Time planted cannot be in the future.",
+        )
+
+    plant.time_planted = time_planted_utc

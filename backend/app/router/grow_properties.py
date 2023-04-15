@@ -49,7 +49,7 @@ async def get_all_grow_properties(
     grow_properties = results.scalars().all()
 
     return await model_list_to_schema(
-        grow_properties, GrowPropertyRead, "No grow properties found."
+        grow_properties, GrowPropertyRead, "No grow properties found.", session
     )
 
 
@@ -224,8 +224,8 @@ async def update_property_ranges(
 
     if max < min:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Range max cannot be less than min.",
+            status.HTTP_400_BAD_REQUEST,
+            "Range max cannot be less than min.",
         )
 
     grow_property.min = min

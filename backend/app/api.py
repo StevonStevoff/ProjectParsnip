@@ -6,6 +6,7 @@ from app.router import (
     devices,
     grow_properties,
     grow_property_types,
+    notifications,
     plant_data,
     plant_profiles,
     plant_types,
@@ -60,6 +61,11 @@ app.include_router(
     grow_property_types.router,
     prefix="/grow_property_types",
     tags=["grow_property_types"],
+)
+app.include_router(
+    notifications.router,
+    prefix="/notifications",
+    tags=["notifications"],
 )
 app.include_router(
     plants.router,
