@@ -51,10 +51,7 @@ async def get_all_grow_property_types(
     grow_property_types = results.scalars().all()
 
     return await model_list_to_schema(
-        grow_property_types,
-        GrowPropertyTypeRead,
-        "No grow property types found.",
-        session,
+        grow_property_types, GrowPropertyTypeRead, "No grow property types found."
     )
 
 

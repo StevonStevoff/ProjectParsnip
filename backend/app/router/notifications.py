@@ -39,5 +39,5 @@ async def get_my_notifications(
     notifications = notifications_query.scalars().all()
 
     return await model_list_to_schema(
-        notifications, NotificationRead, "User has no notifications", session
+        notifications, NotificationRead, "User has no notifications"
     )

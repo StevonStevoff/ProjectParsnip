@@ -18,13 +18,17 @@ async def get_object_or_404(
 
 
 async def model_list_to_schema(
-    model_list: list[Base], schema: BaseRead, detail: str, session: AsyncSession
+    model_list: list[Base],
+    schema: BaseRead,
+    detail: str,
+    session: AsyncSession | None = None,
 ) -> BaseRead:
     if not model_list:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail)
     schema_list = []
     for model in model_list:
-        await session.refresh(model)
+        if session:
+            await session.refresh(model)
         schema_list.append(schema.from_orm(model))
     return schema_list
 
