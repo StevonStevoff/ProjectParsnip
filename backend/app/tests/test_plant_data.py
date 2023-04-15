@@ -1,10 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 import pytest
 from sqlalchemy import select
 
 from app.models import Plant, PlantData, SensorReading
-from app.tests.conftest import get_all_objects, get_objects
+from app.tests.conftest import get_objects
 from app.tests.populate_tests import add_plant_data, add_sensor_readings, populate_db
 
 
