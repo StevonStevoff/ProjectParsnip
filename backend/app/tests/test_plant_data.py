@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from sqlalchemy import select
 
-from app.models import PlantData, SensorReading
+from app.models import Plant, PlantData, SensorReading
 from app.tests.conftest import get_all_objects, get_objects
 from app.tests.populate_tests import add_plant_data, add_sensor_readings, populate_db
 
@@ -69,15 +69,16 @@ async def test_get_plant_data(setup_db, client, user_access_token):
     )
 
 
-@pytest.mark.skip(reason="Greenlet error, also update populate db")
+# @pytest.mark.skip(reason="Greenlet error, also update populate db")
 @pytest.mark.asyncio(scope="session")
 async def test_send_plant_data(setup_db, client, user_access_token):
     headers = {"Authorization": f"Bearer {user_access_token}"}
+    timestamp = datetime.now()
     response = await client.post(
         "/plant_data/",
         headers=headers,
         json={
-            "timestamp": str(datetime.now()),
+            "timestamp": timestamp.isoformat(),
             "device_id": 1,
             "sensor_readings": [
                 {
@@ -92,19 +93,28 @@ async def test_send_plant_data(setup_db, client, user_access_token):
         },
     )
 
-    # assert response.status_code == 201
+    assert response.status_code == 201
     json_response = response.json()
+
+    # We expect the same number of plant data objects
+    # as plants on the device to be created
+    device_plants_query = select(Plant).where(Plant.device_id == 1)
+    device_plants = await get_objects(device_plants_query)
+
+    assert len(device_plants) == len(json_response)
+    assert json_response[0]["plant_id"] == 1
+    assert json_response[1]["plant_id"] == 2
 
     # assert json_response["detail"] == ""
 
-    plant_data = await get_all_objects(PlantData)
-    assert len(plant_data) == 1
-    assert len(plant_data[0].sensor_readings) == 2
-    assert plant_data[0].sensor_readings[0].value == 55
-    assert (
-        plant_data[0].sensor_readings[1].sensor_id
-        == json_response["sensor_readings"][1]["sensor_id"]
-    )
+    # plant_data = await get_all_objects(PlantData)
+    # assert len(plant_data) == 1
+    # assert len(plant_data[0].sensor_readings) == 2
+    # assert plant_data[0].sensor_readings[0].value == 55
+    # assert (
+    #     plant_data[0].sensor_readings[1].sensor_id
+    #     == json_response["sensor_readings"][1]["sensor_id"]
+    # )
 
 
 # more tests for invalid combinations of ids
