@@ -1,17 +1,27 @@
+from typing import Annotated
+
 import jwt
 from dotenv import dotenv_values
-from fastapi import status
+from fastapi import Header, status
 from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .models import User
+import app.settings as secrets
+from app.models import User, Device
 
-config_credentials = dotenv_values(".env")
+
+async def create_device_token(device: Device) -> str:
+    payload = {"id": device.id}
+    return jwt.encode(payload, secrets.BACKEND_SECRET_KEY, "HS256")
 
 
-async def verify_token(token: str, session: AsyncSession):
+async def verify_device_token(device_token: Annotated[str, Header()]) -> bool:
+    pass
+
+
+async def verify_token(token: str, session: AsyncSession) -> User:
     try:
-        payload = jwt.decode(token, config_credentials["SECRET"], algorithms=["HS256"])
+        payload = jwt.decode(token, secrets.BACKEND_SECRET_KEY, algorithms=["HS256"])
         user = await session.get(User, payload.get("id"))
     except HTTPException:
         raise HTTPException(
