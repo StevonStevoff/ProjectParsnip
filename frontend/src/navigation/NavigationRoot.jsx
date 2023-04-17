@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { useColorModeValue } from 'native-base';
+import { Center, useColorModeValue } from 'native-base';
+import { ActivityIndicator } from 'react-native';
 import Navigation from './BottomTabNavigation';
 import ProfileScreen from '../screens/AuthScreens/ProfileScreen';
 import RegistrationScreen from '../screens/AuthScreens/RegistrationScreen';
 import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import ForgotPasswordScreen from '../screens/AuthScreens/ForgotPasswordScreen';
-import DevicesDetailsScreen from '../screens/DevicesScreens/DevicesDetailsScreen';
+import AuthUtils from '../api/utils/AuthUtils';
 
 const Stack = createStackNavigator();
 function NavigationRoot() {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const reactNavigationTheme = {
     ...DefaultTheme,
     colors: {
@@ -24,10 +27,20 @@ function NavigationRoot() {
       dark: true,
     },
   };
+
+  useEffect(() => {
+    AuthUtils.isUserAuthenticated().then((isLoggedIn) => {
+      setIsUserLoggedIn(isLoggedIn);
+      setIsLoading(false);
+    });
+  }, []);
+  if (isLoading) {
+    return <Center flex={1}><ActivityIndicator size="large" /></Center>;
+  }
   return (
     <NavigationContainer theme={reactNavigationTheme}>
       <Stack.Navigator
-        initialRouteName="LoginScreen"
+        initialRouteName={isUserLoggedIn ? 'Navigation' : 'LoginScreen'}
         screenOptions={{
           headerShown: false,
         }}

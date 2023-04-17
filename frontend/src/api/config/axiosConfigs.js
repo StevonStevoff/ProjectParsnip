@@ -2,7 +2,7 @@ import axios from 'axios';
 import { notification } from 'antd';
 import { Platform } from 'react-native';
 
-const mobileUrl = 'http://10.43.200.227:8000';
+const mobileUrl = 'http://192.168.0.116:8000';
 
 const api = axios.create({
   baseURL: Platform.OS !== 'web' ? mobileUrl : 'http://localhost:8000',

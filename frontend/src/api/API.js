@@ -4,7 +4,7 @@ import api from './config/axiosConfigs';
 import defineCancelApiObject from './config/axiosUtils';
 
 const API = {
-  async get(cancel = false) {
+  async checkAPIConnection(cancel = false) {
     const response = await api.request({
       url: '/',
       method: 'GET',
@@ -12,7 +12,7 @@ const API = {
         : undefined,
     });
 
-    return response.data;
+    return response;
   },
   async registerUser({
     email, password, name, username,
@@ -51,8 +51,13 @@ const API = {
           : undefined,
       },
     });
-    api.defaults.headers.common.Authorization = `Bearer ${response.data.access_token}`;
+    this.setJWTtoken(response.data.access_token);
     return response;
+  },
+
+  setJWTtoken(token) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    console.log('token set ');
   },
   async logout(cancel = false) {
     const response = await api.request({

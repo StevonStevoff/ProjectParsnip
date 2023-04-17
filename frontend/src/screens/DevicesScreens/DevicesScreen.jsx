@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import {
   View, useWindowDimensions, StyleSheet, RefreshControl, FlatList, TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {
   Text, Box, Heading, SectionList,
@@ -106,7 +107,7 @@ function DevicesScreen({ navigation }) {
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <Text>Loading...</Text>
+        <ActivityIndicator color="#4da707" />
       </View>
     );
   }

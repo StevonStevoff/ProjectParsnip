@@ -1,19 +1,35 @@
+/* eslint-disable no-cond-assign */
 import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
 import API from '../API';
 
 const AuthUtils = {
   async isUserAuthenticated() {
-    if (Device.brand != null) { // checks the device isn't a mobile
-      if (await SecureStore.getItemAsync('token')) {
-        return true;
-      }
-    } else if (window.localStorage.getItem('token') !== null) {
-      return true;
+    const token = await this.getUserToken();
+    if (token == null) {
+      return false;
     }
-    return false;
+    API.setJWTtoken(token);
+    return this.checkTokenVaildity();
+  },
+  async checkTokenVaildity() {
+    return API.getAuthenticatedUser()
+      .then((response) => {
+        console.log(response);
+        return true;
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   },
 
+  async getUserToken() {
+    if (Device.brand != null) {
+      return SecureStore.getItemAsync('token');
+    }
+    return window.localStorage.getItem('token');
+  },
   async setUserToken(token) {
     if (Device.brand != null) {
       SecureStore.setItemAsync('token', token);
@@ -67,6 +83,7 @@ const AuthUtils = {
   logout(navigation) {
     API.logout();
     navigation.navigate('LoginScreen');
+    this.setUserToken(null);
   },
 
   handleAuthenticationError(error) {
