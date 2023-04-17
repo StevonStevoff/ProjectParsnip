@@ -38,8 +38,8 @@ function DevicesDetailsScreen({ navigation, route }) {
     }
   });
 
-  useEffect(() => {
-    DeviceUtils.getAllSensors()
+  useEffect(async () => {
+    await DeviceUtils.getAllSensors()
       .then((sensorResponse) => {
         setAllSensors(sensorResponse);
       })
@@ -98,7 +98,6 @@ function DevicesDetailsScreen({ navigation, route }) {
         marginTop: '5%',
       }}
     >
-
       <Box
         height="100%"
         minHeight="100%"

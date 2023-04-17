@@ -48,13 +48,6 @@ function DevicesDetailsSensors({ sensors, handleSensorUpdate }) {
 
   return (
     <VStack space={2} alignItems="stretch">
-      <WarningDialog
-        isOpen={warningDialogOpen}
-        onClose={handleDeleteClose}
-        onConfirm={handleRemoveSensorConfirm}
-        warningMessage={`Are you sure you want to remove ${sensorToDelete?.name}?`}
-        actionBtnText="Remove"
-      />
       {sensors.map((sensor) => (
         <HStack key={sensor.id} justifyContent="space-between" space={3} p={3} alignItems="center">
           <HStack space={4} minWidth="15%" alignItems="center">
@@ -82,6 +75,13 @@ function DevicesDetailsSensors({ sensors, handleSensorUpdate }) {
           />
         </HStack>
       ))}
+      <WarningDialog
+        isOpen={warningDialogOpen}
+        onClose={handleDeleteClose}
+        onConfirm={handleRemoveSensorConfirm}
+        warningMessage={`Are you sure you want to remove ${sensorToDelete?.name}?`}
+        actionBtnText="Remove"
+      />
     </VStack>
   );
 }

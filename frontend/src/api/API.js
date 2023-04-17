@@ -57,7 +57,6 @@ const API = {
 
   setJWTtoken(token) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    console.log('token set ');
   },
   async logout(cancel = false) {
     const response = await api.request({
@@ -158,7 +157,7 @@ const API = {
   },
   async getSensors(cancel = false) {
     const response = await api.request({
-      url: '/sensors',
+      url: '/sensors/',
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

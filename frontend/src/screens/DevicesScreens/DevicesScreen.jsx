@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {
-  Text, Box, Heading, SectionList,
+  Text, Box, Heading, SectionList, Center,
 } from 'native-base';
 import DevicesCard from '../../components/DevicesCard';
 import DeviceUtils from '../../api/utils/DeviceUtils';
@@ -26,7 +26,6 @@ function DevicesScreen({ navigation }) {
     DeviceUtils.getLinkedDevices()
       .then((devicesObj) => {
         setLinkedDevices(devicesObj);
-        console.log(devicesObj);
       })
       .catch((error) => {
         console.error(error);
@@ -106,9 +105,9 @@ function DevicesScreen({ navigation }) {
   );
   if (isLoading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator color="#4da707" />
-      </View>
+      <Center flex={1}>
+        <ActivityIndicator size="large" color="#4da707" />
+      </Center>
     );
   }
 
