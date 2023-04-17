@@ -14,12 +14,10 @@ function App() {
   const checkConnection = async () => {
     try {
       const response = await API.checkAPIConnection();
-      console.log(response);
       const connected = response.status === 200;
       setIsConnected(connected);
       setLoading(false);
     } catch (error) {
-      console.log(error);
       setIsConnected(false);
       setLoading(false);
     }

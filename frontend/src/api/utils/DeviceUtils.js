@@ -33,7 +33,16 @@ const DeviceUtils = {
       return []; // Return an empty array in case of an error
     }
   },
-
+  async updateDevice(device) {
+    try {
+      const data = this.createDevicePostBodyFormat(device);
+      const response = await API.updateDevice({ data });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of an error
+    }
+  },
   async updateSensorsInDevice(device, sensors) {
     // eslint-disable-next-line no-param-reassign
     device.sensors = sensors;

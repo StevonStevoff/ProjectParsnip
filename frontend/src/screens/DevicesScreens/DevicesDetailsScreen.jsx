@@ -5,7 +5,9 @@ import {
   Icon, Avatar, Button, Divider, ScrollView,
 } from 'native-base';
 import React, { useState, useEffect } from 'react';
-import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import {
+  MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome,
+} from '@expo/vector-icons';
 import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 import AdditionDialog from '../../components/AdditionDialog';
@@ -46,6 +48,7 @@ function DevicesDetailsScreen({ navigation, route }) {
       .catch((error) => {
         console.error(error);
       });
+    console.log('all sensors', allSensors);
   }, []);
 
   useEffect(() => {
@@ -128,6 +131,18 @@ function DevicesDetailsScreen({ navigation, route }) {
               <Icon
                 as={Ionicons}
                 name="arrow-back"
+                _dark={{ color: 'white' }}
+                _light={{ color: 'grey.200' }}
+                size="lg"
+              />
+            </Button>
+            <Button
+              variant="unstyled"
+              onPress={() => navigation.navigate('DeviceEdit', { device: currentDevice })}
+            >
+              <Icon
+                as={FontAwesome}
+                name="pencil-square-o"
                 _dark={{ color: 'white' }}
                 _light={{ color: 'grey.200' }}
                 size="lg"
