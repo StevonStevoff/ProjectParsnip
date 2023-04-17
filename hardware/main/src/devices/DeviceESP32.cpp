@@ -8,7 +8,6 @@ DeviceESP32::DeviceESP32() : Portal(server), sensors_()
     //     Serial.println("WiFi connected: " + WiFi.localIP().toString());
     // }
 #endif
-
     this->deviceServerInterface = new DeviceServerInterface("https://parsnipbackend.azurewebsites.net");
 }
 
@@ -50,25 +49,55 @@ void DeviceESP32::removeSensor(int id)
     }
 }
 
-void DeviceESP32::readSensors()
+// one sensor can have multiple readings
+std::map<std::string, float> DeviceESP32::readSensors()
 {
+    std::map<std::string, float> sensor_readings;
     // Loop through each sensor and take a reading
     for (auto sensor : sensors_)
     {
-        std::map<std::string, float> value = sensor->read();
-
+        std::map<std::string, float> values = sensor->read();
         // Send the sensor data to the server
         // char data[128];
         // sprintf(data, "{\"sensor_id\":%d,\"value\":%f}", sensor->getId(), value);
-        Serial.println(value["temperature"]);
-        Serial.println(value["humidity"]);
+        Serial.println(values["temperature"]);
+        Serial.println(values["humidity"]);
         // this->httpClient_->post("/api/sensor-data", data);
     }
+
+    return sensor_readings;
 }
 
 // make a method that packages the data and sends it to the backend using the http client
 void DeviceESP32::sendSensorData()
 {
-    return;
-    char data[128];
+    if (this->readInterval < this->lastReadTime) // sync time with server
+    {
+        this->readSensors();
+        this->lastReadTime = 0;
+
+        // send data to server
+        // this->deviceServerInterface->sendSensorData();
+    }
+    else
+    {
+        this->lastReadTime += 1000;
+    }
+}
+void DeviceESP32::setReadInterval(int interval)
+{
+    this->readInterval = interval;
+}
+int DeviceESP32::getReadInterval()
+{
+    return this->readInterval;
+}
+
+void DeviceESP32::setLastReadTime(int time)
+{
+    this->lastReadTime = time;
+}
+int DeviceESP32::getLastReadTime()
+{
+    return this->lastReadTime;
 }

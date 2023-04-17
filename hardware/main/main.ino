@@ -1,14 +1,11 @@
 #include "src/devices/DeviceESP32.h"
-#include "src/sensors/temperature/TemperatureSensor.h"
-
-// Hardware Definitions
-#define ESP32
-#define DHTTYPE DHT11
-#define DHTPIN 4
+#include "src/sensors/temperature/TemperatureSensorDHT.h"
 
 // Global Variables
 DeviceESP32 *device = new DeviceESP32();
-TemperatureSensor *temperatureSensor = new TemperatureSensor(1);
+TemperatureSensorDHT *temperatureSensor = new TemperatureSensorDHT(1, 4, 11);
+
+// Lora *lora = new Lora(1);
 
 #include <HttpClient.h>
 HTTPClient client;
@@ -21,22 +18,25 @@ void setup()
   Serial.println(F("start"));
   // add sensors
   device->addSensor(temperatureSensor);
+  // device->addSensor(lora);
 
   device->beginServer();
   Serial.println(F("Connected to wifi"));
 
   // client(device->server, 80);
   // client.begin("https://parsnipbackend.azurewebsites.net");
+  int loopTime = 0;
 }
 
 void loop()
 {
-  // delay(1000);
   device->handleClientRequest();
-  delay(1000);
-  device->readSensors();
-  Serial.println(F("looped"));
 
+  device->readSensors();
+
+  device->sendSensorData();
+
+  Serial.println(F("looped"));
   // device->sendSensorData()
 
   // Serial.println(temperatureSensor->getTemperature());

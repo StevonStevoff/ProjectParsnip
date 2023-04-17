@@ -10,6 +10,19 @@ void DeviceServerInterface::setAuthToken(String authToken)
     this->authToken = authToken;
 }
 
+void DeviceServerInterface::getAuthToken()
+{
+    // send the GET request for the auth token
+    // int statusCode = http.GET(this->baseUrl + "/getAuthToken");
+
+    // // check the response status code
+    // if (statusCode == HTTP_CODE_OK)
+    // {
+    //     String authToken = http.getString();
+    //     this->authToken = authToken;
+    // }
+}
+
 int DeviceServerInterface::sendData(float value)
 {
     // create the payload

@@ -7,6 +7,7 @@ public:
     void setAuthToken(String authToken);
     int sendData(float value);
     String getDeviceId();
+    void getAuthToken();
 
 private:
     HTTPClient http;
