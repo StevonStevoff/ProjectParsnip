@@ -257,11 +257,10 @@ async def get_plant_data(
     )
     plant = plant_query.scalars().first()
     if plant is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="The plant does not exist."
-        )
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The plant does not exist.")
 
     await user_can_use_object(user, plant.device_id, Device, "device", session)
+    user = await session.merge(user)
 
     return await model_list_to_schema(
         plant.plant_data, PlantDataRead, "No plant data found."
@@ -326,7 +325,7 @@ async def update_plant_coordinates(
     error_msg += "."
 
     if not valid_longitude or not valid_latitude:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error_msg)
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, error_msg)
 
     if latitude is not None:
         plant.latitude = latitude
@@ -339,8 +338,8 @@ async def update_time_planted(plant: Plant, time_planted: datetime) -> None:
     time_planted_utc = time_planted.astimezone(timezone.utc)
     if current_time < time_planted_utc:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Time planted cannot be in the future.",
+            status.HTTP_400_BAD_REQUEST,
+            "Time planted cannot be in the future.",
         )
 
     plant.time_planted = time_planted_utc
