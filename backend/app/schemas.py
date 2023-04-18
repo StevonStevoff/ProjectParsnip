@@ -219,7 +219,6 @@ class PlantUpdate(PlantBase):
 
 
 class PlantDataBase(BaseModel):
-    plant_id: int
     timestamp: datetime
 
 
@@ -229,4 +228,15 @@ class PlantDataCreate(PlantDataBase):
 
 
 class PlantDataRead(BaseRead, PlantDataBase):
+    plant_id: int
     sensor_readings: list[SensorReadingRead]
+
+
+class NotificationBase(BaseModel):
+    text: str
+    resolved: bool
+    timestamp: datetime
+
+
+class NotificationRead(BaseRead, NotificationBase):
+    plant: PlantRead

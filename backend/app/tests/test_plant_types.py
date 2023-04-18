@@ -279,7 +279,7 @@ async def test_delete_plant_type_id(setup_db, client, user_access_token):
 
     assert response.status_code == 200
 
-    query = select(PlantType).where(PlantType.id == 1)
+    query = select(PlantType).where(PlantType.id == 3)
     plant_type = await get_objects(query)
 
     assert plant_type == []
@@ -302,7 +302,7 @@ async def test_delete_plant_type_id_invalid(setup_db, client, superuser_access_t
 
 @pytest.mark.asyncio(scope="session")
 async def test_patch_plant_type_without_token(setup_db, client):
-    response = await client.patch("/plant_types/3")
+    response = await client.patch("/plant_types/4")
 
     assert response.status_code == 401
     json_response = response.json()

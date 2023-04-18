@@ -1,25 +1,88 @@
+from datetime import datetime
+
 from fastapi_users.password import PasswordHelper
 
 from app.models import (
+    Base,
     Device,
+    GrowPropertyRange,
     GrowPropertyType,
     Plant,
+    PlantData,
     PlantProfile,
     PlantType,
     Sensor,
+    SensorReading,
     User,
 )
 from app.tests.conftest import get_db
 
+class_list = [
+    Device,
+    GrowPropertyRange,
+    GrowPropertyType,
+    Plant,
+    PlantData,
+    PlantType,
+    PlantProfile,
+    PlantType,
+    Sensor,
+    SensorReading,
+    User,
+]
 
-async def populate_db():
-    await add_users()
-    await add_grow_property_types()
-    await add_sensors()
-    await add_devices()
-    await add_plant_types()
-    await add_plant_profiles()
-    await add_plants()
+
+async def populate_db(
+    exclude: list[Base] = [],
+):
+    if User not in exclude:
+        await add_users()
+    if GrowPropertyType not in exclude:
+        await add_grow_property_types()
+    if Sensor not in exclude:
+        await add_sensors()
+    if Device not in exclude:
+        await add_devices()
+    if PlantType not in exclude:
+        await add_plant_types()
+    if PlantProfile not in exclude:
+        await add_plant_profiles()
+    if Plant not in exclude:
+        await add_plants()
+    if GrowPropertyRange not in exclude:
+        await add_grow_properties()
+    if PlantData not in exclude:
+        await add_plant_data()
+    if SensorReading not in exclude:
+        await add_sensor_readings()
+
+
+async def add_grow_properties():
+    async for session in get_db():
+        test_grow_properties = []
+        test_grow_properties.append(
+            GrowPropertyRange(
+                min=10,
+                max=50,
+                grow_property_type_id=1,
+                plant_profile_id=2,
+                sensor_id=1,
+            )
+        )
+        test_grow_properties.append(
+            GrowPropertyRange(
+                min=50,
+                max=100,
+                grow_property_type_id=2,
+                plant_profile_id=3,
+                sensor_id=2,
+            )
+        )
+
+        for grow_property in test_grow_properties:
+            session.add(grow_property)
+        await session.commit()
+        break
 
 
 async def add_grow_property_types():
@@ -27,8 +90,14 @@ async def add_grow_property_types():
         test_grow_property_types = []
         test_grow_property_types.append(
             GrowPropertyType(
-                name="Temperature",
+                name="Test Temperature",
                 description="Temperature Data values, stored in Degrees C",
+            )
+        )
+        test_grow_property_types.append(
+            GrowPropertyType(
+                name="Test Moisture",
+                description="Moisture description",
             )
         )
 
@@ -126,7 +195,7 @@ async def add_sensors():
                 id=2,
                 name="sensor2",
                 description="this is also a description",
-                grow_property_type_id=1,
+                grow_property_type_id=2,
             )
         )
 
@@ -270,7 +339,62 @@ async def add_plants():
                 longitude=-1.5550,
             )
         )
+        test_plants.append(
+            Plant(
+                name="We Need More Plants",
+                device_id=2,
+                plant_profile_id=2,
+                plant_type_id=2,
+                outdoor=False,
+                latitude=23.8067,
+                longitude=-19.5550,
+            )
+        )
         for test_plant in test_plants:
             session.add(test_plant)
         await session.commit()
         break
+
+
+async def add_plant_data():
+    async for session in get_db():
+        test_plant_data = []
+        test_plant_data.append(
+            PlantData(
+                timestamp=(datetime(2023, 3, 6, 10, 12, 0, 123456)),
+                plant_id=1,
+            )
+        )
+        test_plant_data.append(
+            PlantData(
+                timestamp=(datetime(2023, 3, 6, 10, 13, 0, 123456)),
+                plant_id=1,
+            )
+        )
+        for test_plant_data_item in test_plant_data:
+            session.add(test_plant_data_item)
+        await session.commit()
+
+
+async def add_sensor_readings():
+    async for session in get_db():
+        test_sensor_readings = []
+        test_sensor_readings.append(
+            SensorReading(
+                value=10.5,
+                sensor_id=1,
+                grow_property_id=1,
+                plant_data_id=1,
+            )
+        )
+        test_sensor_readings.append(
+            SensorReading(
+                value=11.5,
+                sensor_id=1,
+                grow_property_id=1,
+                plant_data_id=2,
+            )
+        )
+        for test_sensor_reading in test_sensor_readings:
+            session.add(test_sensor_reading)
+        await session.commit()

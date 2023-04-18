@@ -124,8 +124,8 @@ async def get_created_profiles(
 
     if not profiles:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User has no created plant profiles.",
+            status.HTTP_404_NOT_FOUND,
+            "User has no created plant profiles.",
         )
     profile_list = [PlantProfileRead.from_orm(profile) for profile in profiles]
     return profile_list
@@ -295,7 +295,7 @@ async def patch_plant_profile(
                 plant_profile, plant_profile_update.user_ids, session
             )
         else:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+            raise HTTPException(status.HTTP_403_FORBIDDEN)
 
     await session.commit()
     await session.refresh(plant_profile)
@@ -314,7 +314,7 @@ async def check_removing_or_adding_self(
     removing_self = existing_user_ids == plant_profile_update.user_ids
 
     if not (removing_self or adding_self):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+        raise HTTPException(status.HTTP_403_FORBIDDEN)
 
 
 async def update_profile_plant_type(
@@ -325,8 +325,8 @@ async def update_profile_plant_type(
         plant_type = await get_object_or_404(plant_type_id, PlantType, session, detail)
     except HTTPException:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No plant type with id ({plant_type_id}) found.",
+            status.HTTP_404_NOT_FOUND,
+            f"No plant type with id ({plant_type_id}) found.",
         )
 
     plant_profile.plant_type = plant_type
@@ -338,8 +338,8 @@ async def update_plant_profile_users(
     unique_user_id_list = [*set(user_ids)]
     if plant_profile.creator.id not in unique_user_id_list:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cannot remove plant profile creator from users.",
+            status.HTTP_400_BAD_REQUEST,
+            "Cannot remove plant profile creator from users.",
         )
 
     users_query = await session.execute(
@@ -351,8 +351,8 @@ async def update_plant_profile_users(
 async def update_grow_duration(plant_profile: PlantProfile, grow_duration: int):
     if grow_duration < 0:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Grow duration cannot be less than zero.",
+            status.HTTP_400_BAD_REQUEST,
+            "Grow duration cannot be less than zero.",
         )
     plant_profile.grow_duration = grow_duration
 
@@ -370,8 +370,8 @@ async def update_profile_grow_properties(
     for grow_property in unique_grow_property_ids:
         if grow_property not in profile_grow_property_ids:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Cannot add new grow properties from plant profile route.",
+                status.HTTP_400_BAD_REQUEST,
+                "Cannot add new grow properties from plant profile route.",
             )
 
     grow_properties_query = await session.execute(
