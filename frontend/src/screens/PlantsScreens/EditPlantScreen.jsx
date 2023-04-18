@@ -1,14 +1,12 @@
-import { ActivityIndicator, View ,ScrollView} from 'react-native';
+import { View, ScrollView } from 'react-native';
 import React from 'react';
 import {
-  VStack
+  VStack,
 } from 'native-base';
 import CloseBtn from '../../components/CloseBtn';
 import EditPlantForm from '../../components/EditPlantForm';
 
-function EditPlantScreen( {route,navigation} ) {
-
-
+function EditPlantScreen({ route, navigation }) {
   return (
     <View
       style={{
@@ -30,13 +28,20 @@ function EditPlantScreen( {route,navigation} ) {
         <CloseBtn navigation={navigation} />
       </View>
 
-
       <VStack space={10} alignItems="center" width="90%">
-      <ScrollView style={{ maxHeight: "100%" ,width:"100%"}}>
-        <View style={{width:"100%",height:"100%", alignItems:"top",padding:10}}>  
-          <EditPlantForm plantTypes={route.params.plantTypes} plantProfiles={route.params.plantProfiles} devices={route.params.devices} plant={route.params.plant}/> 
-        </View>
-        </ScrollView> 
+        <ScrollView style={{ maxHeight: '100%', width: '100%' }}>
+          <View style={{
+            width: '100%', height: '100%', alignItems: 'top', padding: 10,
+          }}
+          >
+            <EditPlantForm
+              plantTypes={route.params.plantTypes}
+              plantProfiles={route.params.plantProfiles}
+              devices={route.params.devices}
+              plant={route.params.plant}
+            />
+          </View>
+        </ScrollView>
       </VStack>
     </View>
   );
