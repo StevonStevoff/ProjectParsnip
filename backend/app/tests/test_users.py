@@ -121,12 +121,11 @@ async def test_get_user_id_invalid(setup_db, client, user_access_token):
     assert json_response["detail"] == "The user does not exist."
 
 
-# @pytest.mark.asyncio(scope="session")
-# async def test_get_user_profile_pic_none_set(setup_db, client, user_access_token):
-# headers = {"Authorization": f"Bearer {user_access_token}"}
-# response = await client.get("/users/2/pfp", headers=headers)
-
-# assert response.status_code == 200
+@pytest.mark.asyncio(scope="session")
+async def test_get_user_profile_pic_none_set(setup_db, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/users/2/pfp", headers=headers)
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio(scope="session")
@@ -144,3 +143,21 @@ async def test_set_user_profile_pic(setup_db, client, user_access_token):
 
     json_response = response.json()
     assert json_response["size"] == list(size)
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_user_profile_pic(setup_db, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/users/2/pfp", headers=headers)
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_get_user_profile_invalid_user(setup_db, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.get("/users/99/pfp", headers=headers)
+
+    assert response.status_code == 404
+
+    json_response = response.json()
+    assert json_response["detail"] == "The user does not exist."
