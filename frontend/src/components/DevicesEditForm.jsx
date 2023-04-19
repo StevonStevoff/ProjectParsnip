@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-param-reassign */
+
+import React, { useState } from 'react';
 import {
   View,
   ActivityIndicator,
@@ -17,11 +19,19 @@ function DeviceEditForm({ navigation, device }) {
 
   const handleDeviceEdit = async (values) => {
     setIsLoading(true);
+    device.isUserOwner = false;
     device.owner = deviceOwner;
     device.name = values.name;
     try {
-      const response = await DeviceUtils.updateDevice(device);
+      const [response, currentUser] = await Promise.all([
+        DeviceUtils.updateDevice(device),
+        DeviceUtils.getCurrentUser(),
+      ]);
+
       if (response.status === 200) {
+        if (deviceOwner.id === currentUser.id) {
+          device.isUserOwner = true;
+        }
         navigation.goBack();
       } else {
         console.error('Failed to edit device:', response.statusText);
@@ -53,7 +63,7 @@ function DeviceEditForm({ navigation, device }) {
       <Formik
         initialValues={{
           name: device.name || '',
-          owner: deviceOwner, // fix here
+          owner: deviceOwner,
         }}
         validationSchema={DeviceSchema}
         onSubmit={handleDeviceEdit}
@@ -101,7 +111,11 @@ function DeviceEditForm({ navigation, device }) {
                 }}
               >
                 {device.users.map((user) => (
-                  <Select.Item key={user.id} label={user.username} value={user.id} />
+                  <Select.Item
+                    key={user.id}
+                    label={user.username}
+                    value={user.id}
+                  />
                 ))}
               </Select>
             </FormControl>

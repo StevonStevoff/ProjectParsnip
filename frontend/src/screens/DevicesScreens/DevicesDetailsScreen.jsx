@@ -55,20 +55,23 @@ function DevicesDetailsScreen({ navigation, route }) {
       return { ...user, isOwner: false };
     }));
   }, [currentDevice.owner]);
+
   useEffect(
     () => {
-      setIsLoading(true);
-      currentDevice.sensors = deviceSensors;
-      currentDevice.users = deviceUsers;
-      DeviceUtils.updateDevice(currentDevice)
-        .then((response) => {
-          console.log('response', response);
-        }).catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      if (currentDevice.isUserOwner) {
+        setIsLoading(true);
+        currentDevice.sensors = deviceSensors;
+        currentDevice.users = deviceUsers;
+        DeviceUtils.updateDevice(currentDevice)
+          .then((response) => {
+            console.log('response', response);
+          }).catch((error) => {
+            console.log(error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      }
     },
     [deviceSensors, deviceUsers],
   );
@@ -80,6 +83,7 @@ function DevicesDetailsScreen({ navigation, route }) {
       </Center>
     );
   }
+
   return (
     <ScrollView
       contentContainerStyle={{

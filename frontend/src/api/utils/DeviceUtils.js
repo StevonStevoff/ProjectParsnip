@@ -42,7 +42,6 @@ const DeviceUtils = {
 
   async updateDevice(device) {
     try {
-      console.log('device', device);
       const data = this.createDevicePostBodyFormat(device);
       const response = await API.updateDevice({ data });
       return response;
