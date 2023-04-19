@@ -1,24 +1,21 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/destructuring-assignment */
 import {
-  Text, Box, Heading, HStack, VStack, IconButton,
-  Icon, Avatar, Button, Divider, ScrollView, Center,
+  Text, Box, Heading, HStack, VStack,
+  Icon, Button, ScrollView, Center,
 } from 'native-base';
 import React, { useState, useEffect } from 'react';
-import {
-  MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome,
-} from '@expo/vector-icons';
-import { useIsFocused } from '@react-navigation/native';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native';
-import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
+import { useIsFocused } from '@react-navigation/native';
 import DeviceUtils from '../../api/utils/DeviceUtils';
-import AdditionDialog from '../../components/AdditionDialog';
 import DeviceDetailsInfo from '../../components/DeviceDetailsInfo';
-// import PlantInfoTable from '../../components/PlantInfoTable';
+import PlantInfoTable from '../../components/PlantInfoTable';
 
 function DevicesDetailsScreen({ navigation, route }) {
   const { item } = route.params;
   const currentDevice = (item && item.device) || item || {};
+  currentDevice.isLinked = !!item.device;
   const isFocused = useIsFocused();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -73,7 +70,7 @@ function DevicesDetailsScreen({ navigation, route }) {
           });
       }
     },
-    [deviceSensors, deviceUsers],
+    [deviceSensors, deviceUsers, isFocused],
   );
 
   if (isLoading) {
@@ -91,12 +88,9 @@ function DevicesDetailsScreen({ navigation, route }) {
         justifyContent: 'center',
         alignItems: 'center',
         paddingBottom: '5%',
-        marginTop: '5%',
       }}
     >
       <Box
-        height="100%"
-        minHeight="100%"
         width="100%"
         minWidth="100%"
         rounded="sm"
@@ -108,7 +102,7 @@ function DevicesDetailsScreen({ navigation, route }) {
         _dark={{ borderColor: '#18181b', backgroundColor: '#18181b' }}
         _light={{ backgroundColor: 'gray.50' }}
       >
-        <VStack width="90%">
+        <VStack width="90%" space={4}>
           <HStack justifyContent="space-between" width="100%">
             <Button
               onPress={() => navigation.goBack()}
@@ -148,6 +142,11 @@ function DevicesDetailsScreen({ navigation, route }) {
               {model_name}
             </Text>
           </VStack>
+          <PlantInfoTable
+            plantProfileName={item?.plant_profile?.name || ''}
+            plantType={item?.plant_type?.name || ''}
+            plantName={item?.name || ''}
+          />
           <DeviceDetailsInfo heading="Sensors" isUserOwner={currentDevice.isUserOwner} items={deviceSensors} setItems={setDeviceSensors} fetchSelectionOptions={DeviceUtils.getAllSensors} />
           <DeviceDetailsInfo heading="Users" isUserOwner={currentDevice.isUserOwner} items={deviceUsers} setItems={setDeviceUsers} fetchSelectionOptions={DeviceUtils.getAllUsers} />
         </VStack>

@@ -8,7 +8,7 @@ function WarningDialog({
     <AlertDialog isOpen={isOpen} onClose={onClose}>
       <AlertDialog.Content>
         <AlertDialog.Header fontSize="lg" fontWeight="bold">
-          Remove Sensor for device.
+          Remove item from device
         </AlertDialog.Header>
         <AlertDialog.Body>
           {warningMessage}

@@ -7,15 +7,17 @@ import {
 } from 'react-native';
 import { Formik } from 'formik';
 import {
-  Input, Icon, FormControl, VStack, Select, Button, Center,
+  Input, Icon, FormControl, VStack, Select, Button, Center, Heading, Spacer,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import DeviceUtils from '../api/utils/DeviceUtils';
 import DeviceSchema from '../utils/validationSchema/DeviceSchema';
+import WarningDialog from './WarningDialog';
 
 function DeviceEditForm({ navigation, device }) {
   const [isFormLoading, setIsLoading] = useState(false);
   const [deviceOwner, setDeviceOwner] = useState(device.owner);
+  const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
 
   const handleDeviceEdit = async (values) => {
     setIsLoading(true);
@@ -43,6 +45,29 @@ function DeviceEditForm({ navigation, device }) {
     }
   };
 
+  const handleDeleteClose = () => {
+    setIsWarningDialogOpen(false);
+  };
+
+  const handleDeleteConfirm = () => {
+    setIsWarningDialogOpen(false);
+    setIsLoading(true);
+    DeviceUtils.deleteDevice(device)
+      .then((response) => {
+        if (response.status === 200) {
+          navigation.navigate('DevicesRoot');
+        } else {
+          console.error('Failed to delete device:', response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error('Error deleting device:', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   if (isFormLoading) {
     return (
       <Center flex={1}>
@@ -52,14 +77,28 @@ function DeviceEditForm({ navigation, device }) {
   }
 
   return (
-    <View
+    <VStack
       style={{
         flex: 1,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: '90%',
       }}
+      space={8}
+      alignItems="center"
     >
+      <WarningDialog
+        isOpen={isWarningDialogOpen}
+        onClose={handleDeleteClose}
+        onConfirm={handleDeleteConfirm}
+        warningMessage="Are you sure you want to delete this device? This action cannot be undone."
+        actionBtnText="Delete Device"
+      />
+
+      <Heading>
+        {' '}
+        Editing
+        {' '}
+        {device.name}
+      </Heading>
       <Formik
         initialValues={{
           name: device.name || '',
@@ -119,11 +158,24 @@ function DeviceEditForm({ navigation, device }) {
                 ))}
               </Select>
             </FormControl>
-            <Button w="40%" onPress={() => handleDeviceEdit(values)}> Update Device </Button>
+            <VStack alignItems="center" width="100%" space={2}>
+              <Spacer size={5} />
+              <Button w="40%" onPress={() => handleDeviceEdit(values)}> Update Device </Button>
+              {!device.isLinked && (
+              <Button
+                color="white"
+                w="40%"
+                bg="error.600"
+                onPress={() => setIsWarningDialogOpen(true)}
+              >
+                Delete Device
+              </Button>
+              ) }
+            </VStack>
           </VStack>
         )}
       </Formik>
-    </View>
+    </VStack>
   );
 }
 

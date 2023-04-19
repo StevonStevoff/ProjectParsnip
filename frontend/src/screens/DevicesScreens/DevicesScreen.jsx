@@ -43,15 +43,11 @@ function DevicesScreen({ navigation }) {
 
   useEffect(() => {
     fetchDeviceData();
-  }, []);
-
-  useEffect(() => {
-    fetchDeviceData();
   }, [isFocused]);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    fetchDeviceData();
+    await fetchDeviceData();
     setRefreshing(false);
   };
 
@@ -127,11 +123,11 @@ function DevicesScreen({ navigation }) {
     <View style={styles.container}>
       <SectionList
         sections={sections}
-        data={linkedDevices}
         keyExtractor={(item, index) => item.id + index}
         renderItem={renderDevice}
-        sectionHeader={renderSectionHeader}
+        renderSectionHeader={renderSectionHeader}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        stickySectionHeadersEnabled={false}
       />
     </View>
   );
@@ -141,11 +137,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    margin: '2%',
+    paddingBottom: '2%',
+    margin: '.5%',
+    height: '85%',
   },
   webContainer: {
     flex: 1,
     padding: 10,
+    height: '85%',
   },
   cardContainer: {
     alignItems: 'center',

@@ -150,7 +150,7 @@ const API = {
   async updateDevice({ data }, cancel = false) {
     const response = await api.request({
       // eslint-disable-next-line no-template-curly-in-string
-      url: `devices/${data.id}/`,
+      url: `devices/${data.id}`,
       method: 'PATCH',
       data,
       headers: {
@@ -175,6 +175,19 @@ const API = {
 
     return response;
   },
+  async deleteDevice({ device }, cancel = false) {
+    const response = await api.request({
+      url: `/devices/${device.id}`,
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  }
 };
 
 // defining the cancel API object for ProductAPI

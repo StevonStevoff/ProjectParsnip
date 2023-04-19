@@ -8,30 +8,31 @@ import {
 import { useWindowDimensions } from 'react-native';
 import AdditionDialog from './AdditionDialog';
 import getIconComponent from '../utils/SensorIcons';
+import WarningDialog from './WarningDialog';
 
 function DeviceDetailsInfo({
   heading, isUserOwner, items, setItems, fetchSelectionOptions,
 }) {
   const screenWidth = useWindowDimensions().width;
   const [additionDialogOpen, setAdditionDialogOpen] = useState(false);
-  const [selectionOptions, setSelectionOptions] = useState([]);
+  const [warningDialogOpen, setWarningDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const handlePopUpWindowClose = () => {
     setAdditionDialogOpen(false);
-    setSelectionOptions([]);
+    setItemToDelete(null);
+    setWarningDialogOpen(false);
   };
 
   const handlePopUpWindowConfirm = (updatedInfoItems) => {
     setItems(updatedInfoItems);
-
     handlePopUpWindowClose();
   };
 
-  const handleItemDeletion = (item) => {
-    const updatedItems = items.filter((i) => i.id !== item.id);
-    return () => {
-      setItems(updatedItems);
-    };
+  const handleDeletionConfirmation = () => {
+    const updatedItems = items.filter((i) => i.id !== itemToDelete.id);
+    handlePopUpWindowClose();
+    setItems(updatedItems);
   };
 
   return (
@@ -48,6 +49,13 @@ function DeviceDetailsInfo({
         currentItems={items}
         fetchSelectionOptions={fetchSelectionOptions}
         actionBtnText="Add"
+      />
+      <WarningDialog
+        isOpen={warningDialogOpen}
+        onClose={handlePopUpWindowClose}
+        onConfirm={handleDeletionConfirmation}
+        warningMessage="Are you sure you want to procede. This action cannot be undone."
+        actionBtnText="Delete"
       />
       <HStack justifyContent="space-between">
         <Heading size="lg" fontWeight={500}>{heading}</Heading>
@@ -93,7 +101,7 @@ function DeviceDetailsInfo({
             {isUserOwner && (
             <Button
               variant="unstyled"
-              onPress={handleItemDeletion(item)}
+              onPress={() => { setWarningDialogOpen(true); setItemToDelete(item); }}
             >
               <Icon
                 as={MaterialCommunityIcons}

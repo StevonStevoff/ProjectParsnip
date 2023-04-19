@@ -39,7 +39,6 @@ const DeviceUtils = {
       return []; // Return an empty array in case of an error
     }
   },
-
   async updateDevice(device) {
     try {
       const data = this.createDevicePostBodyFormat(device);
@@ -120,6 +119,15 @@ const DeviceUtils = {
     try {
       const response = await API.getAllUsers();
       return response.data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
+  async deleteDevice(device) {
+    try {
+      const response = await API.deleteDevice({ device });
+      return response;
     } catch (error) {
       console.error(error);
       return [];

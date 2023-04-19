@@ -82,6 +82,7 @@ function AdditionDialog({
             <Box maxW="500">
               <Select
                 selectedValue={selectedItem?.id}
+                placeholder="Select item"
                 minWidth="200"
                 _selectedItem={{
                   bg: 'teal.600',
