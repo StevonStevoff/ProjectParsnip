@@ -12,52 +12,42 @@
 #include "WebServer.h"
 #endif
 
-#include <AutoConnect.h>
-
-#include "../sensors/Sensor.h"
-#include "../http/DeviceServerInterface.h"
-
-#include <vector>
-#include <map>
-#include <string>
-
-#include <EEPROM.h>
-
-class DeviceESP32
+class DeviceESP32 : public Device
 {
 public:
   DeviceESP32(String deviceServerAddress = "https://parsnipbackend.azurewebsites.net");
 
-  AutoConnect &getPortal();
-  std::map<std::string, float> readSensors();
-  void addSensor(Sensor *sensor);
-  void removeSensor(int id);
-  void handleClientRequest();
-  void beginServer();
-  void sendSensorData();
-  void setReadInterval(int interval);
-  void setLastReadTime(int time);
-  int getLastReadTime();
-  int getReadInterval();
+  // AutoConnect &getPortal();
+  // std::map<std::string, float> readSensors();
+  // void addSensor(Sensor *sensor);
+  // void removeSensor(int id);
+  // void handleClientRequest();
+  // void beginServer();
+  // void sendSensorData();
 
-  String onHandleAuthToken(AutoConnectAux &page, PageArgument &args);
-  String onLoadAuthPage(AutoConnectAux &page, PageArgument &args);
+  // void setReadInterval(int interval);
+  // void setLastReadTime(int time);
+  // int getLastReadTime();
+  // int getReadInterval();
 
-  String getAuthenticationToken();
+  // String onHandleAuthToken(AutoConnectAux &page, PageArgument &args);
+  // String onLoadAuthPage(AutoConnectAux &page, PageArgument &args);
+
+  // String getAuthenticationToken();
 
 private:
-  WebServer server;
-  AutoConnect Portal;
-  std::vector<Sensor *> sensors_;
-  DeviceServerInterface *deviceServerInterface;
-  int deviceId = 1;
-  int readInterval = 3600000;
-  int lastReadTime = 0;
+  // WebServer server;
+  // AutoConnect Portal;
+  // std::vector<Sensor *> sensors_;
+  // DeviceServerInterface *deviceServerInterface;
+  // int deviceId = 1;
+  // int readInterval = 3600000;
+  // int lastReadTime = 0;
 
-  struct
-  {
-    char token[33]; // 32 bytes for the token + 1 byte for the null terminator
-  } EEPROM_CONFIG_tt;
+  // struct
+  // {
+  //   char token[33]; // 32 bytes for the token + 1 byte for the null terminator
+  // } EEPROM_CONFIG_tt;
 
   // AutoConnectAux auxInputToken;
   // AutoConnectAux auxHandleToken;
