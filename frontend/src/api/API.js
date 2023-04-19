@@ -150,7 +150,7 @@ const API = {
   async updateDevice({ data }, cancel = false) {
     const response = await api.request({
       // eslint-disable-next-line no-template-curly-in-string
-      url: `devices/${data.id}`,
+      url: `devices/${data.id}/`,
       method: 'PATCH',
       data,
       headers: {

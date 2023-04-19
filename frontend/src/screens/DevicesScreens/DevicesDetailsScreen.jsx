@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import {
   MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome,
 } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
 import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
 import DeviceUtils from '../../api/utils/DeviceUtils';
@@ -18,6 +19,7 @@ import DeviceDetailsInfo from '../../components/DeviceDetailsInfo';
 function DevicesDetailsScreen({ navigation, route }) {
   const { item } = route.params;
   const currentDevice = (item && item.device) || item || {};
+  const isFocused = useIsFocused();
 
   const [isLoading, setIsLoading] = useState(true);
   const [deviceSensors, setDeviceSensors] = useState(currentDevice.sensors || []);
@@ -45,10 +47,19 @@ function DevicesDetailsScreen({ navigation, route }) {
     addUsersOwnerFlag();
   }, []);
 
+  useEffect(() => {
+    setDeviceUsers((prevUsers) => prevUsers.map((user) => {
+      if (user.id === currentDevice.owner.id) {
+        return { ...user, isOwner: true };
+      }
+      return { ...user, isOwner: false };
+    }));
+  }, [currentDevice.owner]);
   useEffect(
     () => {
       setIsLoading(true);
       currentDevice.sensors = deviceSensors;
+      currentDevice.users = deviceUsers;
       DeviceUtils.updateDevice(currentDevice)
         .then((response) => {
           console.log('response', response);

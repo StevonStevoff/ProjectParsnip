@@ -45,7 +45,7 @@ const DeviceUtils = {
       console.log('device', device);
       const data = this.createDevicePostBodyFormat(device);
       const response = await API.updateDevice({ data });
-      return response.data;
+      return response;
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of an error
@@ -102,6 +102,7 @@ const DeviceUtils = {
       id,
       name,
       model_name,
+      new_owner_id,
       sensor_ids,
       user_ids,
     };

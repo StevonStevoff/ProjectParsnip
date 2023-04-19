@@ -1,13 +1,11 @@
-/* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
 import {
   View,
-  Text,
-  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { Formik } from 'formik';
 import {
-  Input, Icon, FormControl, VStack, Select, Button,
+  Input, Icon, FormControl, VStack, Select, Button, Center,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import DeviceUtils from '../api/utils/DeviceUtils';
@@ -15,17 +13,12 @@ import DeviceSchema from '../utils/validationSchema/DeviceSchema';
 
 function DeviceEditForm({ navigation, device }) {
   const [isFormLoading, setIsLoading] = useState(false);
-  const [ownerID, setOwnerId] = useState(device.owner.id || '');
-  const [deviceName, setDeviceName] = useState(device.name || '');
+  const [deviceOwner, setDeviceOwner] = useState(device.owner);
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
-
-  const handleDeviceEdit = async () => {
+  const handleDeviceEdit = async (values) => {
     setIsLoading(true);
-    device.owner.id = ownerID;
-    device.name = deviceName;
+    device.owner = deviceOwner;
+    device.name = values.name;
     try {
       const response = await DeviceUtils.updateDevice(device);
       if (response.status === 200) {
@@ -60,7 +53,7 @@ function DeviceEditForm({ navigation, device }) {
       <Formik
         initialValues={{
           name: device.name || '',
-          owner: device.owner?.id || '',
+          owner: deviceOwner, // fix here
         }}
         validationSchema={DeviceSchema}
         onSubmit={handleDeviceEdit}
@@ -69,6 +62,8 @@ function DeviceEditForm({ navigation, device }) {
           errors,
           touched,
           handleBlur,
+          handleChange,
+          values,
         }) => (
           <VStack alignItems="center" width="90%">
             <FormControl isRequired isInvalid={errors.name && touched.name}>
@@ -81,9 +76,9 @@ function DeviceEditForm({ navigation, device }) {
                 InputLeftElement={<Icon as={<MaterialIcons name="devices" />} size={5} ml="2" color="muted.400" />}
                 placeholder="Device name"
                 variant="filled"
-                onChangeText={(text) => setDeviceName(text)}
+                onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
-                value={deviceName}
+                value={values.name}
               />
               <FormControl.ErrorMessage>
                 {errors.name}
@@ -99,15 +94,18 @@ function DeviceEditForm({ navigation, device }) {
                 InputLeftElement={<Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />}
                 placeholder="Select owner"
                 variant="filled"
-                selectedValue={ownerID}
-                onValueChange={(itemValue) => setOwnerId(itemValue)}
+                selectedValue={deviceOwner?.id}
+                onValueChange={(value) => {
+                  const owner = device.users.find((user) => user.id === +value);
+                  setDeviceOwner(owner);
+                }}
               >
                 {device.users.map((user) => (
                   <Select.Item key={user.id} label={user.username} value={user.id} />
                 ))}
               </Select>
             </FormControl>
-            <Button w="40%" onPress={handleDeviceEdit}> Update Device </Button>
+            <Button w="40%" onPress={() => handleDeviceEdit(values)}> Update Device </Button>
           </VStack>
         )}
       </Formik>
