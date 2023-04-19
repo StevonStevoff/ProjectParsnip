@@ -5,9 +5,6 @@
 DeviceESP32 *device;
 TemperatureSensorDHT *temperatureSensor = new TemperatureSensorDHT(1, 4, 11);
 
-// #include <HttpClient.h>
-// HTTPClient client;
-
 void setup()
 {
   delay(1000);

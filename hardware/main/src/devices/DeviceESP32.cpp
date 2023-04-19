@@ -35,9 +35,9 @@ String DeviceESP32::onLoadAuthPage(AutoConnectAux &page, PageArgument &args)
     return String();
 }
 
-DeviceESP32::DeviceESP32() : Portal(server), sensors_()
+DeviceESP32::DeviceESP32(String deviceServerAddress) : Portal(server), sensors_()
 {
-    this->deviceServerInterface = new DeviceServerInterface("https://parsnipbackend.azurewebsites.net");
+    this->deviceServerInterface = new DeviceServerInterface(deviceServerAddress);
 
     ACText(text, "Please enter your device token");
     ACInput(input, "", "Device Token");

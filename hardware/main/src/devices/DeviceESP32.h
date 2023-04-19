@@ -26,7 +26,7 @@
 class DeviceESP32
 {
 public:
-  DeviceESP32();
+  DeviceESP32(String deviceServerAddress = "https://parsnipbackend.azurewebsites.net");
 
   AutoConnect &getPortal();
   std::map<std::string, float> readSensors();
