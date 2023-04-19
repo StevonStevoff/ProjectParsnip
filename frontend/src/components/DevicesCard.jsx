@@ -8,15 +8,15 @@ import { Entypo } from '@expo/vector-icons';
 import { View, useWindowDimensions } from 'react-native';
 import CardSensors from './CardSensors';
 
-function DevicesCard({ navigation, device, plant }) {
+function DevicesCard({ item }) {
   const { width, height } = useWindowDimensions();
 
   const {
     name = '', model_name = '', users = [], sensors = [],
-  } = device || (plant && plant.device) || {};
+  } = (item && (item.device || item)) || {};
 
-  const plantName = plant ? plant.name : null;
-  const plantProfileName = plant ? plant.plant_profile.name : null;
+  const plantName = item.device ? item.name : null;
+  const plantProfileName = item.device ? item.plant_profile.name : null;
 
   return (
     <View

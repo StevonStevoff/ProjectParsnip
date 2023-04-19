@@ -2,16 +2,10 @@ import React, { useState } from 'react';
 import {
   Box, HStack, Icon, IconButton, Text, VStack,
 } from 'native-base';
-import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useWindowDimensions } from 'react-native';
 import WarningDialog from './WarningDialog';
-
-const keywordToIconComponent = {
-  temperature: <Icon as={FontAwesome5} name="thermometer-half" size="8" paddingLeft={2.5} />,
-  humidity: <Icon as={MaterialCommunityIcons} name="water-percent" size="38" />,
-  'soil moisture': <Icon as={Ionicons} name="water-outline" size="8" paddingLeft={0.5} />,
-  light: <Icon as={MaterialCommunityIcons} name="weather-sunny" size="10" paddingLeft={0.5} />,
-};
+import getIconComponent from '../utils/SensorIcons';
 
 function DevicesDetailsSensors({ sensors, handleSensorUpdate }) {
   const screenWidth = useWindowDimensions().width;
@@ -32,18 +26,6 @@ function DevicesDetailsSensors({ sensors, handleSensorUpdate }) {
     const updatedSensors = sensors.filter((sensor) => sensor.id !== sensorToDelete.id);
     handleSensorUpdate(updatedSensors);
     handleDeleteClose();
-  };
-
-  const getIconComponent = (description) => {
-    const descriptionLower = description.toLowerCase();
-    const keywords = Object.keys(keywordToIconComponent);
-    for (let i = 0; i < keywords.length; i++) {
-      const keyword = keywords[i];
-      if (descriptionLower.includes(keyword)) {
-        return keywordToIconComponent[keyword];
-      }
-    }
-    return null;
   };
 
   return (

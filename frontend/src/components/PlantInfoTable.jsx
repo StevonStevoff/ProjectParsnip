@@ -7,10 +7,8 @@ import { useWindowDimensions } from 'react-native';
 function PlantInfoTable({ plantName, plantProfileName, plantType }) {
   const screenWidth = useWindowDimensions().width;
   const isScreenSmall = screenWidth < 700;
-  console.log(screenWidth);
-  console.log(isScreenSmall);
 
-  if (plantName === '') {
+  if (plantProfileName === '') {
     return (
       <VStack
         rounded="lg"

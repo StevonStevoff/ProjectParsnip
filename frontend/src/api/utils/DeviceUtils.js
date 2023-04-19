@@ -2,6 +2,15 @@
 import API from '../API';
 
 const DeviceUtils = {
+  async getCurrentUser() {
+    try {
+      const response = await API.getUserInfo();
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of an error
+    }
+  },
   async getAllUserDevices() {
     try {
       const response = await API.getUsersDevices();
@@ -13,28 +22,27 @@ const DeviceUtils = {
   },
   async getLinkedDevices() {
     try {
-      const response = await API.getCurrentUsersPlants();
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      return []; // Return an empty array in case of an error
-    }
-  },
-  async getUnlinkedDevices() {
-    try {
-      const allDevices = await this.getAllUserDevices();
-      const linkedDevices = await this.getLinkedDevices();
+      const [currentUser, response] = await Promise.all([this.getCurrentUser(),
+        API.getCurrentUsersPlants()]);
 
-      const linkedDeviceIds = linkedDevices.map((plant) => plant.device.id);
-      const unlinkedDevices = allDevices.filter((device) => !linkedDeviceIds.includes(device.id));
-      return unlinkedDevices;
+      const plants = response.data.map((plant) => {
+        if (plant.device.owner.id === currentUser.id) {
+          // eslint-disable-next-line no-param-reassign
+          plant.device.isUserOwner = true;
+        }
+        return plant;
+      });
+
+      return plants;
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of an error
     }
   },
+
   async updateDevice(device) {
     try {
+      console.log('device', device);
       const data = this.createDevicePostBodyFormat(device);
       const response = await API.updateDevice({ data });
       return response.data;
@@ -53,6 +61,31 @@ const DeviceUtils = {
     } catch (error) {
       console.error(error);
       return error;
+    }
+  },
+  async getUnlinkedDevices() {
+    try {
+      const [allDevices, linkedDevices, currentUser] = await Promise.all([
+        this.getAllUserDevices(),
+        this.getLinkedDevices(),
+        this.getCurrentUser(),
+      ]);
+
+      const linkedDeviceIds = linkedDevices.map((plant) => plant.device.id);
+      const unlinkedDevices = allDevices.filter((device) => !linkedDeviceIds.includes(device.id));
+
+      unlinkedDevices.map((device) => {
+        if (device.owner.id === currentUser.id) {
+          // eslint-disable-next-line no-param-reassign
+          device.isUserOwner = true;
+        }
+        return device;
+      });
+
+      return unlinkedDevices;
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of an error
     }
   },
   createDevicePostBodyFormat(device) {
@@ -77,11 +110,19 @@ const DeviceUtils = {
   async getAllSensors() {
     try {
       const response = await API.getSensors();
-      console.log('response', response);
       return response.data;
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of an error
+    }
+  },
+  async getAllUsers() {
+    try {
+      const response = await API.getAllUsers();
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return [];
     }
   },
 };

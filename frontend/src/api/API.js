@@ -90,6 +90,16 @@ const API = {
     return response;
   },
 
+  async getAllUsers(cancel = false) {
+    const response = await api.request({
+      url: '/users/',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+    return response;
+  },
+
   async updateUserInfo({ name, email, username }, cancel = false) {
     const response = await api.request({
       url: '/users/me',

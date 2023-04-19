@@ -12,90 +12,55 @@ import { ActivityIndicator } from 'react-native';
 import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 import AdditionDialog from '../../components/AdditionDialog';
-import PlantInfoTable from '../../components/PlantInfoTable';
+import DeviceDetailsInfo from '../../components/DeviceDetailsInfo';
+// import PlantInfoTable from '../../components/PlantInfoTable';
 
 function DevicesDetailsScreen({ navigation, route }) {
+  const { item } = route.params;
+  const currentDevice = (item && item.device) || item || {};
+
   const [isLoading, setIsLoading] = useState(true);
-  const [additionDialogOpen, setAdditionDialogOpen] = useState(false);
-  const [selectionOptions, setSelectionOptions] = useState([]);
-  const { device = {}, plant = {} } = route?.params || {};
-  const [deviceSensors, setDeviceSensors] = useState([]);
-  const [allSensors, setAllSensors] = useState([]);
+  const [deviceSensors, setDeviceSensors] = useState(currentDevice.sensors || []);
+  const [deviceUsers, setDeviceUsers] = useState(currentDevice.users || []);
 
   const {
     name = '',
     model_name = '',
-    users = [],
-    sensors = [],
-  } = (device && Object.keys(device).length > 0) ? device : (plant && plant.device) || {};
+  } = currentDevice;
 
-  const plantName = plant?.name || '';
-  const plantProfileName = plant?.plant_profile?.name || '';
-  const plantType = plant?.plant_type?.name || '';
-  const ownerID = (plant && plant.device && plant.device.owner && plant.device.owner.id)
-    || (device && device.owner && device.owner.id)
-    || '';
-  const currentDevice = (device && Object.keys(device).length > 0)
-    ? device : (plant && plant.device) || {};
-  users.forEach((user) => {
-    if (user.id === ownerID) {
-      // eslint-disable-next-line no-param-reassign
-      user.isOwner = true;
+  const addUsersOwnerFlag = () => {
+    if (currentDevice.name) {
+      deviceUsers.map((user) => {
+        if (user.id === currentDevice.owner.id) {
+          // eslint-disable-next-line no-param-reassign
+          user.isOwner = true;
+        }
+        return user;
+      });
+      setIsLoading(false);
     }
-  });
+  };
 
   useEffect(() => {
-    DeviceUtils.getAllSensors()
-      .then((sensorResponse) => {
-        setAllSensors(sensorResponse);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    console.log('all sensors', allSensors);
+    addUsersOwnerFlag();
   }, []);
 
-  useEffect(() => {
-    setDeviceSensors(sensors);
-  }, [sensors]);
-
-  const handleSensorUpdate = async (updatedSensors) => {
-    try {
-      const response = await DeviceUtils.updateSensorsInDevice(currentDevice, updatedSensors);
-
-      if (response.status === 200) {
-        const updatedDevice = await response.data;
-        setDeviceSensors(updatedDevice.sensors);
-      } else {
-        // Handle the error case (e.g., show an error message)
-        console.error('Failed to update sensors:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error updating sensors:', error);
-    }
-  };
-
-  const handleAdditionClick = () => {
-    setAdditionDialogOpen(true);
-  };
-
-  const handleAdditionClose = () => {
-    setAdditionDialogOpen(false);
-    setSelectionOptions([]);
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const handleAdditionConfirm = (newSensor = null, newUser = null) => {
-    const updateSensors = [...currentDevice.sensors, newSensor];
-    handleSensorUpdate(updateSensors);
-    handleAdditionClose();
-  };
-
-  const addSensorsClick = () => {
-    setSelectionOptions(allSensors);
-    handleAdditionClick();
-  };
+  useEffect(
+    () => {
+      setIsLoading(true);
+      currentDevice.sensors = deviceSensors;
+      DeviceUtils.updateDevice(currentDevice)
+        .then((response) => {
+          console.log('response', response);
+        }).catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    [deviceSensors, deviceUsers],
+  );
 
   if (isLoading) {
     return (
@@ -128,13 +93,6 @@ function DevicesDetailsScreen({ navigation, route }) {
         _dark={{ borderColor: '#18181b', backgroundColor: '#18181b' }}
         _light={{ backgroundColor: 'gray.50' }}
       >
-        <AdditionDialog
-          isOpen={additionDialogOpen}
-          onClose={handleAdditionClose}
-          onConfirm={handleAdditionConfirm}
-          selectionOptions={selectionOptions}
-          actionBtnText="Add"
-        />
         <VStack width="90%">
           <HStack justifyContent="space-between" width="100%">
             <Button
@@ -149,6 +107,7 @@ function DevicesDetailsScreen({ navigation, route }) {
                 size="lg"
               />
             </Button>
+            {currentDevice.isUserOwner && (
             <Button
               variant="unstyled"
               onPress={() => navigation.navigate('DeviceEdit', { device: currentDevice })}
@@ -161,6 +120,7 @@ function DevicesDetailsScreen({ navigation, route }) {
                 size="lg"
               />
             </Button>
+            )}
           </HStack>
           <VStack height="7%">
             <Heading size="xl" fontWeight={500} textAlign="center">{name}</Heading>
@@ -173,82 +133,8 @@ function DevicesDetailsScreen({ navigation, route }) {
               {model_name}
             </Text>
           </VStack>
-          <PlantInfoTable
-            plantName={plantName}
-            plantProfileName={plantProfileName}
-            plantType={plantType}
-          />
-          <VStack
-            rounded="lg"
-            justifyContent="center"
-            width="100%"
-            p={4}
-          >
-            <HStack justifyContent="space-between">
-              <Heading size="lg" fontWeight={500}>Sensors</Heading>
-              <Button
-                variant="unstyled"
-                onPress={() => addSensorsClick()}
-              >
-                <Icon
-                  as={MaterialIcons}
-                  name="add-circle"
-                  size="lg"
-                  _light={{ color: 'grey.200' }}
-                  _dark={{ color: 'white' }}
-                />
-              </Button>
-            </HStack>
-            <Divider />
-            <DevicesDetailsSensors
-              sensors={deviceSensors}
-              handleSensorUpdate={handleSensorUpdate}
-            />
-          </VStack>
-          <VStack
-            rounded="lg"
-            justifyContent="center"
-            width="100%"
-            p={4}
-            space={2}
-          >
-            <HStack justifyContent="space-between">
-              <Heading size="lg" fontWeight={500}>Users</Heading>
-              <IconButton icon={(
-                <Icon
-                  as={MaterialIcons}
-                  name="add-circle"
-                  size="lg"
-                  _light={{ color: 'grey.200' }}
-                  _dark={{ color: 'white' }}
-                />
-)}
-              />
-            </HStack>
-            <Divider />
-            {users.map((user) => (
-              <HStack justifyContent="space-between" alignItems="center" space={3} p={3} key={user.id}>
-                <HStack justifyContent="flex-start" alignItems="center" space={3}>
-                  <Avatar size="md" source={{ uri: 'https://images.unsplash.com/photo-1510771463146-e89e6e86560e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80' }} />
-                  <Text color="coolGray.500">
-                    {user.name}
-                    {' '}
-                    {user.isOwner ? '(Owner)' : ''}
-                  </Text>
-                </HStack>
-                <IconButton icon={(
-                  <Icon
-                    as={MaterialCommunityIcons}
-                    name="close"
-                    size="lg"
-                    _light={{ color: 'grey.200' }}
-                    _dark={{ color: 'white' }}
-                  />
-)}
-                />
-              </HStack>
-            ))}
-          </VStack>
+          <DeviceDetailsInfo heading="Sensors" isUserOwner={currentDevice.isUserOwner} items={deviceSensors} setItems={setDeviceSensors} fetchSelectionOptions={DeviceUtils.getAllSensors} />
+          <DeviceDetailsInfo heading="Users" isUserOwner={currentDevice.isUserOwner} items={deviceUsers} setItems={setDeviceUsers} fetchSelectionOptions={DeviceUtils.getAllUsers} />
         </VStack>
       </Box>
     </ScrollView>

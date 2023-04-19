@@ -1,18 +1,75 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  AlertDialog, Button, Select, Box, Center, CheckIcon,
+  AlertDialog, Button, Select, Box, Center, CheckIcon, Text, HStack, Icon,
 } from 'native-base';
+import { ActivityIndicator } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 function AdditionDialog({
-  isOpen, onClose, onConfirm, actionBtnText, selectionOptions,
+  isOpen, onClose, onConfirm, actionBtnText, fetchSelectionOptions, currentItems,
 }) {
-  const [selection, setSelection] = useState('');
-  const [selectedItem, setSelectedItem] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectionOptions, setSelectionOptions] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleConfirm = () => {
-    onConfirm(selectedItem);
+  const handleOnClose = () => {
+    setSelectedItem(null);
+    setSelectionOptions([]);
     onClose();
   };
+  const handleConfirm = () => {
+    onConfirm([...currentItems, selectedItem]);
+    handleOnClose();
+  };
+
+  useEffect(() => {
+    fetchSelectionOptions()
+      .then((options) => {
+        // eslint-disable-next-line no-param-reassign
+        options = options.filter(
+          (item) => !currentItems.some((currentItem) => currentItem.id === item.id),
+        );
+        setSelectionOptions(options);
+        setIsLoading(false);
+      }).catch((error) => {
+        console.log(error);
+      }).finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (selectionOptions.length === 0) {
+    return (
+      <AlertDialog isOpen={isOpen} onClose={onClose} height="40%">
+        <AlertDialog.Content>
+          <HStack justifyContent="flex-Start" width="100%">
+            <Button
+              variant="unstyled"
+              onPress={handleOnClose}
+            >
+              <Icon as={<MaterialIcons name="close" />} size="sm" />
+            </Button>
+          </HStack>
+          <Center flex={1} p={5}>
+            <Text>No more items to add</Text>
+          </Center>
+
+        </AlertDialog.Content>
+      </AlertDialog>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <AlertDialog isOpen={isOpen} onClose={onClose}>
+        <AlertDialog.Content>
+          <Center flex={1}>
+            <ActivityIndicator size="large" color="#4da707" />
+          </Center>
+        </AlertDialog.Content>
+      </AlertDialog>
+    );
+  }
 
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
@@ -24,10 +81,8 @@ function AdditionDialog({
           <Center>
             <Box maxW="500">
               <Select
-                selectedValue={selection}
+                selectedValue={selectedItem?.id}
                 minWidth="200"
-                accessibilityLabel="Choose Service"
-                placeholder="Choose Service"
                 _selectedItem={{
                   bg: 'teal.600',
                   endIcon: <CheckIcon size="5" />,
@@ -38,7 +93,6 @@ function AdditionDialog({
                   const selected = selectionOptions.find((item) => item.id == itemValue);
                   if (selected) {
                     setSelectedItem(selected);
-                    setSelection(selected.id);
                   }
                 }}
               >
@@ -55,8 +109,8 @@ function AdditionDialog({
         </AlertDialog.Body>
         <AlertDialog.Footer>
           <Button.Group space={2}>
-            <Button onPress={onClose}>Cancel</Button>
-            <Button colorScheme="red" onPress={handleConfirm}>
+            <Button width="40%" onPress={handleOnClose}>Cancel</Button>
+            <Button width="40%" colorScheme="red" onPress={handleConfirm}>
               {actionBtnText}
             </Button>
           </Button.Group>
