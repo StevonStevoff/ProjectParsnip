@@ -75,12 +75,13 @@ function DevicesCard({ navigation, device, plant }) {
               </Avatar.Group>
             </HStack>
             <HStack
-              justifyContent="space-between"
+              justifyContent="space-evenly"
               alignItems="center"
               width="100%"
               minHeight={5}
             >
               <Text
+                textAlign="center"
                 fontSize={12}
                 noOfLines={1}
                 _light={{

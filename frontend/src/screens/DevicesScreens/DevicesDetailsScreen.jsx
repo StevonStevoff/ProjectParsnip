@@ -40,8 +40,8 @@ function DevicesDetailsScreen({ navigation, route }) {
     }
   });
 
-  useEffect(async () => {
-    await DeviceUtils.getAllSensors()
+  useEffect(() => {
+    DeviceUtils.getAllSensors()
       .then((sensorResponse) => {
         setAllSensors(sensorResponse);
       })

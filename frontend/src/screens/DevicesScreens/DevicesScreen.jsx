@@ -7,10 +7,12 @@ import {
 import {
   Text, Box, Heading, SectionList, Center,
 } from 'native-base';
+import { useIsFocused } from '@react-navigation/native';
 import DevicesCard from '../../components/DevicesCard';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 
 function DevicesScreen({ navigation }) {
+  const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = React.useState(true);
   const [linkedDevices, setLinkedDevices] = React.useState([]);
   const [unlinkedDevices, setUnlinkedDevices] = React.useState([]);
@@ -54,6 +56,11 @@ function DevicesScreen({ navigation }) {
     fetchLinkedDevices();
     fetchUnlinkedDevices();
   }, []);
+
+  useEffect(() => {
+    fetchLinkedDevices();
+    fetchUnlinkedDevices();
+  }, [isFocused]);
 
   const renderSectionHeader = ({ section: { title } }) => (
     <Heading>{title}</Heading>
