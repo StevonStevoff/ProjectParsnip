@@ -126,13 +126,10 @@ const API = {
       throw error;
     }
   },
-  async getUserPlants(cancel = false) {
+  async getCurrentUsersPlants(cancel = false) {
     const response = await api.request({
       url: '/plants/me',
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });

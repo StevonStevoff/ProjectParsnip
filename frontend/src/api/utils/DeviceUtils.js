@@ -13,7 +13,7 @@ const DeviceUtils = {
   },
   async getLinkedDevices() {
     try {
-      const response = await API.getUserPlants();
+      const response = await API.getCurrentUsersPlants();
       return response.data;
     } catch (error) {
       console.error(error);

@@ -73,4 +73,6 @@ VALUES
 INSERT INTO plants (id, name, device_id, plant_profile_id, plant_type_id)
 VALUES (2, 'Tomato Plant', 3, 2, 2),
        (3, 'Cherry Tomato Plant', 4, 2, 2),
-       (4, 'Cactus Plant', 2, 3, 3);
+       (4, 'Cactus Plant', 2, 3, 3),
+       (5, 'Vegtable Patch', null, 2, 2),
+       (6, 'Outdoor Vegtable Patch', null, 2, 2);

@@ -35,7 +35,11 @@ function NavigationRoot() {
     });
   }, []);
   if (isLoading) {
-    return <Center flex={1}><ActivityIndicator size="large" /></Center>;
+    return (
+      <Center flex={1}>
+        <ActivityIndicator size="large" color="#4da707" />
+      </Center>
+    );
   }
   return (
     <NavigationContainer theme={reactNavigationTheme}>

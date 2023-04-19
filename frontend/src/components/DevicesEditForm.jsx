@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Formik } from 'formik';
 import {
-  Input, Icon, FormControl, VStack, Select, CheckIcon, Button,
+  Input, Icon, FormControl, VStack, Select, Button,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import DeviceUtils from '../api/utils/DeviceUtils';
@@ -39,6 +39,14 @@ function DeviceEditForm({ navigation, device }) {
       setIsLoading(false);
     }
   };
+
+  if (isFormLoading) {
+    return (
+      <Center flex={1}>
+        <ActivityIndicator size="large" color="#4da707" />
+      </Center>
+    );
+  }
 
   return (
     <View

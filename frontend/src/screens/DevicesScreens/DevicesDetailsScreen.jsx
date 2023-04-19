@@ -2,18 +2,20 @@
 /* eslint-disable react/destructuring-assignment */
 import {
   Text, Box, Heading, HStack, VStack, IconButton,
-  Icon, Avatar, Button, Divider, ScrollView,
+  Icon, Avatar, Button, Divider, ScrollView, Center,
 } from 'native-base';
 import React, { useState, useEffect } from 'react';
 import {
   MaterialCommunityIcons, MaterialIcons, Ionicons, FontAwesome,
 } from '@expo/vector-icons';
+import { ActivityIndicator } from 'react-native';
 import DevicesDetailsSensors from '../../components/DeviceDetailsSensors';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 import AdditionDialog from '../../components/AdditionDialog';
+import PlantInfoTable from '../../components/PlantInfoTable';
 
 function DevicesDetailsScreen({ navigation, route }) {
-  const [sensortoAdd, setSensorToAdd] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [additionDialogOpen, setAdditionDialogOpen] = useState(false);
   const [selectionOptions, setSelectionOptions] = useState([]);
   const { device = {}, plant = {} } = route?.params || {};
@@ -30,7 +32,9 @@ function DevicesDetailsScreen({ navigation, route }) {
   const plantName = plant?.name || '';
   const plantProfileName = plant?.plant_profile?.name || '';
   const plantType = plant?.plant_type?.name || '';
-  const ownerID = plant?.device.owner?.id || device.owner?.id || '';
+  const ownerID = (plant && plant.device && plant.device.owner && plant.device.owner.id)
+    || (device && device.owner && device.owner.id)
+    || '';
   const currentDevice = (device && Object.keys(device).length > 0)
     ? device : (plant && plant.device) || {};
   users.forEach((user) => {
@@ -44,6 +48,7 @@ function DevicesDetailsScreen({ navigation, route }) {
     DeviceUtils.getAllSensors()
       .then((sensorResponse) => {
         setAllSensors(sensorResponse);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -91,6 +96,14 @@ function DevicesDetailsScreen({ navigation, route }) {
     setSelectionOptions(allSensors);
     handleAdditionClick();
   };
+
+  if (isLoading) {
+    return (
+      <Center flex={1}>
+        <ActivityIndicator size="large" color="#4da707" />
+      </Center>
+    );
+  }
   return (
     <ScrollView
       contentContainerStyle={{
@@ -160,35 +173,11 @@ function DevicesDetailsScreen({ navigation, route }) {
               {model_name}
             </Text>
           </VStack>
-          <VStack
-            rounded="lg"
-            justifyContent="center"
-            width="100%"
-            p={5}
-          >
-            <HStack justifyContent="space-between" space={2}>
-              <Heading size="lg" fontWeight={500}>Linked Plant</Heading>
-              <Button
-                bg="error.600"
-                _hover={{ bg: 'error.700' }}
-                size="sm"
-                marginBottom={1}
-              >
-                Unlink
-              </Button>
-            </HStack>
-            <Divider />
-            <VStack justifyContent="space-between" p={3}>
-              <HStack justifyContent="space-between">
-                <Text>
-                  {plantName}
-
-                </Text>
-                <Text>{plantProfileName}</Text>
-                <Text>{plantType}</Text>
-              </HStack>
-            </VStack>
-          </VStack>
+          <PlantInfoTable
+            plantName={plantName}
+            plantProfileName={plantProfileName}
+            plantType={plantType}
+          />
           <VStack
             rounded="lg"
             justifyContent="center"

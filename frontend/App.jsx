@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NativeBaseProvider } from 'native-base';
+import { NativeBaseProvider, Center } from 'native-base';
 import { ActivityIndicator } from 'react-native';
 import NavigationRoot from './src/navigation/NavigationRoot';
 import defaultTheme from './src/stylesheets/defaultTheme';
@@ -28,7 +28,13 @@ function App() {
   }, []);
 
   if (loading) {
-    return <ActivityIndicator />;
+    return (
+      <NativeBaseProvider theme={theme}>
+        <Center flex={1}>
+          <ActivityIndicator size="large" color="#4da707" />
+        </Center>
+      </NativeBaseProvider>
+    );
   }
 
   if (!isConnected) {

@@ -9,9 +9,9 @@ function DeviceEditScreen({ navigation, route }) {
   return (
     <View style={{
       flex: 1,
-      justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
+      height: '90%',
     }}
     >
       <HStack justifyContent="space-between" width="100%">
