@@ -1,14 +1,14 @@
 import {
   View, Appearance, TouchableOpacity, StyleSheet, ScrollView,
 } from 'react-native';
-import { Text } from 'native-base';
+import { Text, Heading } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
-import { LineChart } from 'react-native-chart-kit';
 import { theme, darkTheme } from '../../stylesheets/paperTheme';
 import API from '../../api/API';
 import CloseBtn from '../../components/CloseBtn';
+import GrowPropertyChart from '../../components/GrowPropertyChart';
 
 function PlantDetailsScreen({ route, navigation }) {
   const colorScheme = Appearance.getColorScheme();
@@ -18,7 +18,7 @@ function PlantDetailsScreen({ route, navigation }) {
   });
   const [open, setOpen] = React.useState(false);
 
-  const [plantsD, setPlantsD] = useState([]);
+  const [plantsData, setPlantsData] = useState([]);
 
   const onDismiss = React.useCallback(() => {
     setOpen(false);
@@ -33,39 +33,64 @@ function PlantDetailsScreen({ route, navigation }) {
   );
 
   useEffect(() => {
-    const fetchPlants = async () => {
+    const fetchPlantsData = async () => {
       try {
         const response = await API.getPlantData(parseInt(route.params.plant.id, 10));
-        setPlantsD(response.data);
+        setPlantsData(response.data);
       } catch (error) { /* empty */ }
     };
-    fetchPlants();
+    fetchPlantsData();
   }, []);
 
   const cutoffTimestampStart = new Date(`${range.startDate.toISOString().slice(0, -5)}.000000`);
   const cutoffTimestampEnd = new Date(`${range.endDate.toISOString().slice(0, -5)}.000000`);
 
-  const filteredElements = plantsD.filter((element) => {
+  const filteredDataWithinRange = plantsData.filter((element) => {
     const elementTimestamp = new Date(element.timestamp);
     const isWithinRange = elementTimestamp >= cutoffTimestampStart
     && elementTimestamp <= cutoffTimestampEnd;
     return isWithinRange;
   });
 
-  // const pepepopo = filteredElements.map(element => element.timestamp);
-
-  const days = filteredElements.map((element) => {
+  const days = filteredDataWithinRange.map((element) => {
     const elementDate = new Date(element.timestamp);
     const dayOfMonth = elementDate.getDate();
     return dayOfMonth;
   });
 
-  const filteredValues = filteredElements.flatMap(
-    (element) => element.sensor_readings.map((reading) => reading.value),
-  );
+  // const tempreture = filteredDataWithinRange.filter((plant) => plant.sensor_readings.some(
+  //   (reading) => reading.grow_property.grow_property_type.id === 1,
+  // ));
 
-  console.log(route.params.plant);
+  // const moisture = filteredDataWithinRange.filter((plant) => plant.sensor_readings.some(
+  //   (reading) => reading.grow_property.grow_property_type.id === 2,
+  // ));
 
+  // const tempretureValues = tempreture.flatMap(
+  //   (element) => element.sensor_readings.map((reading) => reading.value),
+  // );
+
+  // const moistureValues = moisture.flatMap(
+  //   (element) => element.sensor_readings.map((reading) => reading.value),
+  // );
+
+  function filterSensorDataByType(filteredDataWithinRange, dataIds) {
+    return dataIds.reduce((acc, dataId) => {
+      const values = filteredDataWithinRange.flatMap((plant) => plant.sensor_readings
+        .filter((reading) => reading.grow_property.grow_property_type.id === dataId)
+        .map((reading) => reading.value));
+
+      return {
+        ...acc,
+        [dataId]: values,
+      };
+    }, {});
+  }
+
+  const dataIds = [1, 2, 3];
+  const filteredDataByType = filterSensorDataByType(filteredDataWithinRange, dataIds);
+  console.log(filteredDataByType);
+  // Access the filtered values for each data_id like this:
   return (
     <ScrollView>
       <View>
@@ -81,41 +106,45 @@ function PlantDetailsScreen({ route, navigation }) {
           <CloseBtn navigation={navigation} />
         </View>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Bezier Line Chart</Text>
-          <LineChart
-            data={{
-              labels: days,
-              datasets: [{
-                data: filteredValues,
-              }],
-            }}
-            width={500} // from react-native
-            height={500}
-            yAxisLabel=""
-            yAxisSuffix=""
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-              backgroundColor: '#e26a00',
-              backgroundGradientFrom: '#fb8c00',
-              backgroundGradientTo: '#ffa726',
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: '6',
-                strokeWidth: '2',
-                stroke: '#ffa726',
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-          />
+          <Heading>PLANT DETAILS</Heading>
+          <TouchableOpacity
+            style={[styles.detailsButton, {
+              fontSize: 25, flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+            }]}
+            onPress={() => setOpen(true)}
+          >
+            <Text style={styles.createText}>Pick range </Text>
+          </TouchableOpacity>
+
+          <Text>
+            {' '}
+            Picked From
+            {' '}
+            {range.startDate.toLocaleDateString()}
+            {' '}
+            to
+            {' '}
+            {range.endDate.toLocaleDateString()}
+          </Text>
+
+          {route.params.plant.plant_profile.grow_properties.map((beans) => (
+            <>
+              <Text>
+                {beans.grow_property_type.name}
+                {' '}
+                Line Chart
+              </Text>
+              <View key={beans.grow_property_type.id}>
+                {filteredDataByType[beans.grow_property_type.id].length > 0 && (
+                <GrowPropertyChart
+                  days={days}
+                  tempretureValues={filteredDataByType[beans.grow_property_type.id]}
+                />
+                )}
+              </View>
+            </>
+          ))}
+
         </View>
 
         {/* <SafeAreaProvider> */}
@@ -174,25 +203,6 @@ function PlantDetailsScreen({ route, navigation }) {
             Plant profile description:
             {route.params.plant.plant_type.description}
           </Text>
-
-          <Text>
-            {' '}
-            Picked From
-            {' '}
-            {range.startDate.toLocaleDateString()}
-            {' '}
-            to
-            {' '}
-            {range.endDate.toLocaleDateString()}
-          </Text>
-          <TouchableOpacity
-            style={[styles.detailsButton, {
-              fontSize: 25, flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-            }]}
-            onPress={() => setOpen(true)}
-          >
-            <Text style={styles.createText}>Pick range </Text>
-          </TouchableOpacity>
 
           <PaperProvider theme={colorScheme === 'dark' ? darkTheme : theme} darkTheme={darkTheme}>
             <DatePickerModal

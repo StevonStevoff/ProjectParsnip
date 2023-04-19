@@ -49,16 +49,6 @@ function PlantsScreen({ navigation }) {
     });
   }, []);
 
-  // useEffect(() => {
-  //   const fetchPlants = async () => {
-  //     try {
-  //       const response = await API.getCurrentUsersPlants();
-  //       setPlants(response.data);
-  //     } catch (error) { /* empty */ }
-  //   };
-  //   fetchPlants();
-  // },[]);
-  console.log(plants);
   useFocusEffect(
     React.useCallback(() => {
       const fetchPlants = async () => {
@@ -69,8 +59,7 @@ function PlantsScreen({ navigation }) {
       };
       fetchPlants();
 
-      return () => {
-        console.log('Screen is unfocused');
+      return () => { /* empty */
       };
     }, []),
   );
@@ -90,9 +79,7 @@ function PlantsScreen({ navigation }) {
       try {
         const response = await API.getAllPlantProfiles();
         setPlantProfiles(response.data);
-      } catch (error) {
-        console.error(error);
-      }
+      } catch (error) { /* empty */ }
     };
     fetchPlantsProfiles();
   }, []);
@@ -162,15 +149,16 @@ function PlantsScreen({ navigation }) {
           </View>
         )}
 
-        <View style={{ flexDirection: 'row' }}>
+        <HStack space={3}>
           <Heading>Your Plants</Heading>
           <TouchableOpacity
-            style={styles.createPlantButton}
+            style={styles.detailsButton}
             onPress={() => navigation.navigate('RegisterPlantScreen', { plantTypes, plantProfiles, devices })}
           >
+            <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
             <Text style={styles.createText}> Create Plant </Text>
           </TouchableOpacity>
-        </View>
+        </HStack>
 
         <View style={{ width: '90%' }}>
           {plants.map((plant) => (
@@ -193,16 +181,16 @@ function PlantsScreen({ navigation }) {
                       plantTypes, plantProfiles, devices, plant,
                     })}
                   >
-                    <Text style={styles.createText}>Edit  </Text>
                     <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
+                    <Text style={styles.createText}>Edit  </Text>
                   </TouchableOpacity>
                   {/* To be Changed to handleEdit */}
                   <TouchableOpacity
                     style={styles.detailsButton}
                     onPress={() => handleDelete(plant.id)}
                   >
-                    <Text style={styles.createText}>Delete </Text>
                     <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
+                    <Text style={styles.createText}>Delete </Text>
                   </TouchableOpacity>
                 </View>
 
@@ -233,6 +221,7 @@ function PlantsScreen({ navigation }) {
 
                 <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                   <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
+                    <Icon as={MaterialIcons} name="info" color="white" _dark={{ color: 'white' }} />
                     <Text style={styles.createText}>Plant Details</Text>
                   </TouchableOpacity>
                 </View>
@@ -249,19 +238,6 @@ function PlantsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  createPlantButton: {
-    marginRight: 10,
-    marginLeft: 120,
-    marginTop: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 15,
-    paddingLeft: 15,
-    backgroundColor: '#1E6738',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
   plantContainer: {
     borderColor: 'grey',
     borderWidth: 3,
