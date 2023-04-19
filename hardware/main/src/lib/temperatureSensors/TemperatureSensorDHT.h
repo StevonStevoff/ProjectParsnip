@@ -1,7 +1,7 @@
 #ifndef TemperatureSensorDHT_h
 #define TemperatureSensorDHT_h
 
-#include "../Sensor.h"
+#include "Sensor.h"
 #include "DHT.h"
 
 #include <tuple>

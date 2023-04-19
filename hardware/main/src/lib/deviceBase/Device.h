@@ -7,8 +7,8 @@
 #include <map>
 #include <string>
 
-#include "../sensors/Sensor.h"
-#include "../http/DeviceServerInterface.h"
+#include "Sensor.h"
+#include "DeviceServerInterface.h"
 
 #include <EEPROM.h>
 #include <AutoConnect.h>

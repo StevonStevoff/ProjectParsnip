@@ -2,7 +2,13 @@
 
 DeviceServerInterface::DeviceServerInterface(String baseUrl)
 {
+#ifdef ESP32
     this->http.begin(baseUrl);
+#endif
+#ifdef ESP8266
+    WiFiClient client;
+    this->http.begin(client, baseUrl);
+#endif
     this->baseUrl = baseUrl;
 }
 
@@ -67,4 +73,5 @@ String DeviceServerInterface::getDeviceSensorIds()
     this->http.addHeader("Authorization", "Bearer " + this->authToken);
     // String address = this->baseUrl + "/getSensorIds";
     // int statusCode = this->http.GET(address);
+    return String();
 }
