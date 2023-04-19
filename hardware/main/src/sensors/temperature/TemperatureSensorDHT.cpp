@@ -8,15 +8,15 @@ TemperatureSensorDHT::TemperatureSensorDHT(int id, int pin, u_int8_t dhtType) : 
     this->dhtType = dhtType;
     // initialize the sensor
     this->dht = new DHT(this->temperatureSensorPin, this->dhtType);
-
-    if (this->dht->begin())
-    {
-        this->sensorWorking = true;
-    }
-    else
-    {
-        this->sensorWorking = false;
-    }
+    this->dht->begin();
+    // if (this->dht->begin())
+    // {
+    //     this->sensorWorking = true;
+    // }
+    // else
+    // {
+    //     this->sensorWorking = false;
+    // }
 }
 
 int TemperatureSensorDHT::getId() const
@@ -26,8 +26,9 @@ int TemperatureSensorDHT::getId() const
 
 float TemperatureSensorDHT::getTemperature() const
 {
-    if (!this->sensorWorking)
-        return nan;
+    // if (!this->sensorWorking)
+    //     return std::nanf("");
+    // ;
     return this->dht->readTemperature();
 }
 float TemperatureSensorDHT::getHumidity() const

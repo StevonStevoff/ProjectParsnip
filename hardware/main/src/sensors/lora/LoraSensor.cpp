@@ -2,7 +2,7 @@
 
 LoraSensor::LoraSensor(int id) : id_(id)
 {
-    Serial.println("Lora Constructor");
+    // Serial.println("Lora Constructor");
 }
 int LoraSensor::getId() const
 {
@@ -19,16 +19,16 @@ std::map<std::string, float> LoraSensor::read() const
     // String packet = Lora.readString();
 
     // process and put into data structure
-    check if 'temp' is in packet
+    // check if 'temp' is in packet
 
-        // Override the read() function with a new implementation
-        // This is just an example implementation, you can replace it with your own
-        // return static_cast<float>(analogRead(this->temperatureSensorPin));
-        // const float temp = this->getTemperature();
-        // const float hu = this->getHumidity();
+    // Override the read() function with a new implementation
+    // This is just an example implementation, you can replace it with your own
+    // return static_cast<float>(analogRead(this->temperatureSensorPin));
+    // const float temp = this->getTemperature();
+    // const float hu = this->getHumidity();
 
-        std::map<std::string, float>
-            sensorData;
+    std::map<std::string, float>
+        sensorData;
 
     // sensorData["temperature"] = temp;
     // sensorData["humidity"] = hu;

@@ -2,6 +2,7 @@
 
 DeviceServerInterface::DeviceServerInterface(String baseUrl)
 {
+    this->http.begin(baseUrl);
     this->baseUrl = baseUrl;
 }
 
@@ -41,11 +42,14 @@ int DeviceServerInterface::sendData(float value)
 String DeviceServerInterface::getDeviceId()
 {
     // set the authentication token
-    this->http.addHeader("Authorization", "Bearer " + authToken);
+    this->http.addHeader("Authorization", "Bearer " + this->authToken);
 
     // send the GET request for the device ID
     // int statusCode = http.GET(this->baseUrl + "/getDeviceId");
 
+    // http.setURL(this->baseUrl + "/plants/");
+    int statusCode = http.GET();
+    return http.getString();
     // // check the response status code
     // if (statusCode == HTTP_CODE_OK)
     // {
@@ -56,4 +60,11 @@ String DeviceServerInterface::getDeviceId()
     // {
     //     return "";
     // }
+}
+
+String DeviceServerInterface::getDeviceSensorIds()
+{
+    this->http.addHeader("Authorization", "Bearer " + this->authToken);
+    // String address = this->baseUrl + "/getSensorIds";
+    // int statusCode = this->http.GET(address);
 }

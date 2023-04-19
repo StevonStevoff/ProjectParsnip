@@ -1,25 +1,73 @@
 #include "DeviceESP32.h"
 
-DeviceESP32::DeviceESP32() : Portal(server), sensors_()
+// Defines the custom data should be stored in EEPROM.
+typedef struct
 {
-#ifdef ESP32 // Check if using ESP32 board
-    server.on("/", std::bind(&DeviceESP32::rootPage, this));
-    // if (Portal.begin()) {
-    //     Serial.println("WiFi connected: " + WiFi.localIP().toString());
-    // }
-#endif
-    this->deviceServerInterface = new DeviceServerInterface("https://parsnipbackend.azurewebsites.net");
+    char token[257]; // 32 bytes for the token + 1 byte for the null terminator
+} EEPROM_CONFIG_t;
+
+String DeviceESP32::onHandleAuthToken(AutoConnectAux &page, PageArgument &args)
+{
+    String input = args.arg(1);
+
+    EEPROM_CONFIG_t eepromConfig;
+    memset(&eepromConfig, 0, sizeof(eepromConfig));
+    strncpy(eepromConfig.token, input.c_str(), sizeof(eepromConfig.token) - 1);
+
+    EEPROM.begin(sizeof(eepromConfig));
+    EEPROM.put(0, eepromConfig);
+    EEPROM.commit();
+    EEPROM.end();
+
+    return String();
 }
 
-void DeviceESP32::rootPage()
+// Read from EEPROM
+String DeviceESP32::onLoadAuthPage(AutoConnectAux &page, PageArgument &args)
 {
-    char content[] = "Hello, world";
-    this->server.send(200, "text/plain", content);
+    EEPROM_CONFIG_t eepromConfig;
+    EEPROM.begin(sizeof(eepromConfig));
+    EEPROM.get(0, eepromConfig);
+    EEPROM.end();
+
+    page["input"].value = String(eepromConfig.token) + " (loaded from EEPROM)";
+
+    return String();
+}
+
+DeviceESP32::DeviceESP32() : Portal(server), sensors_()
+{
+    this->deviceServerInterface = new DeviceServerInterface("https://parsnipbackend.azurewebsites.net");
+
+    ACText(text, "Please enter your device token");
+    ACInput(input, "", "Device Token");
+    ACSubmit(save, "SAVE", "/handleAuth");
+
+    ACText(confirmation, "Your device token has been saved");
+
+    AutoConnectAux auxInputToken = AutoConnectAux("/auth", "Authentication", true, {input, save, text});
+    AutoConnectAux auxHandleToken = AutoConnectAux("/handleAuth", "Handle Input", false, {confirmation});
+
+    auxInputToken.on(std::bind(&DeviceESP32::onLoadAuthPage, this, std::placeholders::_1, std::placeholders::_2));
+    auxHandleToken.on(std::bind(&DeviceESP32::onHandleAuthToken, this, std::placeholders::_1, std::placeholders::_2));
+
+    this->Portal.join({auxInputToken, auxHandleToken});
+    this->Portal.begin();
+}
+
+String DeviceESP32::getAuthenticationToken()
+{
+    EEPROM_CONFIG_t eepromConfig;
+    EEPROM.begin(sizeof(eepromConfig));
+    EEPROM.get(0, eepromConfig);
+    EEPROM.end();
+
+    return eepromConfig.token;
 }
 
 AutoConnect &DeviceESP32::getPortal()
 {
-    return Portal;
+    return this->Portal;
 }
 
 void DeviceESP32::handleClientRequest()
@@ -71,6 +119,9 @@ std::map<std::string, float> DeviceESP32::readSensors()
 // make a method that packages the data and sends it to the backend using the http client
 void DeviceESP32::sendSensorData()
 {
+
+    Serial.println(this->deviceServerInterface->getDeviceId());
+
     if (this->readInterval < this->lastReadTime) // sync time with server
     {
         this->readSensors();

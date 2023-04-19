@@ -8,6 +8,7 @@ public:
     int sendData(float value);
     String getDeviceId();
     void getAuthToken();
+    String getDeviceSensorIds();
 
 private:
     HTTPClient http;

@@ -1,6 +1,0 @@
-
-  controller: esp32
-    sensors:
-      temperature_sensor:
-        sensor_name: DH11
-        pin: 4
