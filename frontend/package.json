@@ -11,6 +11,7 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "setupFiles": ["./jest-setup.js"],
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
