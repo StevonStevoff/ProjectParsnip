@@ -11,6 +11,7 @@ import RegistrationScreen from '../screens/AuthScreens/RegistrationScreen';
 import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import ForgotPasswordScreen from '../screens/AuthScreens/ForgotPasswordScreen';
 import AuthUtils from '../api/utils/AuthUtils';
+import { loadState, saveState } from '../utils/localStorage'; // Import the utility functions
 
 const Stack = createStackNavigator();
 function NavigationRoot() {
@@ -18,6 +19,12 @@ function NavigationRoot() {
   const [isLoading, setIsLoading] = useState(true);
 
   const navigationRef = useRef(null);
+
+  const handleStateChange = (state) => {
+    saveState('navState', state);
+  };
+
+  const initialState = loadState('navState');
 
   const linking = {
     prefixes: ['myapp://', 'https://myapp.com'],
@@ -69,7 +76,13 @@ function NavigationRoot() {
     );
   }
   return (
-    <NavigationContainer theme={reactNavigationTheme} linking={linking} ref={navigationRef}>
+    <NavigationContainer
+      theme={reactNavigationTheme}
+      linking={linking}
+      ref={navigationRef}
+      initialState={initialState}
+      onStateChange={handleStateChange}
+    >
       <Stack.Navigator
         initialRouteName={isUserLoggedIn ? 'Navigation' : 'LoginScreen'}
         screenOptions={{
