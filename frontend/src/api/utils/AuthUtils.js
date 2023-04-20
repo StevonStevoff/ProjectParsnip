@@ -74,7 +74,9 @@ const AuthUtils = {
 
   logout(navigation) {
     API.logout();
-    saveState('navState', null);
+    if (Device.brand == null) {
+      saveState('navState', null);
+    }
     navigation.navigate('LoginScreen');
     this.setUserToken(null);
   },
@@ -86,7 +88,9 @@ const AuthUtils = {
     } catch (error) {
       if (error.response.status === 401) {
         // handle the 401 error
-        saveState('navState', null);
+        if (Device.brand == null) {
+          saveState('navState', null);
+        }
         this.setUserToken(null);
         return null;
       }

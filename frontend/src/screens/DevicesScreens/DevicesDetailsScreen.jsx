@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/destructuring-assignment */
+import React, { useState, useEffect } from 'react';
 import {
   Text, Box, Heading, HStack, VStack,
   Icon, Button, ScrollView, Center,
 } from 'native-base';
-import React, { useState, useEffect } from 'react';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
@@ -14,11 +14,12 @@ import PlantInfoTable from '../../components/PlantInfoTable';
 
 function DevicesDetailsScreen({ navigation, route }) {
   const { item } = route.params;
-  const currentDevice = (item && item.device) || item || {};
-  currentDevice.isLinked = !!item.device;
   const isFocused = useIsFocused();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentDevice, setCurrentDevice] = useState((item && item.device) || item || {});
+  currentDevice.isLinked = !!item.device;
+
+  const [isLoading, setIsLoading] = useState(false);
   const [deviceSensors, setDeviceSensors] = useState(currentDevice.sensors || []);
   const [deviceUsers, setDeviceUsers] = useState(currentDevice.users || []);
 
@@ -36,7 +37,14 @@ function DevicesDetailsScreen({ navigation, route }) {
         }
         return user;
       });
-      setIsLoading(false);
+    }
+  };
+
+  const updateDevice = async () => {
+    if (currentDevice.isUserOwner) {
+      currentDevice.sensors = deviceSensors;
+      currentDevice.users = deviceUsers;
+      await DeviceUtils.updateDevice(currentDevice);
     }
   };
 
@@ -45,33 +53,10 @@ function DevicesDetailsScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    setDeviceUsers((prevUsers) => prevUsers.map((user) => {
-      if (user.id === currentDevice.owner.id) {
-        return { ...user, isOwner: true };
-      }
-      return { ...user, isOwner: false };
-    }));
-  }, [currentDevice.owner]);
-
-  useEffect(
-    () => {
-      if (currentDevice.isUserOwner) {
-        setIsLoading(true);
-        currentDevice.sensors = deviceSensors;
-        currentDevice.users = deviceUsers;
-        DeviceUtils.updateDevice(currentDevice)
-          .then((response) => {
-            console.log('response', response);
-          }).catch((error) => {
-            console.log(error);
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
-      }
-    },
-    [deviceSensors, deviceUsers, isFocused],
-  );
+    if (currentDevice.isUserOwner) {
+      updateDevice();
+    }
+  }, [deviceSensors, deviceUsers]);
 
   if (isLoading) {
     return (
@@ -119,7 +104,7 @@ function DevicesDetailsScreen({ navigation, route }) {
             {currentDevice.isUserOwner && (
             <Button
               variant="unstyled"
-              onPress={() => navigation.navigate('device-edit', { device: currentDevice })}
+              onPress={() => navigation.navigate('device-edit', { device: currentDevice, editDevice: setCurrentDevice })}
             >
               <Icon
                 as={FontAwesome}

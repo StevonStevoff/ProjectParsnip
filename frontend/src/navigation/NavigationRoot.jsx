@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/native';
 import { Center, useColorModeValue } from 'native-base';
 import { ActivityIndicator } from 'react-native';
+import * as Device from 'expo-device';
 import Navigation from './BottomTabNavigation';
 import ProfileScreen from '../screens/AuthScreens/ProfileScreen';
 import RegistrationScreen from '../screens/AuthScreens/RegistrationScreen';
@@ -21,7 +22,9 @@ function NavigationRoot() {
   const navigationRef = useRef(null);
 
   const handleStateChange = (state) => {
-    saveState('navState', state);
+    if (Device.brand == null) {
+      saveState('navState', state);
+    }
   };
 
   const initialState = loadState('navState');

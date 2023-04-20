@@ -6,6 +6,7 @@ import DeviceEditForm from '../../components/DevicesEditForm';
 
 function DeviceEditScreen({ navigation, route }) {
   const device = route?.params?.device || {};
+  const editDevice = route?.params?.setDevice || (() => {});
   return (
     <View style={{
       flex: 1,
@@ -28,7 +29,7 @@ function DeviceEditScreen({ navigation, route }) {
           />
         </Button>
       </HStack>
-      <DeviceEditForm navigation={navigation} device={device} />
+      <DeviceEditForm navigation={navigation} device={device} editDevice={editDevice} />
     </View>
   );
 }

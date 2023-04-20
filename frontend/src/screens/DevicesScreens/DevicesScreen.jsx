@@ -15,7 +15,7 @@ function DevicesScreen({ navigation }) {
   const { width } = useWindowDimensions();
 
   const isFocused = useIsFocused();
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
   const [linkedDevices, setLinkedDevices] = React.useState([]);
@@ -43,7 +43,7 @@ function DevicesScreen({ navigation }) {
 
   useEffect(() => {
     fetchDeviceData();
-  }, [isFocused]);
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -123,7 +123,7 @@ function DevicesScreen({ navigation }) {
     <View style={styles.container}>
       <SectionList
         sections={sections}
-        keyExtractor={(item, index) => item.id + index}
+        keyExtractor={(item, index, sectionIndex) => `${item.id}-${sectionIndex}-${index}`}
         renderItem={renderDevice}
         renderSectionHeader={renderSectionHeader}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

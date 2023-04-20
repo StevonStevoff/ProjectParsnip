@@ -14,7 +14,7 @@ import DeviceUtils from '../api/utils/DeviceUtils';
 import DeviceSchema from '../utils/validationSchema/DeviceSchema';
 import WarningDialog from './WarningDialog';
 
-function DeviceEditForm({ navigation, device }) {
+function DeviceEditForm({ navigation, device, editDevice }) {
   const [isFormLoading, setIsLoading] = useState(false);
   const [deviceOwner, setDeviceOwner] = useState(device.owner);
   const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
@@ -24,6 +24,7 @@ function DeviceEditForm({ navigation, device }) {
     device.isUserOwner = false;
     device.owner = deviceOwner;
     device.name = values.name;
+    editDevice(device);
     try {
       const [response, currentUser] = await Promise.all([
         DeviceUtils.updateDevice(device),
