@@ -2,76 +2,84 @@
 
 DeviceServerInterface::DeviceServerInterface(String baseUrl)
 {
-#ifdef ESP32
-    this->http.begin(baseUrl);
-#endif
-#ifdef ESP8266
-    WiFiClient client;
-    this->http.begin(client, baseUrl);
-#endif
+    // #ifdef ESP32
+    //     this->http.begin(baseUrl);
+    // #endif
+    // #ifdef ESP8266
+    //     WiFiClient client;
+    //     this->http.begin(client, baseUrl);
+    // #endif
     this->baseUrl = baseUrl;
 }
 
-void DeviceServerInterface::setAuthToken(String authToken)
+void DeviceServerInterface::setAuthenticationToken(String authToken)
 {
     this->authToken = authToken;
 }
 
-void DeviceServerInterface::getAuthToken()
+void DeviceServerInterface::setHttpUrl(String url)
 {
-    // send the GET request for the auth token
-    // int statusCode = http.GET(this->baseUrl + "/getAuthToken");
-
-    // // check the response status code
-    // if (statusCode == HTTP_CODE_OK)
-    // {
-    //     String authToken = http.getString();
-    //     this->authToken = authToken;
-    // }
+#ifdef ESP32
+    this->http.begin(url);
+#endif
+#ifdef ESP8266
+    WiFiClient client;
+    this->http.begin(client, url);
+#endif
 }
 
-int DeviceServerInterface::sendData(float value)
+String DeviceServerInterface::getAuthenticationToken()
 {
+    if (this->authToken == NULL)
+        return "NULL";
+
+    if (this->authToken == "")
+        return "NULL";
+
+    if (this->authToken.length() > 256)
+        return "NULL";
+
+    return this->authToken;
+}
+
+int DeviceServerInterface::sendPlantData(std::map<std::string, float> sensorReadings)
+{
+
+    String address = this->baseUrl + "/plant_data";
+    this->setHttpUrl(address);
+
+    this->http.addHeader("Content-Type", "application/json");
+
+    this->http.setAuthorization("admin", "string");
+
     // create the payload
-    String payloadStr = String(value);
+    String payloadStr = "yes";
+
+    // convert map to json object string
+    // String payloadStr = "{"; // start the json object
+    // for (auto const &x : sensorReadings)
+    // {
+    //     payloadStr += "\"" + String(x.first.c_str()) + "\":" + String(x.second) + ",";
+    // }
+    // payloadStr.remove(payloadStr.length() - 1); // remove the last comma
+    // payloadStr += "}"; // end the json object
 
     // set the authentication token
     http.addHeader("Authorization", "Bearer " + authToken);
 
     // send the POST request with the payload
-    // int statusCode = this->http.POST(this->baseUrl + "/sendData", (uint8_t *)payloadStr.c_str(), payloadStr.length());
+    int statusCode = this->http.POST((uint8_t *)payloadStr.c_str(), payloadStr.length());
 
-    // return statusCode;
-    return 1;
-}
-
-String DeviceServerInterface::getDeviceId()
-{
-    // set the authentication token
-    this->http.addHeader("Authorization", "Bearer " + this->authToken);
-
-    // send the GET request for the device ID
-    // int statusCode = http.GET(this->baseUrl + "/getDeviceId");
-
-    // http.setURL(this->baseUrl + "/plants/");
-    int statusCode = http.GET();
-    return http.getString();
-    // // check the response status code
-    // if (statusCode == HTTP_CODE_OK)
-    // {
-    //     String deviceId = http.getString();
-    //     return deviceId;
-    // }
-    // else
-    // {
-    //     return "";
-    // }
+    return statusCode;
 }
 
 String DeviceServerInterface::getDeviceSensorIds()
 {
-    this->http.addHeader("Authorization", "Bearer " + this->authToken);
+    this->setHttpUrl(this->baseUrl + "/sensors");
+    this->setHttpUrl(this->baseUrl);
+    // this->http.addHeader("Authorization", "Bearer " + this->authToken);
     // String address = this->baseUrl + "/getSensorIds";
-    // int statusCode = this->http.GET(address);
-    return String();
+    int statusCode = this->http.GET();
+    Serial.println(statusCode);
+    return http.getString();
 }

@@ -6,15 +6,17 @@
 #include <ESP8266HTTPClient.h>
 #endif
 
+#include <map>
+
 class DeviceServerInterface
 {
 public:
     DeviceServerInterface(String baseUrl);
-    void setAuthToken(String authToken);
-    int sendData(float value);
-    String getDeviceId();
-    void getAuthToken();
+    void setAuthenticationToken(String authToken);
+    int sendPlantData(std::map<std::string, float> sensorReadings);
+    String getAuthenticationToken();
     String getDeviceSensorIds();
+    void setHttpUrl(String url);
 
 private:
     HTTPClient http;

@@ -126,8 +126,13 @@ std::map<std::string, float> Device::readSensors()
 // make a method that packages the data and sends it to the backend using the http client
 void Device::sendSensorData()
 {
+    this->deviceServerInterface->setAuthenticationToken(this->getAuthenticationToken());
 
-    Serial.println(this->deviceServerInterface->getDeviceId());
+    // this->deviceServerInterface->sendPlantData(this->readSensors());
+
+    Serial.println(this->deviceServerInterface->getDeviceSensorIds());
+
+    // Serial.println(this->deviceServerInterface->getDeviceId());
 
     // if (this->readInterval < this->lastReadTime) // sync time with server
     // {
