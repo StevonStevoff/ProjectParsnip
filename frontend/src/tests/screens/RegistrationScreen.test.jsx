@@ -36,9 +36,22 @@ describe('Basic Registration Screen function and loadin', () => {
       expect(title).toBeDefined();
     });
   });
+  test('should have a button to the login page', async () => {
+    const navigation = { navigate: jest.fn() };
+    const { getByText } = render(
+      <NativeBaseProvider theme={theme}>
+        <RegistrationScreen navigation={navigation} />
+      </NativeBaseProvider>,
+    );
+
+    await waitFor(async () => {
+      const loginBtn = getByText('Login');
+      expect(loginBtn).toBeDefined();
+    });
+  });
   test('should show an error message if any form fields are blank', async () => {
     const navigation = { navigate: jest.fn() };
-    const { getByTestId, findByText } = render(
+    const { getByTestId, getByText } = render(
       <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
         <RegistrationScreen navigation={navigation} />
       </NativeBaseProvider>,
@@ -46,24 +59,10 @@ describe('Basic Registration Screen function and loadin', () => {
     await waitFor(() => {
       fireEvent.changeText(getByTestId('password-input-signup'), '');
       fireEvent.changeText(getByTestId('username-input-signup'), '');
-      const usernameError = findByText('Username is required');
-      const passwordError = findByText('Password is required');
+      const usernameError = getByText('Username is required');
+      const passwordError = getByText('Password is required');
       expect(passwordError).toBeDefined();
       expect(usernameError).toBeDefined();
-    });
-  });
-
-  test('should have a button to the login page', async () => {
-    const navigation = { navigate: jest.fn() };
-    const { findByText } = render(
-      <NativeBaseProvider theme={theme}>
-        <RegistrationScreen navigation={navigation} />
-      </NativeBaseProvider>,
-    );
-
-    await waitFor(async () => {
-      const loginBtn = findByText('Login');
-      expect(loginBtn).toBeDefined();
     });
   });
 });

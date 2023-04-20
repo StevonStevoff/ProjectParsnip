@@ -11,11 +11,9 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFiles": ["./jest-setup.js"],
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
-    "testEnvironment": "jsdom",
     "collectCoverage": true,
     "coverageReporters": [
       "json",
@@ -68,8 +66,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "jsdom": "^21.1.0"
+    "eslint-plugin-react-hooks": "^4.6.0"
   },
   "private": true
 }
