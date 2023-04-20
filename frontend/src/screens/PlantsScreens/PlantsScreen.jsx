@@ -27,10 +27,11 @@ function PlantsScreen({ navigation }) {
   const [plantTypes, setPlantsTypes] = useState([]);
   const [devices, setDevices] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
+  const [latestValue, setLatestValue] = useState(null);
 
   const statusArray = [{
     status: 'success',
-    title: 'Plant successfully edited!',
+    title: 'Plant successfully deleted!',
   }, {
     status: 'error',
     title: 'An error has occured!',
@@ -74,6 +75,95 @@ function PlantsScreen({ navigation }) {
     fetchPlantsTypes();
   }, []);
 
+  // Get latest value for each grow property type for each plant
+  useEffect(() => {
+    const fetchLatestValues = async () => {
+      try {
+        const plantIds = plants.map((plant) => plant.id); // replace with your desired plant ids
+        const growPropertyTypeIds = [1, 2, 3, 4];
+        const latestValues = {};
+
+        await Promise.all(plantIds.map(async (id) => {
+          latestValues[id] = {};
+          try {
+            const response = await API.getPlantData(id);
+
+            growPropertyTypeIds.forEach((growPropertyTypeId) => {
+              const data = response.data.filter((item) => item.sensor_readings.some(
+                (reading) => reading.grow_property.grow_property_type.id === growPropertyTypeId,
+              ));
+
+              const latestRecord = data.length > 0 ? data.reduce(
+                (prev, current) => (prev.timestamp > current.timestamp ? prev : current),
+              ) : null;
+              latestValues[id][growPropertyTypeId] = latestRecord === null
+                ? -999 : latestRecord.sensor_readings[0].value;
+            });
+          } catch (error) {
+            if (error.response && error.response.status === 404) {
+              latestValues[id] = {
+                1: -999, 2: -999, 3: -999, 4: -999,
+              };
+            } else {
+              throw error; // re-throw other errors
+            }
+          }
+        }));
+
+        setLatestValue(latestValues);
+        console.log(latestValues);
+      } catch (error) { /* empty */ }
+    };
+    fetchLatestValues();
+  }, [plants]);
+
+  // useEffect(() => {
+  //   const fetchLatestValues = async () => {
+  //     try {
+  //       // const idList = hehe; // replace with your desired list of plant ids
+
+  //       const growPropertyTypeIds = [1, 2, 3, 4];
+  //       const latestValues = {};
+
+  //       for (const id of hehe) {
+  //         latestValues[id] = {};
+  //         let response;
+  //         try {
+  //           response = await API.getPlantData(id);
+  //         } catch (error) {
+  //           if (error.response && error.response.status === 404) {
+  //             latestValues[id] = {
+  //               1: -999,
+  //               2: -999,
+  //               3: -999,
+  //               4: -999,
+  //             };
+  //             continue;
+  //           } else {
+  //             throw error;
+  //           }
+  //         }
+
+  //         growPropertyTypeIds.forEach((growPropertyTypeId) => {
+  //           const data = response.data.filter((item) => item.sensor_readings.some(
+  //             (reading) => reading.grow_property.grow_property_type.id === growPropertyTypeId,
+  //           ));
+
+  //           const latestRecord = data.length > 0 ? data.reduce(
+  //             (prev, current) => (prev.timestamp > current.timestamp ? prev : current),
+  //           ) : null;
+  //           latestValues[id][growPropertyTypeId] = latestRecord === null
+  //             ? -999 : latestRecord.sensor_readings[0].value;
+  //         });
+  //       }
+
+  //       setLatestValue((prevLatestValue) => ({ ...prevLatestValue, ...latestValues }));
+  //       console.log(latestValues);
+  //     } catch (error) { /* empty */ }
+  //   };
+  //   fetchLatestValues();
+  // }, [hehe]);
+
   useEffect(() => {
     const fetchPlantsProfiles = async () => {
       try {
@@ -109,6 +199,22 @@ function PlantsScreen({ navigation }) {
     } catch (error) { setEvent('error'); }
   };
 
+  // function getLatestSensorValue(sensorData, desiredPlantId) {
+  //   const sortedReadings = sensorData.sort(
+  //     (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+  //   );
+
+  //   const filteredReadings = sortedReadings.filter(
+  //     (reading) => reading.plant_id === desiredPlantId,
+  //   );
+
+  //   const latestValue = filteredReadings[0].sensor_readings[0].value;
+
+  //   return latestValue;
+  // }
+
+  // const latestValue = getLatestSensorValue(plantData, 1);
+  console.log(latestValue);
   return (
     <ScrollView style={styles.scrollView}>
 
@@ -182,7 +288,7 @@ function PlantsScreen({ navigation }) {
                     })}
                   >
                     <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
-                    <Text style={styles.createText}>Edit  </Text>
+                    <Text style={styles.createText}> Edit  </Text>
                   </TouchableOpacity>
                   {/* To be Changed to handleEdit */}
                   <TouchableOpacity
@@ -190,7 +296,7 @@ function PlantsScreen({ navigation }) {
                     onPress={() => handleDelete(plant.id)}
                   >
                     <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
-                    <Text style={styles.createText}>Delete </Text>
+                    <Text style={styles.createText}> Delete </Text>
                   </TouchableOpacity>
                 </View>
 
@@ -202,16 +308,18 @@ function PlantsScreen({ navigation }) {
                       {' '}
                       {property.min}
                       {' '}
+                      {latestValue?.[plant.id]?.[property.grow_property_type.id] === -999 ? 'N/A' : latestValue?.[plant.id]?.[property.grow_property_type.id]}
+                      {' '}
                       {property.max}
                     </Text>
                   </HStack>
                 ))}
 
                 {plant.outdoor ? <Text style={styles.plantContainerText}>Outdoor</Text>
-                  : <Text style={styles.plantContainerText}>Indoor</Text>}
+                  : <Text style={styles.plantContainerText}> Indoor</Text>}
 
                 {plant.time_planted === null
-                  ? <Text style={styles.plantContainerText}>Time planted: Not set</Text>
+                  ? <Text style={styles.plantContainerText}> Time planted: Not set</Text>
                   : (
                     <Text style={styles.plantContainerText}>
                       Time planted:
@@ -222,7 +330,7 @@ function PlantsScreen({ navigation }) {
                 <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                   <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
                     <Icon as={MaterialIcons} name="info" color="white" _dark={{ color: 'white' }} />
-                    <Text style={styles.createText}>Plant Details</Text>
+                    <Text style={styles.createText}>  Plant Details</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -251,15 +359,12 @@ const styles = StyleSheet.create({
   detailsButton: {
     marginRight: 5,
     marginLeft: 5,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 10,
-    paddingLeft: 10,
+    padding: 10,
     backgroundColor: '#1E3438',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#1E6738',
-    width: '40%',
+    width: '20%',
     fontSize: 25,
     flex: 1,
     flexDirection: 'row',
