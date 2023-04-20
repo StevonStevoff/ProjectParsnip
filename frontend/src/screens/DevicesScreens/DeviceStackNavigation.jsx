@@ -12,9 +12,9 @@ function DevicesDetailsStackNavigation() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="devices-home" component={DevicesScreen} />
-      <Stack.Screen name="device-details" component={DevicesDetailsScreen} />
-      <Stack.Screen name="device-edit" component={DeviceEditScreen} />
+      <Stack.Screen name="DevicesRoot" component={DevicesScreen} />
+      <Stack.Screen name="DevicesDetails" component={DevicesDetailsScreen} />
+      <Stack.Screen name="DeviceEdit" component={DeviceEditScreen} />
     </Stack.Navigator>
   );
 }

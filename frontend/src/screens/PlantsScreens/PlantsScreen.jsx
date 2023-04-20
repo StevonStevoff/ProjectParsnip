@@ -34,7 +34,7 @@ function PlantsScreen({ navigation }) {
       <Text>PlantsScreen</Text>
       <Button
         title="Plant Details"
-        onPress={() => navigation.navigate('plants-details', { itemID: 12 })}
+        onPress={() => navigation.navigate('PlantDetails', { itemID: 12 })}
       />
     </View>
   );

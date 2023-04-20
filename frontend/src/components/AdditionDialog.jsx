@@ -38,6 +38,25 @@ function AdditionDialog({
       });
   }, []);
 
+  useEffect(() => {
+    const fetchAndUpdateOptions = async () => {
+      try {
+        const options = await fetchSelectionOptions();
+        const filteredOptions = options.filter(
+          (item) => !currentItems.some((currentItem) => currentItem.id === item.id),
+        );
+        setSelectionOptions(filteredOptions);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    setIsLoading(true);
+    fetchAndUpdateOptions();
+  }, [currentItems, fetchSelectionOptions]);
+
   if (selectionOptions.length === 0) {
     return (
       <AlertDialog isOpen={isOpen} onClose={onClose} height="40%">

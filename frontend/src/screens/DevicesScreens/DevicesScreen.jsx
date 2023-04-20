@@ -52,7 +52,7 @@ function DevicesScreen({ navigation }) {
   };
 
   const renderDevice = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('device-details', { item })}>
+    <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { item })}>
       <Box mb={4}>
         <DevicesCard item={item} navigation={navigation} />
       </Box>
@@ -81,7 +81,7 @@ function DevicesScreen({ navigation }) {
     return (
       <Center flex={1}>
         <Text>Add device through the device portal. Then refresh the page.</Text>
-        <Button onPress={onRefresh}>Refresh</Button>
+        <Button onPress={onRefresh} testID="refresh-button">Refresh</Button>
       </Center>
     );
   }
