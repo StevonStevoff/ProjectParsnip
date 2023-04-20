@@ -2,11 +2,12 @@
 import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
 import API from '../API';
+import { saveState } from '../../utils/localStorage';
 
 const AuthUtils = {
   async isUserAuthenticated() {
     const token = await this.getUserToken();
-    if (token == null) {
+    if (token === null) {
       return false;
     }
     API.setJWTtoken(token);
@@ -63,15 +64,6 @@ const AuthUtils = {
         return Promise.reject(this.errorMessage);
       });
   },
-
-  async getUserInfo() {
-    return API.getUserInfo()
-      .then((response) => response.data)
-      .catch((error) => {
-        console.log(error);
-      });
-  },
-
   async updateUserInfo(name, email, username) {
     return API.updateUserInfo({ name, email, username })
       .then((response) => response.data)
@@ -82,10 +74,26 @@ const AuthUtils = {
 
   logout(navigation) {
     API.logout();
+    saveState('navState', null);
     navigation.navigate('LoginScreen');
     this.setUserToken(null);
   },
 
+  async getUserInfo() {
+    try {
+      const response = await API.getUserInfo();
+      return response.data;
+    } catch (error) {
+      if (error.response.status === 401) {
+        // handle the 401 error
+        saveState('navState', null);
+        this.setUserToken(null);
+        return null;
+      }
+      console.log(error);
+      return null;
+    }
+  },
   handleAuthenticationError(error) {
     switch (error) {
       case 'LOGIN_BAD_CREDENTIALS':
