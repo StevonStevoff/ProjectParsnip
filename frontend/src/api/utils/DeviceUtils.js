@@ -69,6 +69,10 @@ const DeviceUtils = {
         this.getCurrentUser(),
       ]);
 
+      if (!allDevices) {
+        return []; // Return an empty array if allDevices is undefined or null
+      }
+
       const linkedDeviceIds = linkedDevices.map((plant) => plant.device.id);
       const unlinkedDevices = allDevices.filter((device) => !linkedDeviceIds.includes(device.id));
 

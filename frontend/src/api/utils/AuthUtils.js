@@ -1,6 +1,7 @@
 /* eslint-disable no-cond-assign */
 import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
+import { CommonActions } from '@react-navigation/native';
 import API from '../API';
 import { saveState } from '../../utils/localStorage';
 
@@ -77,8 +78,13 @@ const AuthUtils = {
     if (Device.brand == null) {
       saveState('navState', null);
     }
-    navigation.navigate('LoginScreen');
     this.setUserToken(null);
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'LoginScreen' }], // Replace with your initial route name
+      }),
+    );
   },
 
   async getUserInfo() {

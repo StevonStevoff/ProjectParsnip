@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {
-  Text, Box, Heading, SectionList, Center,
+  Text, Box, Heading, SectionList, Center, Button,
 } from 'native-base';
 import { useIsFocused } from '@react-navigation/native';
 import DevicesCard from '../../components/DevicesCard';
@@ -79,9 +79,10 @@ function DevicesScreen({ navigation }) {
   if ((!linkedDevices || linkedDevices.length === 0)
   && (!unlinkedDevices || unlinkedDevices.length === 0)) {
     return (
-      <View style={styles.container}>
+      <Center flex={1}>
         <Text>Add device through the device portal. Then refresh the page.</Text>
-      </View>
+        <Button onPress={onRefresh}>Refresh</Button>
+      </Center>
     );
   }
 

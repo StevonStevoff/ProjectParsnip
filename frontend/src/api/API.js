@@ -187,7 +187,7 @@ const API = {
     });
 
     return response;
-  }
+  },
 };
 
 // defining the cancel API object for ProductAPI

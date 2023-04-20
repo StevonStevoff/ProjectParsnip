@@ -29,17 +29,14 @@ function DevicesDetailsScreen({ navigation, route }) {
   } = currentDevice;
 
   const addUsersOwnerFlag = () => {
-    if (currentDevice.name) {
-      deviceUsers.map((user) => {
-        if (user.id === currentDevice.owner.id) {
-          // eslint-disable-next-line no-param-reassign
-          user.isOwner = true;
-        }
-        return user;
-      });
-    }
+    deviceUsers.map((user) => {
+      if (user.id === currentDevice.owner.id) {
+        // eslint-disable-next-line no-param-reassign
+        user.isOwner = true;
+      }
+      return user;
+    });
   };
-
   const updateDevice = async () => {
     if (currentDevice.isUserOwner) {
       currentDevice.sensors = deviceSensors;
@@ -47,6 +44,10 @@ function DevicesDetailsScreen({ navigation, route }) {
       await DeviceUtils.updateDevice(currentDevice);
     }
   };
+
+  useEffect(() => {
+    addUsersOwnerFlag();
+  }, [currentDevice.isUserOwner]);
 
   useEffect(() => {
     addUsersOwnerFlag();
