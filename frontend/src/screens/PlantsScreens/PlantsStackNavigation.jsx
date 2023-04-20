@@ -20,8 +20,8 @@ function PlantsStackNavigation() {
         });
       }}
     >
-      <Stack.Screen name="PlantsRoot" component={PlantsScreen} />
-      <Stack.Screen name="PlantDetails" component={PlantDetailsScreen} />
+      <Stack.Screen name="plants-home" component={PlantsScreen} />
+      <Stack.Screen name="plants-details" component={PlantDetailsScreen} />
     </Stack.Navigator>
   );
 }

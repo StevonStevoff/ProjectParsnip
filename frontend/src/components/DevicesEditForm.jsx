@@ -55,7 +55,7 @@ function DeviceEditForm({ navigation, device }) {
     DeviceUtils.deleteDevice(device)
       .then((response) => {
         if (response.status === 200) {
-          navigation.navigate('DevicesRoot');
+          navigation.navigate('devices-home');
         } else {
           console.error('Failed to delete device:', response.statusText);
         }

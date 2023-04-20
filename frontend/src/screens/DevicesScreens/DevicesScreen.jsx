@@ -52,7 +52,7 @@ function DevicesScreen({ navigation }) {
   };
 
   const renderDevice = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('DevicesDetails', { item })}>
+    <TouchableOpacity onPress={() => navigation.navigate('device-details', { item })}>
       <Box mb={4}>
         <DevicesCard item={item} navigation={navigation} />
       </Box>

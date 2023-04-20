@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import {
+  NavigationContainer, DefaultTheme,
+} from '@react-navigation/native';
 import { Center, useColorModeValue } from 'native-base';
 import { ActivityIndicator } from 'react-native';
 import Navigation from './BottomTabNavigation';
@@ -14,6 +16,30 @@ const Stack = createStackNavigator();
 function NavigationRoot() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const navigationRef = useRef(null);
+
+  const linking = {
+    prefixes: ['myapp://', 'https://myapp.com'],
+    config: {
+      screens: {
+        Profile: 'profile',
+        LoginScreen: 'login',
+        Registration: 'register',
+        ForgotPassword: 'forgot-password',
+        Navigation: {
+          path: '',
+          screens: {
+            Plants: 'plants',
+            'Plant Profiles': 'plant-profiles',
+            Devices: 'devices',
+            Notifications: 'notifications',
+          },
+        },
+      },
+    },
+  };
+
   const reactNavigationTheme = {
     ...DefaultTheme,
     colors: {
@@ -34,6 +60,7 @@ function NavigationRoot() {
       setIsLoading(false);
     });
   }, []);
+
   if (isLoading) {
     return (
       <Center flex={1}>
@@ -42,7 +69,7 @@ function NavigationRoot() {
     );
   }
   return (
-    <NavigationContainer theme={reactNavigationTheme}>
+    <NavigationContainer theme={reactNavigationTheme} linking={linking} ref={navigationRef}>
       <Stack.Navigator
         initialRouteName={isUserLoggedIn ? 'Navigation' : 'LoginScreen'}
         screenOptions={{

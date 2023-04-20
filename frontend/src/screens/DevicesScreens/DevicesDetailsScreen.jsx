@@ -119,7 +119,7 @@ function DevicesDetailsScreen({ navigation, route }) {
             {currentDevice.isUserOwner && (
             <Button
               variant="unstyled"
-              onPress={() => navigation.navigate('DeviceEdit', { device: currentDevice })}
+              onPress={() => navigation.navigate('device-edit', { device: currentDevice })}
             >
               <Icon
                 as={FontAwesome}

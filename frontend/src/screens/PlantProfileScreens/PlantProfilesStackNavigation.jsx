@@ -19,7 +19,7 @@ function PlantProfileStackNavigation() {
         });
       }}
     >
-      <Stack.Screen name="PlantProfile" component={PlantProfileScreen} />
+      <Stack.Screen name="profiles" component={PlantProfileScreen} />
     </Stack.Navigator>
   );
 }
