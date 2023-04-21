@@ -281,6 +281,7 @@ function PlantsScreen({ navigation }) {
                           }
                             color="black"
                             _dark={{ color: 'white' }}
+                            size={8}
                           />
                           {' '}
                           {property.min}
@@ -291,7 +292,7 @@ function PlantsScreen({ navigation }) {
                               ? (
 
                                 <>
-                                  <Text fontSize={20} style={{ color: 'red' }}>
+                                  <Text fontSize={18} style={{ color: 'red', fontWeight: 'bold' ,marginTop:1}}>
                                     {latestValue?.[plant.id]?.[property.grow_property_type.id] === -999
                                       ? 'N/A'
                                       : latestValue?.[plant.id]?.[property.grow_property_type.id]}
@@ -302,7 +303,7 @@ function PlantsScreen({ navigation }) {
 
                               )
                               : (
-                                <Text fontSize={20} style={{ color: 'green' }}>
+                                <Text fontSize={18} style={{ color: 'green', fontWeight: 'bold' }}>
                                   {latestValue?.[plant.id]?.[property.grow_property_type.id]}
                                 </Text>
                               )}
@@ -336,7 +337,7 @@ function PlantsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   plantContainer: {
-    backgroundColor: '#2d2c2f',
+    backgroundColor: '#262626',
     paddingBottom: 15,
     paddingLeft: 2,
     paddingRight: 2,
