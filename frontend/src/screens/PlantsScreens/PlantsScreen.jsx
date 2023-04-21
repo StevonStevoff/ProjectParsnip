@@ -241,29 +241,29 @@ function PlantsScreen({ navigation }) {
                 </View>
 
                 <HStack w="100%">
-                  <VStack w="50%" style={styles.plantDetailsContianer}>
+                  <VStack w="45%" style={styles.plantDetailsContianer}>
                     {plant.outdoor ? <Text style={styles.plantContainerText}>Outdoor</Text>
                       : <Text style={styles.plantContainerText}> Indoor</Text>}
 
-                    <HStack w="100%"  style={styles.plantDetailsContianer}>
-                      <Text style={[styles.plantContainerText], { fontSize: 15 }}> Time planted: </Text>
+                    <HStack w="100%" style={styles.plantDetailsContianer}>
+                      <Text style={[styles.plantContainerText], { fontSize: 10 }}> Time planted: </Text>
                       {plant.time_planted === null
                         ? <Text style={styles.plantContainerText}> Not set</Text>
                         : (
-                          <Text style={styles.plantContainerText}>
+                          <Text style={[styles.plantContainerText], { fontSize: 18 }}>
                             {new Date(plant.time_planted).toLocaleDateString()}
                           </Text>
                         )}
                     </HStack>
                   </VStack>
 
-                  <VStack w="50%">
+                  <VStack w="57%">
                     {plant.plant_profile.grow_properties.map((property) => (
-                      <HStack space={3} flexShrink={1} w="100%" style={styles.propertyTypesConatiner}>
-                        <Text>
-                          <Icon
-                            as={MaterialIcons}
-                            name={
+                      <HStack space={3} w="100%" style={styles.propertyTypesConatiner}>
+
+                        <Icon
+                          as={MaterialIcons}
+                          name={
                             (() => {
                               switch (property.grow_property_type.id) {
                                 case 1:
@@ -279,37 +279,41 @@ function PlantsScreen({ navigation }) {
                               }
                             })()
                           }
-                            color="black"
-                            _dark={{ color: 'white' }}
-                            size={8}
-                          />
-                          {' '}
-                          {property.min}
-                          {'    '}
-                          <HStack style={{ height: 20 }}>
-                            {latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
+                          color="black"
+                          _dark={{ color: 'white' }}
+                          size={8}
+                        />
+                        <Text>
+                          <HStack space={3} style={{ height: 20 }}>
+                            <Text>
+                              {property.min}
+                            </Text>
+                            <Text>
+                              {latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
                         || latestValue?.[plant.id]?.[property.grow_property_type.id] <= property.min
-                              ? (
+                                ? (
 
-                                <>
-                                  <Text fontSize={18} style={{ color: 'red', fontWeight: 'bold' ,marginTop:1}}>
-                                    {latestValue?.[plant.id]?.[property.grow_property_type.id] === -999
-                                      ? 'N/A'
-                                      : latestValue?.[plant.id]?.[property.grow_property_type.id]}
+                                  <>
+                                    <Text fontSize={18} style={{ color: 'red', fontWeight: 'bold', marginTop: 4 }}>
+                                      {latestValue?.[plant.id]?.[property.grow_property_type.id] === -999
+                                        ? 'N/A'
+                                        : latestValue?.[plant.id]?.[property.grow_property_type.id]}
+                                    </Text>
+                                    <Icon as={MaterialIcons} name="priority-high" color="rose.600" _dark={{ color: 'rose.600' }} size={5} />
+
+                                  </>
+
+                                )
+                                : (
+                                  <Text fontSize={18} style={{ color: 'green', fontWeight: 'bold' }}>
+                                    {latestValue?.[plant.id]?.[property.grow_property_type.id]}
                                   </Text>
-                                  <Icon as={MaterialIcons} name="priority-high" color="rose.600" _dark={{ color: 'rose.600' }} size={5} />
-
-                                </>
-
-                              )
-                              : (
-                                <Text fontSize={18} style={{ color: 'green', fontWeight: 'bold' }}>
-                                  {latestValue?.[plant.id]?.[property.grow_property_type.id]}
-                                </Text>
-                              )}
+                                )}
+                            </Text>
+                            <Text>
+                              {property.min}
+                            </Text>
                           </HStack>
-                          {'    '}
-                          {property.max}
                         </Text>
                       </HStack>
                     ))}
@@ -320,7 +324,7 @@ function PlantsScreen({ navigation }) {
                 <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                   <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
                     {/* <Icon as={MaterialIcons} name="info" color="white" _dark={{ color: 'white' }} /> */}
-                    <Text style={styles.createText}>  Plant Details</Text>
+                    <Text style={styles.createText}> Plant Details  </Text>
                   </TouchableOpacity>
                 </View>
 
@@ -357,6 +361,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign: 'center',
   },
   createText: {
     color: '#fff',
@@ -372,6 +377,7 @@ const styles = StyleSheet.create({
   plantContainerText: {
     fontSize: 20,
     fontWeight: 'bold',
+    paddingBottom: 5,
   },
   scrollView: {
     marginHorizontal: 40,
