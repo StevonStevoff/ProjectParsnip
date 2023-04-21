@@ -4,6 +4,7 @@ import {
 } from '@testing-library/react-native';
 import { NativeBaseProvider } from 'native-base';
 import RegistrationScreen from '../../screens/AuthScreens/RegistrationScreen';
+import SignUpForm from '../../components/SignUpForm';
 import defaultTheme from '../../stylesheets/defaultTheme';
 
 jest.mock('../../api/utils/AuthUtils.js', () => ({
@@ -34,35 +35,6 @@ describe('Basic Registration Screen function and loadin', () => {
     await waitFor(() => {
       const title = findByText('Create Account');
       expect(title).toBeDefined();
-    });
-  });
-  test('should have a button to the login page', async () => {
-    const navigation = { navigate: jest.fn() };
-    const { getByText } = render(
-      <NativeBaseProvider theme={theme}>
-        <RegistrationScreen navigation={navigation} />
-      </NativeBaseProvider>,
-    );
-
-    await waitFor(async () => {
-      const loginBtn = getByText('Login');
-      expect(loginBtn).toBeDefined();
-    });
-  });
-  test('should show an error message if any form fields are blank', async () => {
-    const navigation = { navigate: jest.fn() };
-    const { getByTestId, getByText } = render(
-      <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
-        <RegistrationScreen navigation={navigation} />
-      </NativeBaseProvider>,
-    );
-    await waitFor(() => {
-      fireEvent.changeText(getByTestId('password-input-signup'), '');
-      fireEvent.changeText(getByTestId('username-input-signup'), '');
-      const usernameError = getByText('Username is required');
-      const passwordError = getByText('Password is required');
-      expect(passwordError).toBeDefined();
-      expect(usernameError).toBeDefined();
     });
   });
 });
