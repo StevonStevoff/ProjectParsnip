@@ -285,16 +285,16 @@ function PlantsScreen({ navigation }) {
                         />
                         <Text>
                           <HStack space={3} style={{ height: 20 }}>
-                            <Text>
+                            <Text fontSize={15}>
                               {property.min}
                             </Text>
-                            <Text>
+                            <HStack  style={{marginBottom:1 }}>
                               {latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
                         || latestValue?.[plant.id]?.[property.grow_property_type.id] <= property.min
                                 ? (
 
                                   <>
-                                    <Text fontSize={18} style={{ color: 'red', fontWeight: 'bold', marginTop: 4 }}>
+                                    <Text fontSize={16} style={{ color: 'red', fontWeight: 'bold',marginTop:1  }}>
                                       {latestValue?.[plant.id]?.[property.grow_property_type.id] === -999
                                         ? 'N/A'
                                         : latestValue?.[plant.id]?.[property.grow_property_type.id]}
@@ -305,13 +305,13 @@ function PlantsScreen({ navigation }) {
 
                                 )
                                 : (
-                                  <Text fontSize={18} style={{ color: 'green', fontWeight: 'bold' }}>
+                                  <Text fontSize={15} style={{ color: 'green', fontWeight: 'bold' }}>
                                     {latestValue?.[plant.id]?.[property.grow_property_type.id]}
                                   </Text>
                                 )}
-                            </Text>
-                            <Text>
-                              {property.min}
+                            </HStack>
+                            <Text fontSize={15}>
+                              {property.max}
                             </Text>
                           </HStack>
                         </Text>
