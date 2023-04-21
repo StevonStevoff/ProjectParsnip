@@ -2,13 +2,6 @@
 
 DeviceServerInterface::DeviceServerInterface(String baseUrl)
 {
-    // #ifdef ESP32
-    //     this->http.begin(baseUrl);
-    // #endif
-    // #ifdef ESP8266
-    //     WiFiClient client;
-    //     this->http.begin(client, baseUrl);
-    // #endif
     this->baseUrl = baseUrl;
 }
 
@@ -42,6 +35,11 @@ String DeviceServerInterface::getAuthenticationToken()
     return this->authToken;
 }
 
+void DeviceServerInterface::setAuthHeader()
+{
+    this->http.addHeader("X-SECRET-DEVICE", this->getAuthenticationToken());
+}
+
 int DeviceServerInterface::sendPlantData(std::map<std::string, float> sensorReadings)
 {
 
@@ -65,7 +63,7 @@ int DeviceServerInterface::sendPlantData(std::map<std::string, float> sensorRead
     // payloadStr += "}"; // end the json object
 
     // set the authentication token
-    http.addHeader("Authorization", "Bearer " + authToken);
+    this->setAuthHeader();
 
     // send the POST request with the payload
     int statusCode = this->http.POST((uint8_t *)payloadStr.c_str(), payloadStr.length());
@@ -77,9 +75,12 @@ String DeviceServerInterface::getDeviceSensorIds()
 {
     this->setHttpUrl(this->baseUrl + "/sensors");
     this->setHttpUrl(this->baseUrl);
+
+    this->setAuthHeader();
+
     // this->http.addHeader("Authorization", "Bearer " + this->authToken);
     // String address = this->baseUrl + "/getSensorIds";
     int statusCode = this->http.GET();
-    Serial.println(statusCode);
+    Serial.println(statusCode); // remove this when done debugging
     return http.getString();
 }

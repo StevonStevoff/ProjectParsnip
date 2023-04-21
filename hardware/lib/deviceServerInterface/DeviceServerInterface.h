@@ -7,6 +7,7 @@
 #endif
 
 #include <map>
+#include <string>
 
 class DeviceServerInterface
 {
@@ -17,6 +18,7 @@ public:
     String getAuthenticationToken();
     String getDeviceSensorIds();
     void setHttpUrl(String url);
+    void setAuthHeader();
 
 private:
     HTTPClient http;
