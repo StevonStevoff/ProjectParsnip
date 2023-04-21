@@ -1,7 +1,10 @@
 import {
   View, Appearance, TouchableOpacity, StyleSheet, ScrollView,
 } from 'react-native';
-import { Text, Heading } from 'native-base';
+import {
+  Text, Heading, VStack, Icon,
+} from 'native-base';
+import { MaterialIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
@@ -58,22 +61,6 @@ function PlantDetailsScreen({ route, navigation }) {
     return dayOfMonth;
   });
 
-  // const tempreture = filteredDataWithinRange.filter((plant) => plant.sensor_readings.some(
-  //   (reading) => reading.grow_property.grow_property_type.id === 1,
-  // ));
-
-  // const moisture = filteredDataWithinRange.filter((plant) => plant.sensor_readings.some(
-  //   (reading) => reading.grow_property.grow_property_type.id === 2,
-  // ));
-
-  // const tempretureValues = tempreture.flatMap(
-  //   (element) => element.sensor_readings.map((reading) => reading.value),
-  // );
-
-  // const moistureValues = moisture.flatMap(
-  //   (element) => element.sensor_readings.map((reading) => reading.value),
-  // );
-
   function filterSensorDataByType(filteredDataWithinRange, dataIds) {
     return dataIds.reduce((acc, dataId) => {
       const values = filteredDataWithinRange.flatMap((plant) => plant.sensor_readings
@@ -89,8 +76,7 @@ function PlantDetailsScreen({ route, navigation }) {
 
   const dataIds = [1, 2, 3];
   const filteredDataByType = filterSensorDataByType(filteredDataWithinRange, dataIds);
-  console.log(filteredDataByType);
-  // Access the filtered values for each data_id like this:
+
   return (
     <ScrollView>
       <View>
@@ -105,18 +91,24 @@ function PlantDetailsScreen({ route, navigation }) {
         >
           <CloseBtn navigation={navigation} />
         </View>
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Heading>PLANT DETAILS</Heading>
-          <TouchableOpacity
-            style={[styles.detailsButton, {
-              fontSize: 25, flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-            }]}
-            onPress={() => setOpen(true)}
-          >
-            <Text style={styles.createText}>Pick range </Text>
-          </TouchableOpacity>
+        <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <VStack w="70%" space={2} style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Heading style={{ textTransform: 'uppercase', flexWrap: 'wrap' }}>
+              {route.params.plant.name}
+              {' '}
+            </Heading>
+            <TouchableOpacity
+              style={[styles.detailsButton, {
+                fontSize: 25, flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+              }]}
+              onPress={() => setOpen(true)}
+            >
+              <Icon as={MaterialIcons} name="date-range" color="white" _dark={{ color: 'white' }} size={5} />
+              <Text style={styles.createText}>  Pick range </Text>
+            </TouchableOpacity>
+          </VStack>
 
-          <Text>
+          <Text style={[styles.centeredText, { padding: 10 }]}>
             {' '}
             Picked From
             {' '}
@@ -129,81 +121,29 @@ function PlantDetailsScreen({ route, navigation }) {
 
           {route.params.plant.plant_profile.grow_properties.map((beans) => (
             <>
-              <Text>
+              <Text style={styles.centeredText}>
                 {beans.grow_property_type.name}
                 {' '}
                 Line Chart
               </Text>
               <View key={beans.grow_property_type.id}>
-                {filteredDataByType[beans.grow_property_type.id].length > 0 && (
-                <GrowPropertyChart
-                  days={days}
-                  tempretureValues={filteredDataByType[beans.grow_property_type.id]}
-                />
-                )}
+                {filteredDataByType[beans.grow_property_type.id].length > 0 ? (
+                  <GrowPropertyChart
+                    days={days}
+                    tempretureValues={filteredDataByType[beans.grow_property_type.id]}
+                  />
+                ) : <Text style={styles.errorText}>No data for this range</Text>}
               </View>
+
             </>
           ))}
 
         </View>
 
-        {/* <SafeAreaProvider> */}
         <View style={{
           justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%',
         }}
         >
-
-          <Text>
-            Name :
-            {route.params.plant.name}
-          </Text>
-          <Text>
-            Longitude:
-            {' '}
-            {route.params.plant.longitude}
-          </Text>
-          <Text>
-            Latitude:
-            {' '}
-            {route.params.plant.latitude}
-          </Text>
-          <Text>
-            Outoor?:
-            {route.params.plant.outdoor}
-          </Text>
-
-          <Text>
-            Time?:
-            {route.params.plant.time_planted}
-          </Text>
-
-          <Text>
-            Device:
-            {route.params.plant.device.name}
-          </Text>
-          <Text>
-            Model name:
-            {route.params.plant.device.model_name}
-          </Text>
-
-          <Text>
-            Plant profile name:
-            {route.params.plant.plant_profile.name}
-          </Text>
-          <Text>
-            Plant profile description:
-            {route.params.plant.plant_profile.description}
-          </Text>
-
-          <Text>
-            Plant type name:
-            {route.params.plant.plant_type.name}
-          </Text>
-          <Text>
-            Plant profile description:
-            {route.params.plant.plant_type.description}
-          </Text>
-
           <PaperProvider theme={colorScheme === 'dark' ? darkTheme : theme} darkTheme={darkTheme}>
             <DatePickerModal
               locale="en-GB"
@@ -216,7 +156,6 @@ function PlantDetailsScreen({ route, navigation }) {
             />
           </PaperProvider>
         </View>
-        {/* </SafeAreaProvider> */}
 
       </View>
     </ScrollView>
@@ -256,6 +195,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  centeredText: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
   },
   scrollView: {
     marginHorizontal: 40,

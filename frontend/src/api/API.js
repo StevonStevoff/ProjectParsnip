@@ -74,21 +74,23 @@ const API = {
 
     return response;
   },
-  async registerPlant({ name, device_id ,plant_profile_id,plant_type_id,outdoor,latitude,longitude}, cancel = false) {
+  async registerPlant({
+    name, device_id, plant_profile_id, plant_type_id, outdoor, latitude, longitude,
+  }, cancel = false) {
     const response = await api.request({
       url: '/plants/register',
       method: 'POST',
       data: {
         name,
-         device_id ,
-         plant_profile_id,
-         plant_type_id,
-         outdoor,
-         latitude,
-         longitude,
+        device_id,
+        plant_profile_id,
+        plant_type_id,
+        outdoor,
+        latitude,
+        longitude,
       },
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
 
       },
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
@@ -108,9 +110,9 @@ const API = {
     return response;
   },
 
-  async getPlantData(id,cancel = false) {
+  async getPlantData(id, cancel = false) {
     const response = await api.request({
-      url:  `/plants/${id}/data`,
+      url: `/plants/${id}/data`,
       method: 'GET',
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
@@ -119,34 +121,36 @@ const API = {
     return response;
   },
 
-  async deletePlant(id,cancel = false) {
-    const response = await api.request({ 
+  async deletePlant(id, cancel = false) {
+    const response = await api.request({
       url: `/plants/${id}`,
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'},
-        signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
-          : undefined,
-      });
-  
-      return response;
-    },
+      headers: { 'Content-Type': 'application/json' },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
 
-  async editPlant({id, name, device_id ,plant_profile_id,plant_type_id,time_planted,outdoor,latitude,longitude}, cancel = false) {
+    return response;
+  },
+
+  async editPlant({
+    id, name, device_id, plant_profile_id, plant_type_id, time_planted, outdoor, latitude, longitude,
+  }, cancel = false) {
     const response = await api.request({
       url: `/plants/${id}`,
       method: 'PATCH',
       data: {
         name,
-         device_id ,
-         plant_profile_id,
-         plant_type_id,
-         time_planted,outdoor,
-         latitude,
-         longitude
+        device_id,
+        plant_profile_id,
+        plant_type_id,
+        time_planted,
+        outdoor,
+        latitude,
+        longitude,
       },
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
 
       },
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
@@ -165,7 +169,6 @@ const API = {
 
     return response;
   },
-
 
   async updateUserInfo({ name, email, username }, cancel = false) {
     const response = await api.request({
@@ -188,7 +191,7 @@ const API = {
 
   async getAllPlantTypes(cancel = false) {
     const response = await api.request({
-      url: '/plant_types/',
+      url: '/plant_types/me',
       method: 'GET',
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
@@ -210,7 +213,7 @@ const API = {
 
   async getAllPlantProfiles(cancel = false) {
     const response = await api.request({
-      url: '/plant_profiles/',
+      url: '/plant_profiles/me',
       method: 'GET',
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,

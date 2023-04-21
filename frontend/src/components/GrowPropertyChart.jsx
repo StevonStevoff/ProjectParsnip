@@ -40,7 +40,8 @@ function GrowPropertyChart(props) {
         }}
         bezier
         style={{
-          marginVertical: 8,
+          marginVertical: 15,
+          paddingBottom: 10,
           borderRadius: 16,
         }}
       />
