@@ -92,6 +92,10 @@ class DeviceUpdate(DeviceBase):
     user_ids: Optional[list[int]]
 
 
+class DeviceToken(BaseModel):
+    token: str
+
+
 class PlantTypeBase(BaseModel):
     name: str
     description: str

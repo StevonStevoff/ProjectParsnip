@@ -78,6 +78,7 @@ class Device(Base):
     name = Column(String)
     model_name = Column(String)
     auth_token = Column(String)
+    token_uuid = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", lazy="selectin")
