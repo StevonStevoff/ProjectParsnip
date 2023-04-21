@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-use-before-define */
 import qs from 'qs';
 import api from './config/axiosConfigs';
@@ -141,7 +142,6 @@ const API = {
     id, name, device_id, plant_profile_id, plant_type_id,
     time_planted, outdoor, latitude, longitude,
   }, cancel = false) {
-    console.log(time_planted);
     const response = await api.request({
       url: `/plants/${id}`,
       method: 'PATCH',
