@@ -42,6 +42,7 @@ function ProfileScreen({ navigation }) {
       <ProfilePicture
         name={user.name}
         username={user.username}
+        profilePic={user.profile_picture_URL}
         setEditMode={setEditMode}
         editMode={editMode}
       />

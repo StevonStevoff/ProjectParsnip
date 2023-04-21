@@ -2,6 +2,7 @@
 import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
 import { CommonActions } from '@react-navigation/native';
+import * as FileSystem from 'expo-file-system';
 import API from '../API';
 import { saveState } from '../../utils/localStorage';
 
@@ -25,7 +26,16 @@ const AuthUtils = {
         return false;
       });
   },
-
+  async blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result.split(',')[1]);
+      };
+      reader.readAsDataURL(blob);
+    });
+  },
   async getUserToken() {
     if (Device.brand != null) {
       return SecureStore.getItemAsync('token');
@@ -86,10 +96,32 @@ const AuthUtils = {
       }),
     );
   },
+  async getProfilePicture(userID) {
+    try {
+      const imageBlob = await API.getProfilePicture(userID);
 
+      if (Device.brand === null) {
+        const imageURL = URL.createObjectURL(imageBlob);
+        return imageURL;
+      }
+      const base64Image = await this.blobToBase64(imageBlob);
+      const imagePath = `${FileSystem.documentDirectory}${userID}_pfp.png`;
+      await FileSystem.writeAsStringAsync(
+        imagePath,
+        base64Image,
+        { encoding: FileSystem.EncodingType.Base64 },
+      );
+      console.log(imagePath);
+      return imagePath;
+    } catch (error) {
+      console.error('Error fetching profile picture:', error);
+      return '../../../assets/images/avatar.png';
+    }
+  },
   async getUserInfo() {
     try {
       const response = await API.getUserInfo();
+      response.data.profile_picture_URL = await this.getProfilePicture(response.data.id);
       return response.data;
     } catch (error) {
       if (error.response.status === 401) {
@@ -122,7 +154,6 @@ const AuthUtils = {
         this.errorMessage = '';
     }
   },
-
   getErrorMessage() {
     return this.errorMessage;
   },

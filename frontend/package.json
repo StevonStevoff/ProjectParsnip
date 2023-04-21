@@ -11,7 +11,9 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFiles": ["./jest.setup.js"],
+    "setupFiles": [
+      "./jest.setup.js"
+    ],
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
@@ -41,6 +43,7 @@
     "install": "^0.13.0",
     "jest": "^26.6.3",
     "jest-expo": "^47.0.1",
+    "jsdom": "^21.1.0",
     "native-base": "^3.4.25",
     "qs": "^6.11.0",
     "react": "18.1.0",
@@ -60,7 +63,7 @@
     "react-native-web": "~0.18.9",
     "react-navigation": "^4.4.4",
     "yup": "^0.32.11",
-    "jsdom": "^21.1.0"
+    "expo-file-system": "~15.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
