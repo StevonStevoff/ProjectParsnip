@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.authentication import (
-    device_auth_header,
     create_device_token,
+    device_auth_header,
     verify_device_token,
 )
 from app.database import get_async_session

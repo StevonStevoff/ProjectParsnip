@@ -1,16 +1,14 @@
+import uuid
 from typing import Annotated, Tuple
 
 import jwt
-import uuid
-
-from fastapi import Depends, Header, status
-from fastapi.security import APIKeyHeader
+from fastapi import Header, status
 from fastapi.exceptions import HTTPException
+from fastapi.security import APIKeyHeader
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import app.settings as secrets
-from app.database import get_async_session
-from app.models import User, Device
+from app.models import Device, User
 from app.router.utils import get_object_or_404
 
 device_auth_header = APIKeyHeader(name="X-SECRET-DEVICE", scheme_name="device-header")
