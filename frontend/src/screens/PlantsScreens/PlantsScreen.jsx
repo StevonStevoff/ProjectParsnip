@@ -4,7 +4,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   ScrollView,
-  Appearance, Platform,
+  Appearance,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -246,11 +246,11 @@ function PlantsScreen({ navigation }) {
                       : <Text style={styles.plantContainerText}> Indoor</Text>}
 
                     <HStack w="100%" style={styles.plantDetailsContianer}>
-                      <Text style={[styles.plantContainerText], { fontSize: 10 }}> Time planted: </Text>
+                      <Text fontSize={10} style={styles.plantContainerText}> Time planted: </Text>
                       {plant.time_planted === null
                         ? <Text style={styles.plantContainerText}> Not set</Text>
                         : (
-                          <Text style={[styles.plantContainerText], { fontSize: 18 }}>
+                          <Text fontSize={18} style={styles.plantContainerText}>
                             {new Date(plant.time_planted).toLocaleDateString()}
                           </Text>
                         )}
@@ -288,14 +288,18 @@ function PlantsScreen({ navigation }) {
                             <Text fontSize={15}>
                               {property.min}
                             </Text>
-                            <HStack  style={{marginBottom:1 }}>
-                              {latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
+                            <HStack style={{ marginBottom: 1 }}>
+                              {latestValue?.
+                                [plant.id]?.
+                                [property.grow_property_type.id] >= property.max
                         || latestValue?.[plant.id]?.[property.grow_property_type.id] <= property.min
                                 ? (
 
                                   <>
-                                    <Text fontSize={16} style={{ color: 'red', fontWeight: 'bold',marginTop:1  }}>
-                                      {latestValue?.[plant.id]?.[property.grow_property_type.id] === -999
+                                    <Text fontSize={16} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
+                                      {latestValue?.
+                                        [plant.id]?.
+                                        [property.grow_property_type.id] === -999
                                         ? 'N/A'
                                         : latestValue?.[plant.id]?.[property.grow_property_type.id]}
                                     </Text>
@@ -323,7 +327,6 @@ function PlantsScreen({ navigation }) {
 
                 <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                   <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
-                    {/* <Icon as={MaterialIcons} name="info" color="white" _dark={{ color: 'white' }} /> */}
                     <Text style={styles.createText}> Plant Details  </Text>
                   </TouchableOpacity>
                 </View>

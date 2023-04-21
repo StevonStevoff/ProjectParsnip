@@ -61,9 +61,9 @@ function PlantDetailsScreen({ route, navigation }) {
     return dayOfMonth;
   });
 
-  function filterSensorDataByType(filteredDataWithinRange, dataIds) {
+  function filterSensorDataByType(filteredData, dataIds) {
     return dataIds.reduce((acc, dataId) => {
-      const values = filteredDataWithinRange.flatMap((plant) => plant.sensor_readings
+      const values = filteredData.flatMap((plant) => plant.sensor_readings
         .filter((reading) => reading.grow_property.grow_property_type.id === dataId)
         .map((reading) => reading.value));
 

@@ -75,16 +75,16 @@ const API = {
     return response;
   },
   async registerPlant({
-    name, device_id, plant_profile_id, plant_type_id, outdoor, latitude, longitude,
+    name, deviceId, plantProfileId, plantTypeId, outdoor, latitude, longitude,
   }, cancel = false) {
     const response = await api.request({
       url: '/plants/register',
       method: 'POST',
       data: {
         name,
-        device_id,
-        plant_profile_id,
-        plant_type_id,
+        deviceId,
+        plantProfileId,
+        plantTypeId,
         outdoor,
         latitude,
         longitude,
@@ -134,17 +134,17 @@ const API = {
   },
 
   async editPlant({
-    id, name, device_id, plant_profile_id, plant_type_id, time_planted, outdoor, latitude, longitude,
+    id, name, deviceId, plantProfileId, plantTypeId, timePlanted, outdoor, latitude, longitude,
   }, cancel = false) {
     const response = await api.request({
       url: `/plants/${id}`,
       method: 'PATCH',
       data: {
         name,
-        device_id,
-        plant_profile_id,
-        plant_type_id,
-        time_planted,
+        deviceId,
+        plantProfileId,
+        plantTypeId,
+        timePlanted,
         outdoor,
         latitude,
         longitude,

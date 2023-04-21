@@ -1,5 +1,5 @@
 import {
-  View, StyleSheet,
+  View,
 } from 'react-native';
 import React from 'react';
 import { LineChart } from 'react-native-chart-kit';
@@ -49,9 +49,5 @@ function GrowPropertyChart(props) {
 
   );
 }
-
-const styles = StyleSheet.create({
-
-});
 
 export default GrowPropertyChart;
