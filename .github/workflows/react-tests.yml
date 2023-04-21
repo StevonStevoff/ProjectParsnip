@@ -9,11 +9,11 @@ on:
 jobs:
   build_test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        node-version: [18.x]
-    
+        node-version: ["18.15.0"]
+
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
