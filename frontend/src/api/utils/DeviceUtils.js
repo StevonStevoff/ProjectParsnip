@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import API from '../API';
+import AuthUtils from './AuthUtils';
 
 const DeviceUtils = {
   async getCurrentUser() {
@@ -10,6 +11,15 @@ const DeviceUtils = {
       console.error(error);
       return []; // Return an empty array in case of an error
     }
+  },
+  async getProfilePictures(deviceUsers) {
+    deviceUsers.map(async (user) => {
+      if (!user.profile_picture_URL) {
+        // eslint-disable-next-line no-param-reassign
+        user.profile_picture_URL = await AuthUtils.getProfilePicture(user.id);
+      }
+      return user;
+    });
   },
   async getAllUserDevices() {
     try {
@@ -30,6 +40,11 @@ const DeviceUtils = {
           // eslint-disable-next-line no-param-reassign
           plant.device.isUserOwner = true;
         }
+        return plant;
+      });
+
+      await plants.map(async (plant) => {
+        await this.getProfilePictures(plant.device.users);
         return plant;
       });
 
@@ -83,6 +98,8 @@ const DeviceUtils = {
         }
         return device;
       });
+
+      await this.getProfilePictures(unlinkedDevices.users);
 
       return unlinkedDevices;
     } catch (error) {

@@ -1,5 +1,5 @@
 import {
-  View, TouchableOpacity, Image, useWindowDimensions, StyleSheet,
+  View, TouchableOpacity, useWindowDimensions,
 } from 'react-native';
 import React from 'react';
 import { Text, Avatar } from 'native-base';
