@@ -22,7 +22,7 @@ function ProfileScreen({ navigation }) {
     <View
       style={{
         width: '100%',
-        height: '100%',
+        height: '85%',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -31,7 +31,7 @@ function ProfileScreen({ navigation }) {
       <View
         style={{
           position: 'absolute',
-          top: 0,
+          top: 25,
           left: 0,
           zIndex: 1,
           padding: 25,

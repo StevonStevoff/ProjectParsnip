@@ -11,6 +11,8 @@ jest.mock('../../../api/API', () => ({
   loginUser: jest.fn(),
   registerUser: jest.fn(),
   logout: jest.fn(),
+  getAuthenticatedUser: jest.fn(),
+  setJWTtoken: jest.fn(),
 }));
 
 describe('AuthUtils', () => {
@@ -18,25 +20,48 @@ describe('AuthUtils', () => {
     jest.resetAllMocks();
   });
 
-  describe('Testing isUserAuthenticated function', () => {
-    it('When the device is a mobile and there is token stored on the device. Then the user is authenticated.', async () => {
-      jest.mock('expo-device', () => ({ brand: 'Apple' }));
-      SecureStore.getItemAsync.mockResolvedValue('token');
-
-      const result = await AuthUtils.isUserAuthenticated();
-      expect(result).toBe(true);
+  describe('isUserAuthenticated', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
     });
 
-    it('When the device is a mobile and there is no token stored on the device. Then the user is not authenticated.', async () => {
-      jest.mock('expo-device', () => ({ brand: 'Apple' }));
+    it('returns false when there is no token', async () => {
       SecureStore.getItemAsync.mockResolvedValue(null);
       const result = await AuthUtils.isUserAuthenticated();
       expect(result).toBe(false);
     });
 
-    it('returns false if token is not stored', async () => {
-      jest.mock('expo-device', () => ({ brand: null }));
+    it('returns true when the token is valid', async () => {
+      SecureStore.getItemAsync.mockResolvedValue('valid_token');
+      API.getAuthenticatedUser.mockResolvedValue({ data: 'user_data' });
       const result = await AuthUtils.isUserAuthenticated();
+      expect(API.setJWTtoken).toHaveBeenCalledWith('valid_token');
+      expect(result).toBe(true);
+    });
+
+    it('returns false when the token is invalid', async () => {
+      SecureStore.getItemAsync.mockResolvedValue('invalid_token');
+      API.getAuthenticatedUser.mockRejectedValue(new Error('Invalid token'));
+      const result = await AuthUtils.isUserAuthenticated();
+      expect(API.setJWTtoken).toHaveBeenCalledWith('invalid_token');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('checkTokenVaildity', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('returns true when the token is valid', async () => {
+      API.getAuthenticatedUser.mockResolvedValue({ data: 'user_data' });
+      const result = await AuthUtils.checkTokenVaildity();
+      expect(result).toBe(true);
+    });
+
+    it('returns false when the token is invalid', async () => {
+      API.getAuthenticatedUser.mockRejectedValue(new Error('Invalid token'));
+      const result = await AuthUtils.checkTokenVaildity();
       expect(result).toBe(false);
     });
   });

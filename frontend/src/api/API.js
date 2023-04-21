@@ -4,7 +4,7 @@ import api from './config/axiosConfigs';
 import defineCancelApiObject from './config/axiosUtils';
 
 const API = {
-  async get(cancel = false) {
+  async checkAPIConnection(cancel = false) {
     const response = await api.request({
       url: '/',
       method: 'GET',
@@ -12,7 +12,7 @@ const API = {
         : undefined,
     });
 
-    return response.data;
+    return response;
   },
   async registerUser({
     email, password, name, username,
@@ -51,8 +51,12 @@ const API = {
           : undefined,
       },
     });
-    api.defaults.headers.common.Authorization = `Bearer ${response.data.access_token}`;
+    this.setJWTtoken(response.data.access_token);
     return response;
+  },
+
+  setJWTtoken(token) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
   },
   async logout(cancel = false) {
     const response = await api.request({
@@ -75,16 +79,16 @@ const API = {
     return response;
   },
   async registerPlant({
-    name, deviceId, plantProfileId, plantTypeId, outdoor, latitude, longitude,
+    name, device_id, plant_profile_id, plant_type_id, outdoor, latitude, longitude,
   }, cancel = false) {
     const response = await api.request({
       url: '/plants/register',
       method: 'POST',
       data: {
         name,
-        deviceId,
-        plantProfileId,
-        plantTypeId,
+        device_id,
+        plant_profile_id,
+        plant_type_id,
         outdoor,
         latitude,
         longitude,
@@ -134,17 +138,19 @@ const API = {
   },
 
   async editPlant({
-    id, name, deviceId, plantProfileId, plantTypeId, timePlanted, outdoor, latitude, longitude,
+    id, name, device_id, plant_profile_id, plant_type_id,
+    time_planted, outdoor, latitude, longitude,
   }, cancel = false) {
+    console.log(time_planted);
     const response = await api.request({
       url: `/plants/${id}`,
       method: 'PATCH',
       data: {
         name,
-        deviceId,
-        plantProfileId,
-        plantTypeId,
-        timePlanted,
+        device_id,
+        plant_profile_id,
+        plant_type_id,
+        time_planted,
         outdoor,
         latitude,
         longitude,
@@ -170,6 +176,16 @@ const API = {
     return response;
   },
 
+  async getAllUsers(cancel = false) {
+    const response = await api.request({
+      url: '/users/',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+    return response;
+  },
+
   async updateUserInfo({ name, email, username }, cancel = false) {
     const response = await api.request({
       url: '/users/me',
@@ -188,7 +204,64 @@ const API = {
 
     return response;
   },
+  async getUsersDevices(cancel = false) {
+    try {
+      const response = await api.request({
+        url: '/devices/me',
+        method: 'GET',
+        signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+          : undefined,
+      });
 
+      return response;
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return { response: { data: [] } };
+      }
+      throw error;
+    }
+  },
+  async updateDevice({ data }, cancel = false) {
+    const response = await api.request({
+      // eslint-disable-next-line no-template-curly-in-string
+      url: `devices/${data.id}`,
+      method: 'PATCH',
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+  async getSensors(cancel = false) {
+    const response = await api.request({
+      url: '/sensors/',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+  async deleteDevice({ device }, cancel = false) {
+    const response = await api.request({
+      url: `/devices/${device.id}`,
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
   async getAllPlantTypes(cancel = false) {
     const response = await api.request({
       url: '/plant_types/me',
