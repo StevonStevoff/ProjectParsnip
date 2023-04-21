@@ -9,13 +9,18 @@ on:
 jobs:
   build_test:
     runs-on: ubuntu-latest
-
-    container:
-      image: node:18-alpine
-
+    
+    strategy:
+      matrix:
+        node-version: ['18.15.0']
+    
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies, build, and test
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm ci, build and test
         working-directory: ./frontend
         run: |
           npm ci --legacy-peer-deps
