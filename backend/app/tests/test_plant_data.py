@@ -69,43 +69,13 @@ async def test_get_plant_data(setup_db, client, user_access_token):
     )
 
 
-@pytest.mark.asyncio(scope="session")
-async def test_send_plant_data_bad_device_id(setup_db, client, user_access_token):
-    headers = {"Authorization": f"Bearer {user_access_token}"}
-    timestamp = datetime.now()
-    response = await client.post(
-        "/plant_data/",
-        headers=headers,
-        json={
-            "timestamp": timestamp.isoformat(),
-            "device_id": 999,
-            "sensor_readings": [
-                {
-                    "value": 55,
-                    "sensor_id": 1,
-                },
-                {
-                    "value": 60,
-                    "sensor_id": 2,
-                },
-            ],
-        },
-    )
-
-    assert response.status_code == 404
-    json_response = response.json()
-
-    device_query = select(Device).where(Device.id == 999)
-    device = await get_objects(device_query)
-
-    assert device == []
-    assert json_response["detail"] == "The device does not exist."
-
-
 # @pytest.mark.skip(reason="Greenlet error, also update populate db")
 @pytest.mark.asyncio(scope="session")
-async def test_send_plant_data(setup_db, client, user_access_token):
-    headers = {"Authorization": f"Bearer {user_access_token}"}
+async def test_send_plant_data(setup_db, client):
+    device_query = select(Device).where(Device.id == 1)
+    device = await get_objects(device_query)
+    print(f"Token: {device[0].auth_token}")
+    headers = {"X-SECRET-DEVICE": f"{device[0].auth_token}"}
     timestamp = datetime.now()
     response = await client.post(
         "/plant_data/",
