@@ -1,8 +1,8 @@
 import {
-  View, Appearance, TouchableOpacity, StyleSheet, ScrollView,
+  View, Appearance, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator,
 } from 'react-native';
 import {
-  Text, Heading, VStack, Icon,
+  Text, Heading, VStack, Icon, Center,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +20,7 @@ function PlantDetailsScreen({ route, navigation }) {
     startDate: new Date(new Date().setMonth(new Date().getMonth() - 1)), endDate: new Date(),
   });
   const [open, setOpen] = React.useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [plantsData, setPlantsData] = useState([]);
 
   const onDismiss = React.useCallback(() => {
@@ -37,10 +37,11 @@ function PlantDetailsScreen({ route, navigation }) {
 
   useEffect(() => {
     const fetchPlantsData = async () => {
+      setIsLoading(true);
       try {
         const response = await API.getPlantData(parseInt(route.params.plant.id, 10));
         setPlantsData(response.data);
-      } catch (error) { /* empty */ }
+      } catch (error) { /* empty */ } finally { setIsLoading(false); }
     };
     fetchPlantsData();
   }, []);
@@ -61,9 +62,9 @@ function PlantDetailsScreen({ route, navigation }) {
     return dayOfMonth;
   });
 
-  function filterSensorDataByType(filteredData, dataIds) {
+  function filterSensorDataByType(filteredDataWithinRange, dataIds) {
     return dataIds.reduce((acc, dataId) => {
-      const values = filteredData.flatMap((plant) => plant.sensor_readings
+      const values = filteredDataWithinRange.flatMap((plant) => plant.sensor_readings
         .filter((reading) => reading.grow_property.grow_property_type.id === dataId)
         .map((reading) => reading.value));
 
@@ -76,6 +77,22 @@ function PlantDetailsScreen({ route, navigation }) {
 
   const dataIds = [1, 2, 3];
   const filteredDataByType = filterSensorDataByType(filteredDataWithinRange, dataIds);
+
+  if (isLoading) {
+    return (
+      <Center flex={1}>
+        <ActivityIndicator size="large" color="#00ff00" />
+      </Center>
+    );
+  }
+
+  if (plantsData.length === 0) {
+    return (
+      <Center flex={1}>
+        <Text>No plants data has been record yet.</Text>
+      </Center>
+    );
+  }
 
   return (
     <ScrollView>
@@ -127,12 +144,13 @@ function PlantDetailsScreen({ route, navigation }) {
                 Line Chart
               </Text>
               <View key={beans.grow_property_type.id}>
-                {filteredDataByType[beans.grow_property_type.id].length > 0 ? (
-                  <GrowPropertyChart
-                    days={days}
-                    tempretureValues={filteredDataByType[beans.grow_property_type.id]}
-                  />
-                ) : <Text style={styles.errorText}>No data for this range</Text>}
+                {filteredDataByType[beans.grow_property_type.id]
+                  && filteredDataByType[beans.grow_property_type.id].length > 0 ? (
+                    <GrowPropertyChart
+                      days={days}
+                      tempretureValues={filteredDataByType[beans.grow_property_type.id]}
+                    />
+                  ) : <Text style={styles.errorText}>No data for this range</Text>}
               </View>
 
             </>
