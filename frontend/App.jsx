@@ -1,3 +1,4 @@
+import { enGB, registerTranslation } from 'react-native-paper-dates';
 import React, { useState, useEffect } from 'react';
 import { NativeBaseProvider, Center } from 'native-base';
 import { ActivityIndicator } from 'react-native';
@@ -5,6 +6,8 @@ import NavigationRoot from './src/navigation/NavigationRoot';
 import defaultTheme from './src/stylesheets/defaultTheme';
 import API from './src/api/API';
 import CheckAPIConnection from './src/components/CheckAPIConnection';
+
+registerTranslation('en-GB', enGB);
 
 function App() {
   const theme = defaultTheme();
