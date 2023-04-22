@@ -282,11 +282,14 @@ const API = {
 
     return response;
   },
-  async uploadProfileImage({ image }, cancel = false) {
+  async uploadProfileImage(image, cancel = false) {
+    const formData = new FormData();
+    formData.append('image', image);
+
     const response = await api.request({
       url: '/users/pfp',
       method: 'POST',
-      data: image,
+      data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },

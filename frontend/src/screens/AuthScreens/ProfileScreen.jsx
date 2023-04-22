@@ -8,6 +8,7 @@ import ProfilePicture from '../../components/ProfilePicture';
 import AuthUtils from '../../api/utils/AuthUtils';
 import CloseBtn from '../../components/CloseBtn';
 import profileSchema from '../../utils/validationSchema/ProfileSchema';
+import ImageSelector from '../../components/ImageSelector';
 
 function ProfileScreen({ navigation }) {
   const [user, setUser] = React.useState({ name: '', username: '', email: '' });
@@ -45,6 +46,7 @@ function ProfileScreen({ navigation }) {
         profilePic={user.profile_picture_URL}
         setEditMode={setEditMode}
         editMode={editMode}
+        setUser={setUser}
       />
 
       <VStack space={3} alignItems="center" width="90%">

@@ -136,6 +136,15 @@ const AuthUtils = {
       return null;
     }
   },
+  async updateProfilePicture(image) {
+    try {
+      const response = await API.uploadProfileImage(image);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  },
   handleAuthenticationError(error) {
     switch (error) {
       case 'LOGIN_BAD_CREDENTIALS':

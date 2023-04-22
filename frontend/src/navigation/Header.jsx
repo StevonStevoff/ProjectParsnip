@@ -3,10 +3,11 @@ import {
 } from 'react-native';
 import React from 'react';
 import { Text, Avatar } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AuthUtils from '../api/utils/AuthUtils';
 
 function Header() {
+  const isFocused = useIsFocused();
   const dimensions = useWindowDimensions();
   const isLargeScreen = dimensions.width >= 768;
   const navigation = useNavigation();
@@ -17,6 +18,12 @@ function Header() {
       setUser(userDetails);
     });
   }, []);
+
+  React.useEffect(() => {
+    AuthUtils.getUserInfo().then((userDetails) => {
+      setUser(userDetails);
+    });
+  }, [isFocused]);
 
   return (
     <View
