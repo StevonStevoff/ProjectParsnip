@@ -138,6 +138,18 @@ const API = {
     return response;
   },
 
+  async deletePlantProfile(id, cancel = false) {
+    const response = await api.request({
+      url: `/plant_profiles/${id}`,
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
   async editPlant({
     id, name, device_id, plant_profile_id, plant_type_id,
     time_planted, outdoor, latitude, longitude,

@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackActions } from '@react-navigation/native';
 import PlantProfileScreen from './PlantProfileScreen';
+import EditPlantProfileScreen from './EditPlantProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ function PlantProfileStackNavigation() {
       }}
     >
       <Stack.Screen name="PlantProfile" component={PlantProfileScreen} />
+      <Stack.Screen name="EditPlantProfileScreen" component={EditPlantProfileScreen} />
     </Stack.Navigator>
   );
 }
