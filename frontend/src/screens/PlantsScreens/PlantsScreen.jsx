@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Appearance,
+  Platform,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -213,7 +214,7 @@ function PlantsScreen({ navigation }) {
                 <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
                   <Text
                     style={{
-                      fontSize: 20, color: '#4da705', flex: 3, fontWeight: 'bold',
+                      fontSize: Platform.OS === 'web' ? 20 : 14, color: '#4da705', flex: 3, fontWeight: 'bold',
                     }}
                     key={plant.id}
                   >
@@ -241,12 +242,14 @@ function PlantsScreen({ navigation }) {
                 </View>
 
                 <HStack w="100%">
-                  <VStack w="45%" style={styles.plantDetailsContianer}>
-                    {plant.outdoor ? <Text style={styles.plantContainerText}>Outdoor</Text>
-                      : <Text style={styles.plantContainerText}> Indoor</Text>}
+                  <VStack w="50%" style={styles.plantDetailsContianer}>
+                    <Text style={styles.plantContainerText}>
+                      {' '}
+                      {plant.outdoor ? 'Outdoor' : 'Indoor'}
+                    </Text>
 
                     <HStack w="100%" style={styles.plantDetailsContianer}>
-                      <Text fontSize={10} style={styles.plantContainerText}> Time planted: </Text>
+                      <Text fontSize={Platform.OS === 'web' ? 20 : 10} style={styles.plantContainerText}> Time planted: </Text>
                       {plant.time_planted === null
                         ? <Text style={styles.plantContainerText}> Not set</Text>
                         : (
@@ -257,68 +260,61 @@ function PlantsScreen({ navigation }) {
                     </HStack>
                   </VStack>
 
-                  <VStack w="57%">
+                  <VStack space={plant.plant_profile.grow_properties.length} w="40%">
                     {plant.plant_profile.grow_properties.map((property) => (
-                      <HStack space={3} w="100%" style={styles.propertyTypesConatiner}>
-
+                      <HStack justifyContent="space-between">
                         <Icon
                           as={MaterialIcons}
-                          name={
-                            (() => {
-                              switch (property.grow_property_type.id) {
-                                case 1:
-                                  return 'device-thermostat';
-                                case 2:
-                                  return 'device-thermostat';
-                                case 3:
-                                  return 'device-thermostat';
-                                case 4:
-                                  return 'device-thermostat';
-                                default:
-                                  return null; // or some default value if id is not 1, 2, 3, or 4
-                              }
-                            })()
-                          }
+                          name={(() => {
+                            switch (property.grow_property_type.id) {
+                              case 1:
+                                return 'device-thermostat';
+                              case 2:
+                                return 'device-thermostat';
+                              case 3:
+                                return 'device-thermostat';
+                              case 4:
+                                return 'device-thermostat';
+                              default:
+                                return null; // or some default value if id is not 1, 2, 3, or 4
+                            }
+                          })()}
                           color="black"
                           _dark={{ color: 'white' }}
                           size={8}
                         />
-                        <Text>
-                          <HStack space={3} style={{ height: 20 }}>
-                            <Text fontSize={15}>
-                              {property.min}
-                            </Text>
-                            <HStack style={{ marginBottom: 1 }}>
-                              {latestValue?.
-                                [plant.id]?.
-                                [property.grow_property_type.id] >= property.max
-                        || latestValue?.[plant.id]?.[property.grow_property_type.id] <= property.min
-                                ? (
 
-                                  <>
-                                    <Text fontSize={16} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
-                                      {latestValue?.
-                                        [plant.id]?.
-                                        [property.grow_property_type.id] === -999
-                                        ? 'N/A'
-                                        : latestValue?.[plant.id]?.[property.grow_property_type.id]}
-                                    </Text>
-                                    <Icon as={MaterialIcons} name="priority-high" color="rose.600" _dark={{ color: 'rose.600' }} size={5} />
-
-                                  </>
-
-                                )
-                                : (
-                                  <Text fontSize={15} style={{ color: 'green', fontWeight: 'bold' }}>
-                                    {latestValue?.[plant.id]?.[property.grow_property_type.id]}
-                                  </Text>
-                                )}
-                            </HStack>
-                            <Text fontSize={15}>
-                              {property.max}
-                            </Text>
-                          </HStack>
+                        <Text fontSize={15}>
+                          {property.min}
                         </Text>
+                        <HStack style={{ marginBottom: 1 }}>
+                          {latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
+                            || latestValue?.
+                              [plant.id]?.[property.grow_property_type.id] <= property.min
+                            ? (
+
+                              <>
+                                <Text fontSize={16} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
+                                  {latestValue?.
+                                    [plant.id]?.[property.grow_property_type.id] === -999
+                                    ? 'N/A'
+                                    : latestValue?.[plant.id]?.[property.grow_property_type.id]}
+                                </Text>
+                                <Icon as={MaterialIcons} name="priority-high" color="rose.600" _dark={{ color: 'rose.600' }} size={5} />
+
+                              </>
+
+                            )
+                            : (
+                              <Text fontSize={16} style={{ color: 'green', fontWeight: 'bold' }}>
+                                {latestValue?.[plant.id]?.[property.grow_property_type.id]}
+                              </Text>
+                            )}
+                        </HStack>
+                        <Text fontSize={15}>
+                          {property.max}
+                        </Text>
+
                       </HStack>
                     ))}
                   </VStack>
@@ -326,8 +322,8 @@ function PlantsScreen({ navigation }) {
                 </HStack>
 
                 <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                  <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
-                    <Text style={styles.createText}> Plant Details  </Text>
+                  <TouchableOpacity style={styles.plantDetailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
+                    <Text style={styles.createText}>  Plant Details  </Text>
                   </TouchableOpacity>
                 </View>
 
@@ -365,6 +361,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+    height: 40,
+    width: 40,
+  },
+  plantDetailsButton: {
+    marginRight: 5,
+    marginLeft: 5,
+    padding: 10,
+    backgroundColor: '#1E3438',
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#1E6738',
+    fontSize: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
   },
   createText: {
     color: '#fff',
@@ -378,7 +389,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   plantContainerText: {
-    fontSize: 20,
     fontWeight: 'bold',
     paddingBottom: 5,
   },
