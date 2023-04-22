@@ -353,7 +353,7 @@ function EditPlantForm(props) {
               <Input
                 onChangeText={handleChange('longitude')}
                 onBlur={handleBlur('longitude')}
-                value={values.longitude}
+                value={values.longitude.toString()}
                 style={{ padding: 5 }}
                 w="20%"
                 size="2xl"
@@ -364,7 +364,7 @@ function EditPlantForm(props) {
               <Input
                 onChangeText={handleChange('latitude')}
                 onBlur={handleBlur('latitude')}
-                value={values.latitude}
+                value={values.latitude.toString()}
                 style={{ padding: 5 }}
                 w="20%"
                 size="2xl"

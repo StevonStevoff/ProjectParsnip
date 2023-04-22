@@ -11,12 +11,11 @@ import {
   Icon, Heading, VStack, HStack, Alert, IconButton, CloseIcon, Input, Pressable, Text, Switch,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
-import EditPlantProfileSchema from '../utils/validationSchema/EditPlantProfileSchema';
+import CreatePlantProfileSchema from '../utils/validationSchema/CreatePlantProfileSchema';
 import API from '../api/API';
 
-function EditPlantProfileForm(props) {
+function CreatePlantProfileForm(props) {
   const { plantTypes } = props;
-  const { plantProfile } = props;
   const statusArray = [{
     status: 'success',
     title: 'Plant Profile successfully edited!',
@@ -28,7 +27,7 @@ function EditPlantProfileForm(props) {
 
   const [showPTDropdown, setShowPTDropdown] = useState(false);
   const [searchPTTerm, setSearchPTTerm] = useState('');
-  const [selectedPlantType, setSelectedPlantType] = useState(plantProfile.plant_type.name);
+  const [selectedPlantType, setSelectedPlantType] = useState('Choose a plant type');
   const [foundPTLength, setfoundPTLength] = useState('');
 
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
@@ -37,10 +36,10 @@ function EditPlantProfileForm(props) {
     setEvent('');
   };
 
-  const handleEditPlantProfile = async (values, { setSubmitting }) => {
+  const handleRegisterPlantProfile = async (values, { setSubmitting }) => {
     try {
       console.log(values);
-      const response = await API.editPlantProfile(values);
+      const response = await API.registerPlantProfile(values);
       console.log(response);
       setEvent('success');
     } catch (error) {
@@ -66,19 +65,18 @@ function EditPlantProfileForm(props) {
     <View>
       <Formik
         initialValues={{
-          id: plantProfile.id,
-          name: plantProfile.name,
-          description: plantProfile.description,
-          public: plantProfile.public,
-          grow_duration: plantProfile.grow_duration,
-          plant_type_id: plantProfile.plant_type.id,
-          min: plantProfile.grow_properties[0].min,
-          max: plantProfile.grow_properties[0].max,
-          // user_ids: plantProfile.users.map((user) => user.id),
-          grow_property_ids: [1],
+          name: '',
+          description: '',
+          public: false,
+          grow_duration: 0,
+          plant_type_id: '',
+          min: 0,
+          max: 0,
+          user_ids: [1],
+          // grow_property_ids: [1],
         }}
-        validationSchema={EditPlantProfileSchema}
-        onSubmit={handleEditPlantProfile}
+        validationSchema={CreatePlantProfileSchema}
+        onSubmit={handleRegisterPlantProfile}
       >
         {({
           handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting,
@@ -122,6 +120,18 @@ function EditPlantProfileForm(props) {
               marginBottom="2%"
             />
             {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
+
+            <Heading style={styles.label}>Description</Heading>
+            <Input
+              onChangeText={handleChange('description')}
+              onBlur={handleBlur('description')}
+              value={values.description}
+              w="100%"
+              size="2xl"
+              marginBottom="2%"
+            />
+            {touched.description && errors.description
+            && <Text style={styles.error}>{errors.description}</Text>}
 
             {/* Plant Types search and select Dropdown */}
             <Heading style={styles.label}>Plant Type</Heading>
@@ -201,7 +211,7 @@ function EditPlantProfileForm(props) {
               />
             </HStack>
 
-            <VStack space={4} w="90%">
+            {/* <VStack space={4} w="90%">
               <HStack justifyContent="space-between">
                 <Text w="25%" />
                 <Text w="20%">Minimum</Text>
@@ -236,10 +246,10 @@ function EditPlantProfileForm(props) {
             )}
             {touched.max && errors.max && (
             <Text style={styles.error}>{errors.max}</Text>
-            )}
+            )} */}
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
-              <Text style={styles.buttonText}>Update Plant Profile</Text>
+              <Text style={styles.buttonText}>Create Plant Profile</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -282,4 +292,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditPlantProfileForm;
+export default CreatePlantProfileForm;

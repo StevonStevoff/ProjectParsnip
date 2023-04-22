@@ -28,11 +28,8 @@ function PlantProfileScreen({ navigation }) {
   const colorScheme = Appearance.getColorScheme();
 
   const [userEmail, setUserEmail] = useState('');
-  const [plants, setPlants] = useState([]);
   const [plantTypes, setPlantsTypes] = useState([]);
-  const [devices, setDevices] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
-  const [latestValue, setLatestValue] = useState(null);
 
   const statusArray = [{
     status: 'success',
@@ -65,15 +62,20 @@ function PlantProfileScreen({ navigation }) {
     fetchPlantsTypes();
   }, []);
 
-  useEffect(() => {
-    const fetchPlantsProfiles = async () => {
-      try {
-        const response = await API.getAllPlantProfiles();
-        setPlantProfiles(response.data);
-      } catch (error) { /* empty */ }
-    };
-    fetchPlantsProfiles();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPlantsProfiles = async () => {
+        try {
+          const response = await API.getAllPlantProfiles();
+          setPlantProfiles(response.data);
+        } catch (error) { /* empty */ }
+      };
+      fetchPlantsProfiles();
+
+      return () => { /* empty */
+      };
+    }, []),
+  );
 
   if (userEmail == null) {
     return (
@@ -134,7 +136,7 @@ function PlantProfileScreen({ navigation }) {
           <Heading>Your Plant Profiles</Heading>
           <TouchableOpacity
             style={styles.detailsButton}
-            onPress={() => navigation.navigate('RegisterPlantScreen', { plantTypes, plantProfiles, devices })}
+            onPress={() => navigation.navigate('RegisterPlantProfileScreen', { plantTypes })}
           >
             <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
           </TouchableOpacity>
