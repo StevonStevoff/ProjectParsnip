@@ -8,7 +8,6 @@ import ProfilePicture from '../../components/ProfilePicture';
 import AuthUtils from '../../api/utils/AuthUtils';
 import CloseBtn from '../../components/CloseBtn';
 import profileSchema from '../../utils/validationSchema/ProfileSchema';
-import ImageSelector from '../../components/ImageSelector';
 
 function ProfileScreen({ navigation }) {
   const [user, setUser] = React.useState({ name: '', username: '', email: '' });

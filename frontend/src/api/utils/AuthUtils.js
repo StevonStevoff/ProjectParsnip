@@ -43,6 +43,15 @@ const AuthUtils = {
     return window.localStorage.getItem('token');
   },
   async setUserToken(token) {
+    if (token === null) {
+      const expirationDate = new Date().getTime() + 3200;
+      if (Device.brand != null) {
+        SecureStore.setItemAsync('token-expiration-date', expirationDate.toString());
+      } else {
+        window.localStorage.setItem('token-expiration-date', expirationDate.toString());
+      }
+      return;
+    }
     if (Device.brand != null) {
       SecureStore.setItemAsync('token', token);
     } else {
