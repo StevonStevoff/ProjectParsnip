@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Appearance,
+  Platform,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -21,6 +22,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
+import getIconComponent from '../../utils/SensorIcons';
 
 function PlantProfileScreen({ navigation }) {
   const colorScheme = Appearance.getColorScheme();
@@ -170,44 +172,35 @@ function PlantProfileScreen({ navigation }) {
                 </TouchableOpacity>
               </View>
 
-              <VStack w="100%">
+              <VStack space={plantProfile.grow_properties.length} w="90%">
                 {plantProfile.grow_properties.map((property) => (
-                  <HStack space={3} w="100%" style={styles.propertyTypesConatiner}>
+                  <HStack justifyContent="space-between">
+                    <View w="30%">
+                      {(() => {
+                        let iconString;
+                        if (property.id === 1) {
+                          iconString = 'temperature';
+                        } else if (property.id === 2) {
+                          iconString = 'humidity';
+                        } else if (property.id === 3) {
+                          iconString = 'light';
+                        } else {
+                          iconString = 'soil moisture';
+                        }
+                        return getIconComponent(iconString);
+                      })()}
+                    </View>
 
-                    <Icon
-                      as={MaterialIcons}
-                      name={
-                            (() => {
-                              switch (property.grow_property_type.id) {
-                                case 1:
-                                  return 'device-thermostat';
-                                case 2:
-                                  return 'device-thermostat';
-                                case 3:
-                                  return 'device-thermostat';
-                                case 4:
-                                  return 'device-thermostat';
-                                default:
-                                  return null; // or some default value if id is not 1, 2, 3, or 4
-                              }
-                            })()
-                          }
-                      color="black"
-                      _dark={{ color: 'white' }}
-                      size={8}
-                    />
-                    <Text fontSize="xl">
+                    <Text fontSize={Platform.OS === 'web' ? 'md' : 'sm'} w="30%">
                       {property.grow_property_type.name}
-                      {' '}
                     </Text>
-                    <Text>
-                      <HStack space={3} style={{ height: 20 }}>
-                        <Text fontSize="xl">
-                          {property.min}
-                          {'      -     '}
-                          {property.max}
-                        </Text>
-                      </HStack>
+                    <Text w="10%">→</Text>
+                    <Text w="20%">
+                      {property.min}
+                    </Text>
+                    <Text w="20%">-</Text>
+                    <Text w="20%">
+                      {property.max}
                     </Text>
                   </HStack>
                 ))}

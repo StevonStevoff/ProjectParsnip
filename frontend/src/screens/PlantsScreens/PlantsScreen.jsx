@@ -17,11 +17,13 @@ import {
   IconButton,
   CloseIcon,
   Text,
+  Divider,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
+import getIconComponent from '../../utils/SensorIcons';
 
 function PlantsScreen({ navigation }) {
   const colorScheme = Appearance.getColorScheme();
@@ -242,47 +244,42 @@ function PlantsScreen({ navigation }) {
                 </View>
 
                 <HStack w="100%">
-                  <VStack w="50%" style={styles.plantDetailsContianer}>
-                    <Text style={styles.plantContainerText}>
+                  <VStack w="50%" style={styles.plantDetailsContianer} paddingRight={1}>
+                    <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
                       {' '}
                       {plant.outdoor ? 'Outdoor' : 'Indoor'}
                     </Text>
 
                     <HStack w="100%" style={styles.plantDetailsContianer}>
-                      <Text fontSize={Platform.OS === 'web' ? 20 : 10} style={styles.plantContainerText}> Time planted: </Text>
+                      <Text fontSize={Platform.OS === 'web' ? 18 : 10} style={styles.plantContainerText}> Time planted: </Text>
                       {plant.time_planted === null
                         ? <Text style={styles.plantContainerText}> Not set</Text>
                         : (
-                          <Text fontSize={18} style={styles.plantContainerText}>
+                          <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
                             {new Date(plant.time_planted).toLocaleDateString()}
                           </Text>
                         )}
                     </HStack>
                   </VStack>
-
-                  <VStack space={plant.plant_profile.grow_properties.length} w="40%">
+                  <Divider my={1} orientation="vertical" />
+                  <VStack space={plant.plant_profile.grow_properties.length} w="40%" paddingLeft={1}>
                     {plant.plant_profile.grow_properties.map((property) => (
                       <HStack justifyContent="space-between">
-                        <Icon
-                          as={MaterialIcons}
-                          name={(() => {
-                            switch (property.grow_property_type.id) {
-                              case 1:
-                                return 'device-thermostat';
-                              case 2:
-                                return 'device-thermostat';
-                              case 3:
-                                return 'device-thermostat';
-                              case 4:
-                                return 'device-thermostat';
-                              default:
-                                return null; // or some default value if id is not 1, 2, 3, or 4
+                        <View w="20%" marginBottom={10}>
+                          {(() => {
+                            let iconString;
+                            if (property.id === 1) {
+                              iconString = 'temperature';
+                            } else if (property.id === 2) {
+                              iconString = 'humidity';
+                            } else if (property.id === 3) {
+                              iconString = 'light';
+                            } else {
+                              iconString = 'soil moisture';
                             }
+                            return getIconComponent(iconString);
                           })()}
-                          color="black"
-                          _dark={{ color: 'white' }}
-                          size={8}
-                        />
+                        </View>
 
                         <Text fontSize={15}>
                           {property.min}
@@ -294,7 +291,7 @@ function PlantsScreen({ navigation }) {
                             ? (
 
                               <>
-                                <Text fontSize={16} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
+                                <Text fontSize={Platform.OS === 'web' ? 18 : 13} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
                                   {latestValue?.
                                     [plant.id]?.[property.grow_property_type.id] === -999
                                     ? 'N/A'
@@ -306,7 +303,7 @@ function PlantsScreen({ navigation }) {
 
                             )
                             : (
-                              <Text fontSize={16} style={{ color: 'green', fontWeight: 'bold' }}>
+                              <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={{ color: 'green', fontWeight: 'bold' }}>
                                 {latestValue?.[plant.id]?.[property.grow_property_type.id]}
                               </Text>
                             )}
@@ -367,6 +364,7 @@ const styles = StyleSheet.create({
   plantDetailsButton: {
     marginRight: 5,
     marginLeft: 5,
+    marginTop:10,
     padding: 10,
     backgroundColor: '#1E3438',
     borderRadius: 100,

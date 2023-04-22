@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Appearance,
+  Platform,
 } from 'react-native';
 import { Formik } from 'formik';
 import {
@@ -178,7 +179,7 @@ function EditPlantProfileForm(props) {
             <Text style={styles.error}>{errors.plant_type_id}</Text>
             )}
 
-            <HStack space={4} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
+            {/* <HStack space={4} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
 
               <Heading style={{ fontSize: 14 }}>Lower Limit</Heading>
               <Input
@@ -208,9 +209,9 @@ function EditPlantProfileForm(props) {
             )}
             {touched.higher_limit && errors.higher_limit && (
             <Text style={styles.error}>{errors.higher_limit}</Text>
-            )}
+            )} */}
 
-            <HStack space={2} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
+            <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
               <Heading style={{ fontSize: 16, marginRight: 15 }}>Public</Heading>
               {values.public ? <Switch defaultIsChecked onValueChange={(value) => values.public = value} size="md" />
                 : <Switch onValueChange={(value) => values.public = value} size="md" />}
@@ -223,7 +224,7 @@ function EditPlantProfileForm(props) {
                 <Text w="20%">Maximum</Text>
               </HStack>
               <HStack justifyContent="space-between">
-                <Text  w="20%">Tempreture</Text>
+                <Text  w="30%" fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>Tempreture</Text>
                 <Input
                   onChangeText={handleChange('higher_limit')}
                   onBlur={handleBlur('higher_limit')}
@@ -244,7 +245,7 @@ function EditPlantProfileForm(props) {
                 />
               </HStack>
               <HStack justifyContent="space-between">
-                <Text  w="20%">Soil Moisture</Text>
+                <Text  w="30%" fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>Soil Moisture</Text>
                 <Input
                   onChangeText={handleChange('higher_limit')}
                   onBlur={handleBlur('higher_limit')}
@@ -265,7 +266,7 @@ function EditPlantProfileForm(props) {
                 />
               </HStack>
               <HStack justifyContent="space-between">
-                <Text  w="20%">Nirtrogen</Text>
+                <Text  w="30%" fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>Nirtrogen</Text>
                 <Input
                   onChangeText={handleChange('higher_limit')}
                   onBlur={handleBlur('higher_limit')}
