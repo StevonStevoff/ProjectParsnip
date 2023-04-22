@@ -13,13 +13,14 @@ const DeviceUtils = {
     }
   },
   async getProfilePictures(deviceUsers) {
-    deviceUsers.map(async (user) => {
-      if (!user.profile_picture_URL) {
-        // eslint-disable-next-line no-param-reassign
-        user.profile_picture_URL = await AuthUtils.getProfilePicture(user.id);
-      }
-      return user;
-    });
+    await Promise.all(
+      deviceUsers.map(async (user) => {
+        if (!user.profile_picture_URL) {
+          // eslint-disable-next-line no-param-reassign
+          user.profile_picture_URL = await AuthUtils.getProfilePicture(user.id);
+        }
+      }),
+    );
   },
   async getAllUserDevices() {
     try {
@@ -43,10 +44,10 @@ const DeviceUtils = {
         return plant;
       });
 
-      await plants.map(async (plant) => {
+      await Promise.all(plants.map(async (plant) => {
         await this.getProfilePictures(plant.device.users);
         return plant;
-      });
+      }));
 
       return plants;
     } catch (error) {
