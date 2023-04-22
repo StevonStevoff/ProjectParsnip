@@ -117,3 +117,33 @@ async def update_user_profile_picture(
 
     await imgutils.save_as_user_pfp(newimg, current_user)
     return {"size": imgsize}
+
+
+@router.post(
+    "/setPushToken",
+    name="users:set_push_notification_token",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserRead,
+    dependencies=[Depends(current_active_user)],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Missing token or inactive user.",
+        },
+    },
+)
+async def set_push_notification_token(
+    token: str,
+    current_user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    current_user.push_token = token
+    await session.commit()
+    await session.refresh(current_user)
+
+    updated_user = await session.get(
+        User,
+        current_user.id,
+        populate_existing=True,
+    )
+
+    return UserRead.from_orm(updated_user)

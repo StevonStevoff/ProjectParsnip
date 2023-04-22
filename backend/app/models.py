@@ -52,6 +52,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     # email and hashed password created by fastapi_users parent class
     username = Column(String)
     name = Column(String)
+    push_token = Column(String)
 
     plant_profiles = relationship(
         "PlantProfile",
