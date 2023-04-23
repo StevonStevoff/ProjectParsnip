@@ -28,7 +28,7 @@ function EditPlantScreen({ route, navigation }) {
         <CloseBtn navigation={navigation} />
       </View>
 
-      <VStack space={10} alignItems="center" width="99%">
+      <VStack space={10} alignItems="center" width="99%" flex={1}>
         <ScrollView style={{ maxHeight: '100%', width: '100%' }}>
           <View style={{
             width: '100%', height: '100%', alignItems: 'top', padding: 10,

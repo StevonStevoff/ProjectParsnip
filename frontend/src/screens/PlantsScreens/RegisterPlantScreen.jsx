@@ -28,9 +28,12 @@ function RegisterPlantScreen({ route, navigation }) {
         <CloseBtn navigation={navigation} />
       </View>
 
-      <VStack space={10} alignItems="center" width="90%">
+      <VStack space={10} alignItems="center" width="100%" flex={1}>
         <ScrollView style={{ maxHeight: '100%', width: '100%' }}>
-          <View style={{ width: '100%', height: '100%', alignItems: 'top' }}>
+          <View style={{
+            width: '100%', height: '100%', alignItems: 'top', padding: 10,
+          }}
+          >
             <CreatePlantForm
               plantTypes={route.params.plantTypes}
               plantProfiles={route.params.plantProfiles}
