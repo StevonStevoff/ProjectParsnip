@@ -12,7 +12,7 @@ import {
   Heading,
   VStack,
   HStack,
-  Alert, IconButton, CloseIcon, Input, Pressable, Text, Switch, Divider, Button, Select, Modal,
+  Alert, IconButton, CloseIcon, Input, Pressable, Text, Switch, Divider, Button, Modal, AddIcon, Box,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import CreatePlantProfileSchema from '../utils/validationSchema/CreatePlantProfileSchema';
@@ -93,13 +93,10 @@ function CreatePlantProfileForm(props) {
               allPropertyTypes.filter((typeObject) => typeObject.name === property[0])[0].id,
               plant_profile_id: values.plant_profile_id,
             };
-            console.log(allPropertyTypes);
             await API.registerGrowProperty(submittedValues);
           }),
         );
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) { /* empty */ }
 
       setEvent('success');
     } catch (error) {
@@ -278,42 +275,63 @@ function CreatePlantProfileForm(props) {
             <Text style={styles.error}>{errors.grow_duration}</Text>
             )}
 
-            <Heading alignSelf="left">
-              Grow Properties
-              {' '}
-              <Button onPress={handleAdd}>Add</Button>
-            </Heading>
-
+            <HStack space={2} padding={5}>
+              <Heading alignSelf="left">
+                Grow Properties
+                {' '}
+              </Heading>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  backgroundColor: '#1E3438',
+                  borderRadius: 100,
+                  borderWidth: 1,
+                  borderColor: '#1E6738',
+                  height: 40,
+                  width: 40,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={handleAdd}
+              >
+                <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
+              </TouchableOpacity>
+            </HStack>
             <Divider />
 
             <Modal isOpen={showTypeButtons} onClose={() => setShowTypeButtons(false)}>
               <Modal.Content maxWidth="400px">
                 <Modal.CloseButton />
-                <Modal.Header>Pick Property Type</Modal.Header>
+                <Modal.Header>Pick property type</Modal.Header>
                 <Modal.Body>
 
                   {availableTypes.map((type) => (
-                    <Button key={type} onPress={() => handleTypeSelect(type)}>{type}</Button>
+                    <>
+                      <Button key={type} onPress={() => handleTypeSelect(type)}>{type}</Button>
+                      <Text> </Text>
+
+                    </>
                   ))}
                 </Modal.Body>
               </Modal.Content>
             </Modal>
-
+            {selectedTypes.length > 0 && (
             <VStack space={4} w="90%" paddingTop={5}>
               <HStack justifyContent="space-between">
-                <Text w="25%" />
-                <Text w="20%">Minimum</Text>
-                <Text w="20%">Maximum</Text>
+                <Text w={Platform.OS === 'web' ? '40%' : '32%'} />
+                <Text w="27%">Minimum</Text>
+                <Text w="25%">Maximum</Text>
+                <Text w="5%" />
               </HStack>
               {selectedTypes.map((property) => (
                 <HStack key={property} justifyContent="space-between">
-                  <Text w="25%" fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>{property}</Text>
+                  <Text w={Platform.OS === 'web' ? '25%' : '32%'} fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>{property}</Text>
                   <Input
                     onChangeText={handleChange(`properties.${property}.min`)}
                     onBlur={handleBlur(`properties.${property}.min`)}
                     value={values.properties?.[property]?.min?.toString()}
                     style={{ padding: 5 }}
-                    w="20%"
+                    w="27%"
                     size="2xl"
                     marginBottom="2%"
                   />
@@ -322,14 +340,19 @@ function CreatePlantProfileForm(props) {
                     onBlur={handleBlur(`properties.${property}.max`)}
                     value={values.properties?.[property]?.max?.toString()}
                     style={{ padding: 5 }}
-                    w="20%"
+                    w="25%"
                     size="2xl"
                     marginBottom="2%"
                   />
-                  <Button onPress={() => handleDelete(property)}>Delete</Button>
+                  <View w="10%">
+                    <Button borderRadius={100} w={10} h={10} onPress={() => handleDelete(property)}>
+                      <Icon as={MaterialIcons} name="close" color="white" _dark={{ color: 'white' }} />
+                    </Button>
+                  </View>
                 </HStack>
               ))}
             </VStack>
+            )}
 
             {selectedTypes.map((property) => (
               <View key={property}>
