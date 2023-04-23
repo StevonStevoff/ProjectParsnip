@@ -399,44 +399,49 @@ function EditPlantProfileForm(props) {
                 </Modal.Body>
               </Modal.Content>
             </Modal>
-            {selectedTypes.length > 0 && (
-            <VStack space={4} w="90%" paddingTop={5}>
-              <HStack justifyContent="space-between">
-                <Text w={Platform.OS === 'web' ? '40%' : '32%'} />
-                <Text w="27%">Minimum</Text>
-                <Text w="25%">Maximum</Text>
-                <Text w="5%" />
-              </HStack>
-              {selectedTypes.map((property) => (
-                <HStack key={property} justifyContent="space-between">
-                  <Text w={Platform.OS === 'web' ? '25%' : '32%'} fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>{property}</Text>
-                  <Input
-                    onChangeText={handleChange(`properties.${property}.min`)}
-                    onBlur={handleBlur(`properties.${property}.min`)}
-                    value={values.properties?.[property]?.min?.toString()}
-                    style={{ padding: 5 }}
-                    w="27%"
-                    size="2xl"
-                    marginBottom="2%"
-                  />
-                  <Input
-                    onChangeText={handleChange(`properties.${property}.max`)}
-                    onBlur={handleBlur(`properties.${property}.max`)}
-                    value={values.properties?.[property]?.max?.toString()}
-                    style={{ padding: 5 }}
-                    w="25%"
-                    size="2xl"
-                    marginBottom="2%"
-                  />
-                  <View w="10%">
-                    <Button borderRadius={100} w={10} h={10} onPress={() => handleDelete(property)}>
-                      <Icon as={MaterialIcons} name="close" color="white" _dark={{ color: 'white' }} />
-                    </Button>
-                  </View>
+            {selectedTypes.length > 0 ? (
+              <VStack space={4} w="90%" paddingTop={5}>
+                <HStack justifyContent="space-between">
+                  <Text w={Platform.OS === 'web' ? '40%' : '32%'} />
+                  <Text w="27%">Minimum</Text>
+                  <Text w="25%">Maximum</Text>
+                  <Text w="5%" />
                 </HStack>
-              ))}
-            </VStack>
-            )}
+                {selectedTypes.map((property) => (
+                  <HStack key={property} justifyContent="space-between">
+                    <Text w={Platform.OS === 'web' ? '25%' : '32%'} fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>{property}</Text>
+                    <Input
+                      onChangeText={handleChange(`properties.${property}.min`)}
+                      onBlur={handleBlur(`properties.${property}.min`)}
+                      value={values.properties?.[property]?.min?.toString()}
+                      style={{ padding: 5 }}
+                      w="27%"
+                      size="2xl"
+                      marginBottom="2%"
+                    />
+                    <Input
+                      onChangeText={handleChange(`properties.${property}.max`)}
+                      onBlur={handleBlur(`properties.${property}.max`)}
+                      value={values.properties?.[property]?.max?.toString()}
+                      style={{ padding: 5 }}
+                      w="25%"
+                      size="2xl"
+                      marginBottom="2%"
+                    />
+                    <View w="10%">
+                      <Button
+                        borderRadius={100}
+                        w={10}
+                        h={10}
+                        onPress={() => handleDelete(property)}
+                      >
+                        <Icon as={MaterialIcons} name="close" color="white" _dark={{ color: 'white' }} />
+                      </Button>
+                    </View>
+                  </HStack>
+                ))}
+              </VStack>
+            ) : <Heading style={styles.error}>No property selected</Heading>}
 
             {selectedTypes.map((property) => (
               <View key={property}>
@@ -449,7 +454,11 @@ function EditPlantProfileForm(props) {
               </View>
             ))}
 
-            <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={selectedTypes.length > 0 ? handleSubmit : null}
+              disabled={isSubmitting}
+            >
               <Text style={styles.buttonText}>Update Plant Profile</Text>
             </TouchableOpacity>
           </View>
