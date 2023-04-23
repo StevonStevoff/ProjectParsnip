@@ -28,11 +28,15 @@ function RegisterPlantProfileScreen({ route, navigation }) {
         <CloseBtn navigation={navigation} />
       </View>
 
-      <VStack space={10} alignItems="center" width="90%">
-        <ScrollView style={{ maxHeight: '100%', width: '100%' }}>
-          <View style={{ width: '100%', height: '100%', alignItems: 'top' }}>
+      <VStack space={10} alignItems="center" width="99%">
+        <ScrollView style={{ maxHeight: '99%', width: '100%' }}>
+          <View style={{
+            width: '100%', height: '100%', alignItems: 'top', padding: 10,
+          }}
+          >
             <CreatePlantProfileForm
               plantTypes={route.params.plantTypes}
+              userData={route.params.userData}
             />
           </View>
         </ScrollView>

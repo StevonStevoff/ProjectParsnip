@@ -61,7 +61,7 @@ function EditPlantProfileForm(props) {
     setfoundPTLength(filtered.length);
     return filtered;
   };
-
+  console.log(plantProfile.min);
   return (
     <View>
       <Formik
@@ -72,8 +72,8 @@ function EditPlantProfileForm(props) {
           public: plantProfile.public,
           grow_duration: plantProfile.grow_duration,
           plant_type_id: plantProfile.plant_type.id,
-          min: plantProfile.grow_properties[0].min,
-          max: plantProfile.grow_properties[0].max,
+          min: plantProfile?.grow_properties[0]?.min,
+          max: plantProfile?.grow_properties[0]?.max,
           // user_ids: plantProfile.users.map((user) => user.id),
           grow_property_ids: [1],
         }}
@@ -122,6 +122,18 @@ function EditPlantProfileForm(props) {
               marginBottom="2%"
             />
             {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
+
+            <Heading style={styles.label}>Description</Heading>
+            <Input
+              onChangeText={handleChange('description')}
+              onBlur={handleBlur('description')}
+              value={values.description}
+              w="100%"
+              size="2xl"
+              marginBottom="2%"
+            />
+            {touched.description && errors.description
+            && <Text style={styles.error}>{errors.description}</Text>}
 
             {/* Plant Types search and select Dropdown */}
             <Heading style={styles.label}>Plant Type</Heading>
@@ -201,6 +213,8 @@ function EditPlantProfileForm(props) {
               />
             </HStack>
 
+            {plantProfile.grow_properties.length > 0
+            && (
             <VStack space={4} w="90%">
               <HStack justifyContent="space-between">
                 <Text w="25%" />
@@ -231,6 +245,7 @@ function EditPlantProfileForm(props) {
                 </HStack>
               ))}
             </VStack>
+            )}
             {touched.min && errors.min && (
             <Text style={styles.error}>{errors.min}</Text>
             )}

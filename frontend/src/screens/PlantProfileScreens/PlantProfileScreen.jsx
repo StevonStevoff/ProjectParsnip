@@ -28,6 +28,7 @@ function PlantProfileScreen({ navigation }) {
   const colorScheme = Appearance.getColorScheme();
 
   const [userEmail, setUserEmail] = useState('');
+  const [userData, setUserData] = useState([]);
   const [plantTypes, setPlantsTypes] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
 
@@ -49,6 +50,12 @@ function PlantProfileScreen({ navigation }) {
   useEffect(() => {
     PlantUtils.getAuthenticatedUser().then((email) => {
       setUserEmail(email);
+    });
+  }, []);
+
+  useEffect(() => {
+    PlantUtils.getAuthenticatedUserData().then((data) => {
+      setUserData(data);
     });
   }, []);
 
@@ -136,7 +143,7 @@ function PlantProfileScreen({ navigation }) {
           <Heading>Your Plant Profiles</Heading>
           <TouchableOpacity
             style={styles.detailsButton}
-            onPress={() => navigation.navigate('RegisterPlantProfileScreen', { plantTypes })}
+            onPress={() => navigation.navigate('RegisterPlantProfileScreen', { plantTypes, userData })}
           >
             <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
           </TouchableOpacity>
@@ -178,19 +185,7 @@ function PlantProfileScreen({ navigation }) {
                 {plantProfile.grow_properties.map((property) => (
                   <HStack justifyContent="space-between">
                     <View w="30%">
-                      {(() => {
-                        let iconString;
-                        if (property.id === 1) {
-                          iconString = 'temperature';
-                        } else if (property.id === 2) {
-                          iconString = 'humidity';
-                        } else if (property.id === 3) {
-                          iconString = 'light';
-                        } else {
-                          iconString = 'soil moisture';
-                        }
-                        return getIconComponent(iconString);
-                      })()}
+                      {(() => getIconComponent(property.grow_property_type.description))()}
                     </View>
 
                     <Text fontSize={Platform.OS === 'web' ? 'md' : 'sm'} w="30%">

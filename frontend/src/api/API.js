@@ -119,6 +119,21 @@ const API = {
     return response;
   },
 
+  async registerGrowProperty(data, cancel = false) {
+    console.log(data);
+    const response = await api.request({
+      url: '/grow_properties/register',
+      method: 'POST',
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+    return response;
+  },
   async getCurrentUsersPlants(cancel = false) {
     const response = await api.request({
       url: '/plants/me',
@@ -192,34 +207,12 @@ const API = {
     return response;
   },
 
-  // async editPlantProfile(data, cancel = false) {
-  //   console.log('3abeelo we edeelo',data);
-  //   const response = await api.request({
-  //     url: `/plant_profiles/${data.id}`,
-  //     method: 'PATCH',
-  //     data,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-
-  //     },
-  //     signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
-  //       : undefined,
-  //   });
-  //   return response;
-  // },
   async editPlantProfile(data, cancel = false) {
-    console.log('yalla b2a', data);
+    console.log('3abeelo we edeelo',data);
     const response = await api.request({
       url: `/plant_profiles/${data.id}`,
       method: 'PATCH',
-      data: {
-        name: 'belila',
-        description: 'beans',
-        public: true,
-        grow_duration: 16,
-        plant_type_id: 1,
-        grow_property_ids: [1],
-      },
+      data,
       headers: {
         'Content-Type': 'application/json',
 
@@ -229,6 +222,28 @@ const API = {
     });
     return response;
   },
+  // async editPlantProfile(data, cancel = false) {
+  //   console.log('yalla b2a', data);
+  //   const response = await api.request({
+  //     url: `/plant_profiles/${data.id}`,
+  //     method: 'PATCH',
+  //     data: {
+  //       name: 'belila',
+  //       description: 'beans',
+  //       public: true,
+  //       grow_duration: 16,
+  //       plant_type_id: 1,
+  //       grow_property_ids: [3],
+  //     },
+  //     headers: {
+  //       'Content-Type': 'application/json',
+
+  //     },
+  //     signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+  //       : undefined,
+  //   });
+  //   return response;
+  // },
   async getUserInfo(cancel = false) {
     const response = await api.request({
       url: '/users/me',
@@ -329,6 +344,17 @@ const API = {
   async getAllPlantTypes(cancel = false) {
     const response = await api.request({
       url: '/plant_types/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
+  async getGrowPropertyTypes(cancel = false) {
+    const response = await api.request({
+      url: '/grow_property_types/',
       method: 'GET',
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
