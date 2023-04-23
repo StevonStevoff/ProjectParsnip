@@ -133,6 +133,11 @@ function EditPlantProfileForm(props) {
       }
     });
 
+    const filteredTypeIds = allPropertyTypes
+      .filter((type) => selectedTypes.includes(type.name))
+      .map((type) => type.id);
+
+    values.grow_property_ids = filteredTypeIds;
     try {
       await API.editPlantProfile(values);
       const registerArray = Object.entries(result.newproper);
@@ -141,12 +146,14 @@ function EditPlantProfileForm(props) {
         // Register new grow properties
         await Promise.all(
           registerArray.map(async (property) => {
+            const growId = allPropertyTypes.filter(
+              (typeObject) => typeObject.name === property[0],
+            )[0].id;
             const submittedValues = {
               min: property[1].min,
               max: property[1].max,
-              sensor_id: values.sensor_id,
-              grow_property_type_id:
-              allPropertyTypes.filter((typeObject) => typeObject.name === property[0])[0].id,
+              sensor_id: growId,
+              grow_property_type_id: growId,
               plant_profile_id: plantProfile.id,
             };
             await API.registerGrowProperty(submittedValues);
@@ -163,13 +170,15 @@ function EditPlantProfileForm(props) {
         // Edit grow properties
         await Promise.all(
           editArray.map(async (property) => {
+            const growId = allPropertyTypes.filter(
+              (typeObject) => typeObject.name === property[0],
+            )[0].id;
             const submittedValues = {
               id: property[1].id,
               min: property[1].value.min,
               max: property[1].value.max,
-              sensor_id: values.sensor_id,
-              grow_property_type_id:
-              allPropertyTypes.filter((typeObject) => typeObject.name === property[0])[0].id,
+              sensor_id: growId,
+              grow_property_type_id: growId,
               plant_profile_id: plantProfile.id,
             };
             await API.editGrowProperty(submittedValues);

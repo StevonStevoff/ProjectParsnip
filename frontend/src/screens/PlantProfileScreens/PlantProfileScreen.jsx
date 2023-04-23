@@ -17,6 +17,7 @@ import {
   IconButton,
   CloseIcon,
   Text,
+  Button,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -31,7 +32,13 @@ function PlantProfileScreen({ navigation }) {
   const [userData, setUserData] = useState([]);
   const [plantTypes, setPlantsTypes] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
+  const [changed, setChanged] = useState(false);
 
+  const [selectedButton, setSelectedButton] = useState('My Profiles');
+
+  const handleButtonPress = (value) => {
+    setSelectedButton(value);
+  };
   const statusArray = [{
     status: 'success',
     title: 'Plant successfully deleted!',
@@ -73,15 +80,30 @@ function PlantProfileScreen({ navigation }) {
     React.useCallback(() => {
       const fetchPlantsProfiles = async () => {
         try {
-          const response = await API.getAllPlantProfiles();
-          setPlantProfiles(response.data);
+          let response;
+          if (selectedButton === 'My Profiles') {
+            response = await API.getAllPlantProfilesCreated();
+            setPlantProfiles(response.data);
+          } else if (selectedButton === 'Official') {
+            response = await API.getAllPlantProfilesEverything();
+            const filteredProfiles = response.data.filter(
+              (profile) => !profile.user_created && profile.creator.id !== userData.id,
+            );
+            setPlantProfiles(filteredProfiles);
+          } else if (selectedButton === 'Public') {
+            response = await API.getAllPlantProfilesEverything();
+            const filteredProfiles = response.data.filter(
+              (profile) => profile.public && profile.creator.id !== userData.id, /// AJKSDHKJAS
+            );
+            setPlantProfiles(filteredProfiles);
+          }
         } catch (error) { /* empty */ }
       };
       fetchPlantsProfiles();
 
       return () => { /* empty */
       };
-    }, []),
+    }, [selectedButton, changed]),
   );
 
   if (userEmail == null) {
@@ -89,6 +111,33 @@ function PlantProfileScreen({ navigation }) {
       <ActivityIndicator size="large" color="#00ff00" />
     );
   }
+
+  const handleFavourite = async (value) => {
+    const userIds = value.users.map((user) => user.id);
+    const isUserExist = userIds.includes(userData.id);
+    let updatedUsers;
+    let peooe;
+    if (isUserExist) {
+      // User was found in the array, remove it
+      updatedUsers = userIds.filter((id) => id !== userData.id);
+      peooe = {
+        id: value.id,
+        user_ids: updatedUsers,
+      };
+    } else {
+      // User was not found in the array, add it
+      userIds.push(userData.id);
+      peooe = {
+        id: value.id,
+        user_ids: userIds,
+      };
+    }
+    try {
+      await API.editPlantProfile(peooe);
+      setChanged(!changed);
+      setEvent('success');
+    } catch (error) { setEvent('error'); }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -123,6 +172,30 @@ function PlantProfileScreen({ navigation }) {
           color: '#fff',
         }}
       >
+
+        <HStack space={3}>
+          <Button
+            onPress={() => handleButtonPress('My Profiles')}
+            style={{ margin: 10, borderRadius: 5 }}
+            backgroundColor={selectedButton === 'My Profiles' ? '#00ff00' : 'transparent'}
+          >
+            <Text>My Profiles</Text>
+          </Button>
+          <Button
+            onPress={() => handleButtonPress('Official')}
+            style={{ margin: 10, borderRadius: 5 }}
+            backgroundColor={selectedButton === 'Official' ? '#00ff00' : 'transparent'}
+          >
+            <Text>Official</Text>
+          </Button>
+          <Button
+            onPress={() => handleButtonPress('Public')}
+            style={{ margin: 10, borderRadius: 5 }}
+            backgroundColor={selectedButton === 'Public' ? '#00ff00' : 'transparent'}
+          >
+            <Text>Public</Text>
+          </Button>
+        </HStack>
 
         {filteredStatusArray.length !== 0 && (
           <View style={{ padding: 5, width: '90%' }}>
@@ -177,21 +250,56 @@ function PlantProfileScreen({ navigation }) {
                   {' · '}
                   {plantProfile.plant_type.name}
                 </Heading>
-                <TouchableOpacity
-                  style={styles.detailsButton}
-                  onPress={() => navigation.navigate('EditPlantProfileScreen', {
-                    plantTypes, plantProfile,
-                  })}
-                >
-                  <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
-                </TouchableOpacity>
-                {/* To be Changed to handleEdit */}
-                <TouchableOpacity
-                  style={styles.detailsButton}
-                  onPress={() => handleDelete(plantProfile.id)}
-                >
-                  <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
-                </TouchableOpacity>
+
+                {selectedButton === 'My Profiles' ? (
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  <>
+                    {plantProfile.creator.id !== userData.id ? (
+                      <TouchableOpacity
+                        style={styles.detailsButton}
+                        onPress={() => handleFavourite(plantProfile)}
+                      >
+                        <Icon
+                          as={MaterialIcons}
+                          name="favorite"
+                          color="white"
+                          _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <>
+                        <TouchableOpacity
+                          style={styles.detailsButton}
+                          onPress={() => navigation.navigate('EditPlantProfileScreen', {
+                            plantTypes, plantProfile,
+                          })}
+                        >
+                          <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.detailsButton}
+                          onPress={() => handleDelete(plantProfile.id)}
+                        >
+                          <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
+                        </TouchableOpacity>
+
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.detailsButton}
+                    onPress={() => handleFavourite(plantProfile)}
+                  >
+                    <Icon
+                      as={MaterialIcons}
+                      name="favorite"
+                      color="white"
+                      _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
+                    />
+                  </TouchableOpacity>
+                ) }
+
               </View>
 
               <VStack space={plantProfile.grow_properties.length} w="90%">
@@ -215,12 +323,6 @@ function PlantProfileScreen({ navigation }) {
                   </HStack>
                 ))}
               </VStack>
-
-              <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
-                  <Text style={styles.createText}> Plant Profile Details  </Text>
-                </TouchableOpacity>
-              </View>
 
             </View>
           ))}

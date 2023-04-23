@@ -120,7 +120,6 @@ const API = {
   },
 
   async registerGrowProperty(data, cancel = false) {
-    console.log(data);
     const response = await api.request({
       url: '/grow_properties/register',
       method: 'POST',
@@ -382,6 +381,28 @@ const API = {
   async getAllPlantProfiles(cancel = false) {
     const response = await api.request({
       url: '/plant_profiles/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
+  async getAllPlantProfilesCreated(cancel = false) {
+    const response = await api.request({
+      url: '/plant_profiles/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
+  async getAllPlantProfilesEverything(cancel = false) {
+    const response = await api.request({
+      url: '/plant_profiles/',
       method: 'GET',
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,

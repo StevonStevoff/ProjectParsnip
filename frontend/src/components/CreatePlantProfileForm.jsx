@@ -95,12 +95,14 @@ function CreatePlantProfileForm(props) {
       try {
         await Promise.all(
           propertiesArray.map(async (property) => {
+            const growId = allPropertyTypes.filter(
+              (typeObject) => typeObject.name === property[0],
+            )[0].id;
             const submittedValues = {
               min: property[1].min,
               max: property[1].max,
-              sensor_id: values.sensor_id,
-              grow_property_type_id:
-              allPropertyTypes.filter((typeObject) => typeObject.name === property[0])[0].id,
+              grow_property_type_id: growId,
+              sensor_id: growId,
               plant_profile_id: values.plant_profile_id,
             };
             await API.registerGrowProperty(submittedValues);
