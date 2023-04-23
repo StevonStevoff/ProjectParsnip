@@ -100,7 +100,9 @@ const DeviceUtils = {
         return device;
       });
 
-      await this.getProfilePictures(unlinkedDevices.users);
+      await Promise.all(
+        unlinkedDevices.map((device) => this.getProfilePictures(device.users)),
+      );
 
       return unlinkedDevices;
     } catch (error) {

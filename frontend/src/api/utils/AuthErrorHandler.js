@@ -11,6 +11,7 @@ export function handle401Error() {
   // eslint-disable-next-line no-plusplus
   consecutive401Errors++;
   if (consecutive401Errors >= 3 && navigationRef) {
+    console.log('Logging out');
     AuthUtils.logout(navigationRef);
   }
 }

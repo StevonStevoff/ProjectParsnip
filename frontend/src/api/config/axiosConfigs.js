@@ -32,7 +32,6 @@ const errorHandler = (error) => {
       SecureStore.deleteItemAsync('token');
     } else {
       window.localStorage.removeItem('token');
-      window.location.reload();
     }
   } else {
     reset401Errors();
