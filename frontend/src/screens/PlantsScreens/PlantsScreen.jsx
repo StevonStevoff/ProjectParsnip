@@ -206,8 +206,8 @@ function PlantsScreen({ navigation }) {
 
         <View style={{ width: '95%' }}>
           {plants.map((plant) => (
-            <>
-              <Heading style={{ fontSize: 25, padding: 7, fontWeight: 'bold' }} key={plant.id}>{plant.name}</Heading>
+            <React.Fragment key={plant.id}>
+              <Heading key={plant.id} style={{ fontSize: 25, padding: 7, fontWeight: 'bold' }}>{plant.name}</Heading>
               <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
 
                 <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
@@ -259,7 +259,7 @@ function PlantsScreen({ navigation }) {
 
                   <VStack w="57%">
                     {plant.plant_profile.grow_properties.map((property) => (
-                      <HStack space={3} w="100%" style={styles.propertyTypesConatiner}>
+                      <HStack key={property.id} space={3} w="100%" style={styles.propertyTypesConatiner}>
 
                         <Icon
                           as={MaterialIcons}
@@ -332,7 +332,7 @@ function PlantsScreen({ navigation }) {
                 </View>
 
               </View>
-            </>
+            </React.Fragment>
           ))}
         </View>
 
