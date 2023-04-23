@@ -98,7 +98,7 @@ function PlantsScreen({ navigation }) {
               const data = response.data.filter((item) => item.sensor_readings.some(
                 (reading) => reading.grow_property.grow_property_type.id === growPropertyTypeId,
               ));
-
+                  console.log(data);
               const latestRecord = data.length > 0 ? data.reduce(
                 (prev, current) => (prev.timestamp > current.timestamp ? prev : current),
               ) : null;
@@ -157,6 +157,7 @@ function PlantsScreen({ navigation }) {
     } catch (error) { setEvent('error'); }
   };
 
+  // console.log(Object.keys(latestValue).length)
   return (
     <ScrollView style={styles.scrollView}>
 
@@ -273,9 +274,9 @@ function PlantsScreen({ navigation }) {
                           {property.min}
                         </Text>
                         <HStack style={{ marginBottom: 1 }}>
-                          {latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
+                          {(latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
                             || latestValue?.
-                              [plant.id]?.[property.grow_property_type.id] <= property.min
+                              [plant.id]?.[property.grow_property_type.id] <= property.min)
                             ? (
 
                               <>

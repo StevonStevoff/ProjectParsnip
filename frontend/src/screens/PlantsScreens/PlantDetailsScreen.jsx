@@ -74,7 +74,7 @@ function PlantDetailsScreen({ route, navigation }) {
     }, {});
   }
 
-  const dataIds = [1, 2, 3];
+  const dataIds = [1, 2, 3, 4];
   const filteredDataByType = filterSensorDataByType(filteredDataWithinRange, dataIds);
 
   return (
