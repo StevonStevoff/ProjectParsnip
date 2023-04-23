@@ -180,6 +180,18 @@ const API = {
     return response;
   },
 
+  async deleteGrowProperty(id, cancel = false) {
+    const response = await api.request({
+      url: `/grow_properties/${id}`,
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+
   async editPlant({
     id, name, device_id, plant_profile_id, plant_type_id,
     time_planted, outdoor, latitude, longitude,
@@ -208,7 +220,6 @@ const API = {
   },
 
   async editPlantProfile(data, cancel = false) {
-    console.log('3abeelo we edeelo',data);
     const response = await api.request({
       url: `/plant_profiles/${data.id}`,
       method: 'PATCH',
@@ -222,28 +233,22 @@ const API = {
     });
     return response;
   },
-  // async editPlantProfile(data, cancel = false) {
-  //   console.log('yalla b2a', data);
-  //   const response = await api.request({
-  //     url: `/plant_profiles/${data.id}`,
-  //     method: 'PATCH',
-  //     data: {
-  //       name: 'belila',
-  //       description: 'beans',
-  //       public: true,
-  //       grow_duration: 16,
-  //       plant_type_id: 1,
-  //       grow_property_ids: [3],
-  //     },
-  //     headers: {
-  //       'Content-Type': 'application/json',
 
-  //     },
-  //     signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
-  //       : undefined,
-  //   });
-  //   return response;
-  // },
+  async editGrowProperty(data, cancel = false) {
+    const response = await api.request({
+      url: `/grow_properties/${data.id}`,
+      method: 'PATCH',
+      data,
+      headers: {
+        'Content-Type': 'application/json',
+
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+    return response;
+  },
+
   async getUserInfo(cancel = false) {
     const response = await api.request({
       url: '/users/me',

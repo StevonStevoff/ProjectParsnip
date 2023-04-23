@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -8,7 +8,20 @@ import {
 } from 'react-native';
 import { Formik } from 'formik';
 import {
-  Icon, Heading, VStack, HStack, Alert, IconButton, CloseIcon, Input, Pressable, Text, Switch,
+  Icon,
+  Heading,
+  VStack,
+  HStack,
+  Alert,
+  IconButton,
+  CloseIcon,
+  Input,
+  Pressable,
+  Text,
+  Switch,
+  Divider,
+  Button,
+  Modal,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import EditPlantProfileSchema from '../utils/validationSchema/EditPlantProfileSchema';
@@ -17,6 +30,7 @@ import API from '../api/API';
 function EditPlantProfileForm(props) {
   const { plantTypes } = props;
   const { plantProfile } = props;
+
   const statusArray = [{
     status: 'success',
     title: 'Plant Profile successfully edited!',
@@ -24,6 +38,14 @@ function EditPlantProfileForm(props) {
     status: 'error',
     title: 'An error has occured!',
   }];
+
+  const [types, setTypes] = useState([]);
+  const [allPropertyTypes, setAllPropertyTypes] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState(
+    plantProfile.grow_properties.map((type) => type.grow_property_type.name),
+  );
+  const [showTypeButtons, setShowTypeButtons] = useState(false);
+
   const [event, setEvent] = useState('');
 
   const [showPTDropdown, setShowPTDropdown] = useState(false);
@@ -31,17 +53,130 @@ function EditPlantProfileForm(props) {
   const [selectedPlantType, setSelectedPlantType] = useState(plantProfile.plant_type.name);
   const [foundPTLength, setfoundPTLength] = useState('');
 
-  const filteredStatusArray = statusArray.filter((status) => status.status === event);
+  const dataObject = Object.entries(plantProfile.grow_properties).reduce((acc, [key, value]) => {
+    acc[value.grow_property_type.name] = {
+      min: value.min,
+      max: value.max,
+    };
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    const fetchPropertyTypes = async () => {
+      try {
+        const response = await API.getGrowPropertyTypes();
+        setAllPropertyTypes(response.data);
+        setTypes(response.data.map((typea) => typea.name));
+      } catch (error) { /* empty */ }
+    };
+    fetchPropertyTypes();
+  }, []);
+
+  const handleAdd = () => {
+    setShowTypeButtons(!showTypeButtons);
+  };
+
+  const handleTypeSelect = (type) => {
+    if (!selectedTypes.includes(type)) {
+      setSelectedTypes([...selectedTypes, type]);
+    }
+    setShowTypeButtons(false);
+  };
+
+  const handleDelete = async (type) => {
+    setSelectedTypes(selectedTypes.filter((t) => t !== type));
+  };
 
   const handleClose = () => {
     setEvent('');
   };
 
   const handleEditPlantProfile = async (values, { setSubmitting }) => {
+    const selectedProperties = Object.keys(values.properties)
+      .reduce((acc, key) => {
+        if (selectedTypes.includes(key)) {
+          acc[key] = values.properties[key];
+        }
+        return acc;
+      }, {});
+    // Get edited properties and removed properties to PATCH and DELETE accordingly
+    const result = {};
+    result.common = {};
+    result.uncommon = [];
+    plantProfile.grow_properties.forEach((growProperty) => {
+      const propertyName = growProperty;
+
+      if (Object.prototype.hasOwnProperty
+        .call(selectedProperties, propertyName.grow_property_type.name)) {
+        if (!result.common) {
+          result.common = {};
+        }
+        const tempName = propertyName.grow_property_type.name;
+        result.common[tempName] = {
+          value: selectedProperties[tempName],
+          id: propertyName.id,
+        };
+      } else {
+        if (!result.uncommon) {
+          result.uncommon = [];
+        }
+        result.uncommon.push(propertyName.id);
+      }
+    });
+
+    // Add any properties from `properties` that are not in `grow_properties` to `newproper`
+    result.newproper = {};
+    Object.keys(selectedProperties).forEach((propertyName) => {
+      if (!result.common[propertyName]
+         && (!result.uncommon || !result.uncommon.includes(propertyName))) {
+        result.newproper[propertyName] = selectedProperties[propertyName];
+      }
+    });
+
     try {
-      console.log(values);
-      const response = await API.editPlantProfile(values);
-      console.log(response);
+      await API.editPlantProfile(values);
+      const registerArray = Object.entries(result.newproper);
+      const editArray = Object.entries(result.common);
+      try {
+        // Register new grow properties
+        await Promise.all(
+          registerArray.map(async (property) => {
+            const submittedValues = {
+              min: property[1].min,
+              max: property[1].max,
+              sensor_id: values.sensor_id,
+              grow_property_type_id:
+              allPropertyTypes.filter((typeObject) => typeObject.name === property[0])[0].id,
+              plant_profile_id: plantProfile.id,
+            };
+            await API.registerGrowProperty(submittedValues);
+          }),
+        );
+
+        // Delete removed grow properties
+        await Promise.all(
+          result.uncommon.map(async (property) => {
+            await API.deleteGrowProperty(property);
+          }),
+        );
+
+        // Edit grow properties
+        await Promise.all(
+          editArray.map(async (property) => {
+            const submittedValues = {
+              id: property[1].id,
+              min: property[1].value.min,
+              max: property[1].value.max,
+              sensor_id: values.sensor_id,
+              grow_property_type_id:
+              allPropertyTypes.filter((typeObject) => typeObject.name === property[0])[0].id,
+              plant_profile_id: plantProfile.id,
+            };
+            await API.editGrowProperty(submittedValues);
+          }),
+        );
+      } catch (error) { /* empty */ }
+
       setEvent('success');
     } catch (error) {
       setEvent('error');
@@ -61,7 +196,12 @@ function EditPlantProfileForm(props) {
     setfoundPTLength(filtered.length);
     return filtered;
   };
-  console.log(plantProfile.min);
+
+  // Filter out already selected types from the list of types
+  const availableTypes = types.filter((type) => !selectedTypes.includes(type));
+
+  const filteredStatusArray = statusArray.filter((status) => status.status === event);
+
   return (
     <View>
       <Formik
@@ -72,12 +212,18 @@ function EditPlantProfileForm(props) {
           public: plantProfile.public,
           grow_duration: plantProfile.grow_duration,
           plant_type_id: plantProfile.plant_type.id,
-          min: plantProfile?.grow_properties[0]?.min,
-          max: plantProfile?.grow_properties[0]?.max,
-          // user_ids: plantProfile.users.map((user) => user.id),
+          properties: selectedTypes.reduce((acc, property) => ({
+            ...acc,
+            [property]: {
+              min: dataObject[property]?.min ?? 0, max: dataObject[property]?.max ?? 0,
+            },
+          }), {}),
+          sensor_id: 1,
+          grow_property_type_id: 1,
+          user_ids: plantProfile.users.map((user) => user.id),
           grow_property_ids: [1],
         }}
-        validationSchema={EditPlantProfileSchema}
+        validationSchema={EditPlantProfileSchema(selectedTypes)}
         onSubmit={handleEditPlantProfile}
       >
         {({
@@ -213,45 +359,95 @@ function EditPlantProfileForm(props) {
               />
             </HStack>
 
-            {plantProfile.grow_properties.length > 0
-            && (
-            <VStack space={4} w="90%">
+            <HStack space={2} padding={5}>
+              <Heading alignSelf="left">
+                Grow Properties
+                {' '}
+              </Heading>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  backgroundColor: '#1E3438',
+                  borderRadius: 100,
+                  borderWidth: 1,
+                  borderColor: '#1E6738',
+                  height: 40,
+                  width: 40,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={handleAdd}
+              >
+                <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
+              </TouchableOpacity>
+            </HStack>
+            <Divider />
+
+            <Modal isOpen={showTypeButtons} onClose={() => setShowTypeButtons(false)}>
+              <Modal.Content maxWidth="400px">
+                <Modal.CloseButton />
+                <Modal.Header>Pick property type</Modal.Header>
+                <Modal.Body>
+
+                  {availableTypes.map((type) => (
+                    <>
+                      <Button key={type} onPress={() => handleTypeSelect(type)}>{type}</Button>
+                      <Text> </Text>
+
+                    </>
+                  ))}
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+            {selectedTypes.length > 0 && (
+            <VStack space={4} w="90%" paddingTop={5}>
               <HStack justifyContent="space-between">
-                <Text w="25%" />
-                <Text w="20%">Minimum</Text>
-                <Text w="20%">Maximum</Text>
+                <Text w={Platform.OS === 'web' ? '40%' : '32%'} />
+                <Text w="27%">Minimum</Text>
+                <Text w="25%">Maximum</Text>
+                <Text w="5%" />
               </HStack>
-              {plantProfile.grow_properties.map((property) => (
-                <HStack justifyContent="space-between">
-                  <Text w="25%" fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>{property.grow_property_type.name}</Text>
+              {selectedTypes.map((property) => (
+                <HStack key={property} justifyContent="space-between">
+                  <Text w={Platform.OS === 'web' ? '25%' : '32%'} fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>{property}</Text>
                   <Input
-                    onChangeText={handleChange('min')}
-                    onBlur={handleBlur('min')}
-                    value={values.min.toString()}
+                    onChangeText={handleChange(`properties.${property}.min`)}
+                    onBlur={handleBlur(`properties.${property}.min`)}
+                    value={values.properties?.[property]?.min?.toString()}
                     style={{ padding: 5 }}
-                    w="20%"
+                    w="27%"
                     size="2xl"
                     marginBottom="2%"
                   />
                   <Input
-                    onChangeText={handleChange('max')}
-                    onBlur={handleBlur('max')}
-                    value={values.max.toString()}
+                    onChangeText={handleChange(`properties.${property}.max`)}
+                    onBlur={handleBlur(`properties.${property}.max`)}
+                    value={values.properties?.[property]?.max?.toString()}
                     style={{ padding: 5 }}
-                    w="20%"
+                    w="25%"
                     size="2xl"
                     marginBottom="2%"
                   />
+                  <View w="10%">
+                    <Button borderRadius={100} w={10} h={10} onPress={() => handleDelete(property)}>
+                      <Icon as={MaterialIcons} name="close" color="white" _dark={{ color: 'white' }} />
+                    </Button>
+                  </View>
                 </HStack>
               ))}
             </VStack>
             )}
-            {touched.min && errors.min && (
-            <Text style={styles.error}>{errors.min}</Text>
-            )}
-            {touched.max && errors.max && (
-            <Text style={styles.error}>{errors.max}</Text>
-            )}
+
+            {selectedTypes.map((property) => (
+              <View key={property}>
+                {touched.properties?.[property]?.min && errors.properties?.[property]?.min && (
+                <Text style={styles.error}>{errors.properties[property].min}</Text>
+                )}
+                {touched.properties?.[property]?.max && errors.properties?.[property]?.max && (
+                <Text style={styles.error}>{errors.properties[property].max}</Text>
+                )}
+              </View>
+            ))}
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
               <Text style={styles.buttonText}>Update Plant Profile</Text>

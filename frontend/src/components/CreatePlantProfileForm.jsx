@@ -12,7 +12,16 @@ import {
   Heading,
   VStack,
   HStack,
-  Alert, IconButton, CloseIcon, Input, Pressable, Text, Switch, Divider, Button, Modal, AddIcon, Box,
+  Alert,
+  IconButton,
+  CloseIcon,
+  Input,
+  Pressable,
+  Text,
+  Switch,
+  Divider,
+  Button,
+  Modal,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import CreatePlantProfileSchema from '../utils/validationSchema/CreatePlantProfileSchema';
@@ -21,7 +30,21 @@ import API from '../api/API';
 function CreatePlantProfileForm(props) {
   const { plantTypes } = props;
   const { userData } = props;
-  /// //////
+
+  const statusArray = [{
+    status: 'success',
+    title: 'Plant Profile successfully edited!',
+  }, {
+    status: 'error',
+    title: 'An error has occured!',
+  }];
+  const [event, setEvent] = useState('');
+
+  const [showPTDropdown, setShowPTDropdown] = useState(false);
+  const [searchPTTerm, setSearchPTTerm] = useState('');
+  const [selectedPlantType, setSelectedPlantType] = useState('Choose a plant type');
+  const [foundPTLength, setfoundPTLength] = useState('');
+
   const [types, setTypes] = useState([]);
   const [allPropertyTypes, setAllPropertyTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
@@ -53,31 +76,18 @@ function CreatePlantProfileForm(props) {
     setSelectedTypes(selectedTypes.filter((t) => t !== type));
   };
 
-  // Filter out already selected types from the list of types
-  const availableTypes = types.filter((type) => !selectedTypes.includes(type));
-
-  /// /////
-  const statusArray = [{
-    status: 'success',
-    title: 'Plant Profile successfully edited!',
-  }, {
-    status: 'error',
-    title: 'An error has occured!',
-  }];
-  const [event, setEvent] = useState('');
-
-  const [showPTDropdown, setShowPTDropdown] = useState(false);
-  const [searchPTTerm, setSearchPTTerm] = useState('');
-  const [selectedPlantType, setSelectedPlantType] = useState('Choose a plant type');
-  const [foundPTLength, setfoundPTLength] = useState('');
-
-  const filteredStatusArray = statusArray.filter((status) => status.status === event);
-
   const handleClose = () => {
     setEvent('');
   };
 
   const handleRegisterPlantProfile = async (values, { setSubmitting }) => {
+    // Delete removed types from the properties object
+    Object.keys(values.properties).forEach((key) => {
+      if (!selectedTypes.includes(key)) {
+        delete values.properties[key];
+      }
+    });
+
     try {
       const response = await API.registerPlantProfile(values);
       values.plant_profile_id = response.data.id;
@@ -118,6 +128,10 @@ function CreatePlantProfileForm(props) {
     return filtered;
   };
 
+  // Filter out already selected types from the list of types
+  const availableTypes = types.filter((type) => !selectedTypes.includes(type));
+
+  const filteredStatusArray = statusArray.filter((status) => status.status === event);
   return (
     <View>
       <Formik
@@ -129,7 +143,7 @@ function CreatePlantProfileForm(props) {
           plant_type_id: '',
           properties: selectedTypes.reduce((acc, property) => ({
             ...acc,
-            [property]: { min: 0, max: 0 },
+            [property]: { min: '', max: '' },
           }), {}),
           sensor_id: 1,
           grow_property_type_id: 1,
