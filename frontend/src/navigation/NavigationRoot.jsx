@@ -13,6 +13,7 @@ import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import ForgotPasswordScreen from '../screens/AuthScreens/ForgotPasswordScreen';
 import AuthUtils from '../api/utils/AuthUtils';
 import { loadState, saveState } from '../utils/localStorage'; // Import the utility functions
+import { setNavigationRef } from '../api/utils/AuthErrorHandler';
 
 const Stack = createStackNavigator();
 function NavigationRoot() {
@@ -28,6 +29,14 @@ function NavigationRoot() {
   };
 
   const initialState = loadState('navState');
+
+  useEffect(() => {
+    setNavigationRef(navigationRef);
+    AuthUtils.isUserAuthenticated().then((isLoggedIn) => {
+      setIsUserLoggedIn(isLoggedIn);
+      setIsLoading(false);
+    });
+  }, []);
 
   const linking = {
     prefixes: ['myapp://', 'https://myapp.com'],
