@@ -215,11 +215,11 @@ async def update_property_type(
 async def update_property_ranges(
     grow_property: GrowPropertyRange, min: Optional[float], max: Optional[float]
 ) -> None:
-    if not min and not max:
+    if min is None and max is None:
         return
-    elif not min:
+    elif min is None:
         min = grow_property.min
-    elif not max:
+    elif max is None:
         max = grow_property.max
 
     if max < min:
