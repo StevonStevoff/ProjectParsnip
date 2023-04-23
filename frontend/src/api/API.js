@@ -299,6 +299,19 @@ const API = {
 
     return response;
   },
+  async getRefreshToken(cancel = false) {
+    const response = await api.request({
+      url: '/auth/jwt/refresh',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+    this.setJWTtoken(response.data.access_token);
+    return response;
+  },
   async getProfilePicture(userID, cancel = false) {
     const response = await api.request({
       url: `/users/${userID}/pfp`,

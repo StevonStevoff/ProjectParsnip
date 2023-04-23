@@ -13,7 +13,11 @@ const AuthUtils = {
       return false;
     }
     API.setJWTtoken(token);
-    return this.checkTokenVaildity();
+    const isAuthenticated = await this.checkTokenVaildity();
+    if (isAuthenticated) {
+      this.scheduleTokenRefresh(); // Schedule token refresh
+    }
+    return isAuthenticated;
   },
   async checkTokenVaildity() {
     return API.getAuthenticatedUser()
@@ -44,25 +48,28 @@ const AuthUtils = {
   },
   async setUserToken(token) {
     if (token === null) {
-      const expirationDate = new Date().getTime() + 3200;
+      const expirationTime = new Date().getTime() + 60 * 60 * 1000;
+      this.setTokenExpirationTime(expirationTime);
       if (Device.brand != null) {
-        SecureStore.setItemAsync('token-expiration-date', expirationDate.toString());
+        SecureStore.setItemAsync('token', '');
       } else {
-        window.localStorage.setItem('token-expiration-date', expirationDate.toString());
+        window.localStorage.setItem('token', '');
       }
       return;
     }
+    const expirationTime = new Date().getTime() + 60 * 60 * 1000; // Token expires in 1 hour
+    this.setTokenExpirationTime(expirationTime);
     if (Device.brand != null) {
       SecureStore.setItemAsync('token', token);
     } else {
       window.localStorage.setItem('token', token);
     }
   },
-
   async login(navigation, username, password) {
     return API.loginUser({ username, password })
       .then((response) => {
         this.setUserToken(response.data.access_token);
+        this.scheduleTokenRefresh(); // Schedule token refresh
         navigation.navigate('Navigation');
         return 'Successful Login';
       })
@@ -143,6 +150,47 @@ const AuthUtils = {
       }
       console.log(error);
       return null;
+    }
+  },
+  async getTokenExpirationTime() {
+    if (Device.brand != null) {
+      const expirationTime = await SecureStore.getItemAsync('token-expiration-time');
+      return parseInt(expirationTime, 10);
+    }
+    return parseInt(window.localStorage.getItem('token-expiration-time'), 10);
+  },
+  async setTokenExpirationTime(expirationTime) {
+    if (Device.brand != null) {
+      await SecureStore.setItemAsync('token-expiration-time', expirationTime.toString());
+    } else {
+      window.localStorage.setItem('token-expiration-time', expirationTime.toString());
+    }
+  },
+  async refreshToken() {
+    try {
+      const response = await API.getRefreshToken();
+      this.setUserToken(response.data.access_token);
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+    }
+  },
+  async scheduleTokenRefresh() {
+    const expiresIn = await this.getTokenExpirationTime();
+    const currentTime = new Date().getTime();
+    const timeToRefresh = expiresIn - currentTime - 300 * 1000;
+
+    if (timeToRefresh > 0) {
+      setTimeout(async () => {
+        try {
+          await this.refreshToken();
+          this.scheduleTokenRefresh();
+        } catch (error) {
+          console.error('Error refreshing token:', error);
+        }
+      }, timeToRefresh);
+    } else {
+      await this.refreshToken();
+      this.scheduleTokenRefresh();
     }
   },
   async updateProfilePicture(image) {
