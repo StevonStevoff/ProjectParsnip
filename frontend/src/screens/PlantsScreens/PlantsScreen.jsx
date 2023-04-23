@@ -51,7 +51,7 @@ function PlantsScreen({ navigation }) {
   };
 
   useEffect(() => {
-    PlantUtils.getAuthenticatedUser().then((email) => {
+    PlantUtils.getAuthenticatedUserData().then((email) => {
       setUserEmail(email);
     });
   }, []);
@@ -266,19 +266,7 @@ function PlantsScreen({ navigation }) {
                     {plant.plant_profile.grow_properties.map((property) => (
                       <HStack justifyContent="space-between">
                         <View w="20%" marginBottom={10}>
-                          {(() => {
-                            let iconString;
-                            if (property.id === 1) {
-                              iconString = 'temperature';
-                            } else if (property.id === 2) {
-                              iconString = 'humidity';
-                            } else if (property.id === 3) {
-                              iconString = 'light';
-                            } else {
-                              iconString = 'soil moisture';
-                            }
-                            return getIconComponent(iconString);
-                          })()}
+                          {(() => getIconComponent(property.grow_property_type.description))()}
                         </View>
 
                         <Text fontSize={15}>
@@ -364,7 +352,7 @@ const styles = StyleSheet.create({
   plantDetailsButton: {
     marginRight: 5,
     marginLeft: 5,
-    marginTop:10,
+    marginTop: 10,
     padding: 10,
     backgroundColor: '#1E3438',
     borderRadius: 100,
