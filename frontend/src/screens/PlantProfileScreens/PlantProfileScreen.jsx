@@ -92,8 +92,21 @@ function PlantProfileScreen({ navigation }) {
 
   const handleDelete = async (id) => {
     try {
+      try {
+        const propertiesArray = plantProfiles.filter(
+          (plantProfile) => plantProfile.id === id,
+        )[0].grow_properties;
+        console.log(propertiesArray);
+        await Promise.all(
+          propertiesArray.map(async (property) => {
+            await API.deleteGrowProperty(property.id);
+          }),
+        );
+      } catch (error) { /* empty */ }
+
       await API.deletePlantProfile(id).then(() => {
         setPlantProfiles(plantProfiles.filter((plantProfile) => plantProfile.id !== id));
+
         setEvent('success');
       });
     } catch (error) { setEvent('error'); }
