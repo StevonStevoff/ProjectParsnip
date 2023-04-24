@@ -265,7 +265,7 @@ const API = {
 
   async registerPushToken({ token }, cancel = false) {
     const response = await api.request({
-      url: `/users/setPushToken`,
+      url: '/users/setPushToken',
       method: 'POST',
       data: {
         token,
@@ -275,7 +275,7 @@ const API = {
       },
       signal: cancel
         ? cancelApiObject[this.getPaginated.name].handleRequestCancellation()
-            .signal
+          .signal
         : undefined,
     });
 
@@ -314,7 +314,7 @@ const API = {
 
     return response;
   },
-}
+};
 
 // defining the cancel API object for ProductAPI
 const cancelApiObject = defineCancelApiObject(API);
