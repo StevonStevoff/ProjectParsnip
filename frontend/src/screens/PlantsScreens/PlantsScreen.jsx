@@ -201,7 +201,9 @@ function PlantsScreen({ navigation }) {
           <Heading>Your Plants</Heading>
           <TouchableOpacity
             style={styles.detailsButton}
-            onPress={() => navigation.navigate('RegisterPlantScreen', { plantTypes, plantProfiles, devices })}
+            onPress={() => navigation.navigate('RegisterPlantScreen', {
+              plantTypes, plantProfiles, devices,
+            })}
           >
             <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
           </TouchableOpacity>
