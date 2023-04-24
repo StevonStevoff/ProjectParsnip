@@ -108,7 +108,7 @@ function NavigationRoot() {
 
     if (Platform.OS !== "web") {
       registerForPushNotificationsAsync().then((token) => {
-        API.registerPushToken(token);
+        API.registerPushToken({ token });
       });
 
       notificationListener.current =

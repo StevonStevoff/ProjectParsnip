@@ -213,14 +213,12 @@ const API = {
     return response;
   },
 
-  async registerPushToken({ pushToken }, cancel = false) {
-    return;
-
+  async registerPushToken({ token }, cancel = false) {
     const response = await api.request({
       url: `/users/setPushToken`,
       method: "POST",
       data: {
-        pushToken,
+        token,
       },
       headers: {
         "Content-type": "application/json",
