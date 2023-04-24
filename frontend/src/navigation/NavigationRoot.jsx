@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { Center, useColorModeValue } from "native-base";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 import * as Device from "expo-device";
 import Navigation from "./BottomTabNavigation";
 import ProfileScreen from "../screens/AuthScreens/ProfileScreen";
@@ -20,7 +20,7 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
   }),
 });
 
@@ -95,15 +95,40 @@ function NavigationRoot() {
     },
   };
 
+  //const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
   useEffect(() => {
     AuthUtils.isUserAuthenticated().then((isLoggedIn) => {
       setIsUserLoggedIn(isLoggedIn);
       setIsLoading(false);
     });
 
-    registerForPushNotificationsAsync().then((token) => {
-      API.registerPushToken(token);
-    });
+    if (Platform.OS !== "web") {
+      registerForPushNotificationsAsync().then((token) => {
+        API.registerPushToken(token);
+      });
+
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+          //navigationRef.navigate('plants/PlantsRoot');
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
   }, []);
 
   if (isLoading) {

@@ -214,6 +214,8 @@ const API = {
   },
 
   async registerPushToken({ pushToken }, cancel = false) {
+    return;
+
     const response = await api.request({
       url: `/users/setPushToken`,
       method: "POST",
