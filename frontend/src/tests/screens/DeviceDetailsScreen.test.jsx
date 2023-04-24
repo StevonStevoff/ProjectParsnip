@@ -33,6 +33,19 @@ describe('DevicesDetailsScreen', () => {
   });
   const theme = defaultTheme();
 
+  test('displays error message when device details retrieval fails', async () => {
+    DeviceUtils.getDeviceDetails.mockRejectedValueOnce(new Error('Failed to fetch device details'));
+    const { getByText } = render(
+      <NativeBaseProvider theme={theme}>
+        <DeviceDetailsScreen route={{ params: { deviceId: '1' } }} />
+      </NativeBaseProvider>,
+    );
+
+    await waitFor(() => {
+      expect(getByText('Failed to fetch device details')).toBeDefined();
+    });
+  });
+
   test('renders device details correctly', async () => {
     DeviceUtils.getDeviceDetails.mockResolvedValueOnce(mockDevices[0]);
     const { findByText } = render(
@@ -46,18 +59,4 @@ describe('DevicesDetailsScreen', () => {
       expect(findByText('Model 1')).toBeDefined();
     });
   });
-
-  test('displays error message when device details retrieval fails', async () => {
-    DeviceUtils.getDeviceDetails.mockRejectedValueOnce(new Error('Failed to fetch device details'));
-    const { findByText } = render(
-      <NativeBaseProvider theme={theme}>
-        <DeviceDetailsScreen route={{ params: { deviceId: '1' } }} />
-      </NativeBaseProvider>,
-    );
-
-    await waitFor(() => {
-      expect(findByText('Failed to fetch device details')).toBeDefined();
-    });
-  });
-  // Add more tests as needed
 });
