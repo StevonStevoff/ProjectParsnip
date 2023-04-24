@@ -32,6 +32,7 @@ pyjwt = "^2.6.0"
 fastapi-mail = "^1.2.7"
 pytz = "^2023.3"
 Pillow = "^9.5.0"
+exponent-server-sdk = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0.0"

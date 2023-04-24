@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from exponent_server_sdk import PushClient, PushMessage, PushServerError
+from requests.exceptions import ConnectionError, HTTPError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -123,3 +125,21 @@ async def create_user_notification(
         user.notifications.append(notification)
 
     await session.commit()
+
+    await send_push_notification(notification, session)
+
+
+async def send_push_notification(notification: Notification, session: AsyncSession):
+    try:
+        response = PushClient().publish(
+            PushMessage(
+                to="ExponentPushToken[vlGotTPDa_loInuwPqwtx3]",
+                title="Project Parsnip",
+                body=notification.text,
+                data={"plant_id": notification.plant_id},
+            )
+        )
+    except PushServerError as exception:
+        pass
+    except (ConnectionError, HTTPError) as exception:
+        pass
