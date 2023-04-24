@@ -2,6 +2,7 @@ import * as yup from 'yup';
 
 const EditPlantProfileSchema = (selectedTypes) => yup.object().shape({
   name: yup.string().required('Name is required'),
+  description: yup.string().required('Description is required'),
   plant_type_id: yup.number().required('Plant type is required'),
   grow_duration: yup.number().required('Grow Duration is required'),
   public: yup.boolean().required('Public status is required'),

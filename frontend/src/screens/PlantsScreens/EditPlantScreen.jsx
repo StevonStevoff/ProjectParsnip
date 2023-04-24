@@ -28,10 +28,13 @@ function EditPlantScreen({ route, navigation }) {
         <CloseBtn navigation={navigation} />
       </View>
 
-      <VStack space={10} alignItems="center" width="99%" flex={1}>
-        <ScrollView style={{ maxHeight: '100%', width: '100%' }}>
+      <VStack space={1} alignItems="center" width="99%" flex={1} justifyContent="center">
+        <ScrollView
+          style={{ maxHeight: '100%', width: '100%' }}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        >
           <View style={{
-            width: '100%', height: '100%', alignItems: 'top', padding: 10,
+            width: '100%', height: '100%', padding: 10, justifyContent: 'center',
           }}
           >
             <EditPlantForm

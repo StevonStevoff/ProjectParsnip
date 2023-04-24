@@ -22,6 +22,8 @@ import {
   Divider,
   Button,
   Modal,
+  FormControl,
+  Center,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import EditPlantProfileSchema from '../utils/validationSchema/EditPlantProfileSchema';
@@ -267,56 +269,64 @@ function EditPlantProfileForm(props) {
             </View>
             )}
 
-            <Heading style={styles.label}>Name</Heading>
-            <Input
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              value={values.name}
-              w="100%"
-              size="2xl"
-              marginBottom="2%"
-            />
-            {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
+            <FormControl isRequired isInvalid={errors.name && touched.name}>
+              <FormControl.Label>Name</FormControl.Label>
+              <Input
+                onChangeText={handleChange('name')}
+                onBlur={handleBlur('name')}
+                value={values.name}
+                w="100%"
+                size="2xl"
+                marginBottom="2%"
+              />
+              <FormControl.ErrorMessage>
+                {errors.name}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
-            <Heading style={styles.label}>Description</Heading>
-            <Input
-              onChangeText={handleChange('description')}
-              onBlur={handleBlur('description')}
-              value={values.description}
-              w="100%"
-              size="2xl"
-              marginBottom="2%"
-            />
-            {touched.description && errors.description
-            && <Text style={styles.error}>{errors.description}</Text>}
+            <FormControl isRequired isInvalid={errors.description && touched.description}>
+              <FormControl.Label>Description</FormControl.Label>
+              <Input
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                w="100%"
+                size="2xl"
+                marginBottom="2%"
+              />
+              <FormControl.ErrorMessage>
+                {errors.description}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
             {/* Plant Types search and select Dropdown */}
-            <Heading style={styles.label}>Plant Type</Heading>
-            <View style={{ width: '100%' }}>
+            <FormControl isRequired isInvalid={errors.plant_type_id && touched.plant_type_id}>
+              <FormControl.Label>Plant Type</FormControl.Label>
+              <View style={{ width: '100%' }}>
 
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Input
-                  placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
-                  value={searchPTTerm}
-                  onChangeText={(text) => {
-                    setSearchPTTerm(text);
-                  }}
-                  style={{ flex: 1, padding: 10 }}
-                  w="100%"
-                  size="2xl"
-                  marginBottom="2%"
-                  InputLeftElement={showPTDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
-                  InputRightElement={(
-                    <Pressable onPress={() => { setSearchPTTerm(''); setShowPTDropdown(!showPTDropdown); }}>
-                      <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
-                    </Pressable>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Input
+                    placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
+                    value={searchPTTerm}
+                    onChangeText={(text) => {
+                      setSearchPTTerm(text);
+                    }}
+                    style={{ flex: 1, padding: 10 }}
+                    w="100%"
+                    size="2xl"
+                    marginBottom="2%"
+                    InputLeftElement={showPTDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
+                    InputRightElement={(
+                      <Pressable onPress={() => { setSearchPTTerm(''); setShowPTDropdown(!showPTDropdown); }}>
+                        <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
+                      </Pressable>
                 )}
-                  isDisabled={showPTDropdown === false}
-                />
-              </View>
-              {showPTDropdown && (
-              <ScrollView style={{ maxHeight: 100 }}>
-                {
+                    isDisabled={showPTDropdown === false}
+                  />
+                </View>
+                {showPTDropdown && (
+                <ScrollView style={{ maxHeight: 100 }}>
+                  {
                   filterPlantTypes(searchPTTerm).map((plantType) => (
                     <View style={{
                       flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
@@ -337,17 +347,18 @@ function EditPlantProfileForm(props) {
                     </View>
                   ))
                 }
-              </ScrollView>
-              )}
-              {searchPTTerm.length > 0
+                </ScrollView>
+                )}
+                {searchPTTerm.length > 0
               && foundPTLength < 1
               && showPTDropdown
               && <Text style={styles.error}>No results found</Text>}
 
-            </View>
-            {touched.plant_type_id && errors.plant_type_id && (
-            <Text style={styles.error}>{errors.plant_type_id}</Text>
-            )}
+              </View>
+              <FormControl.ErrorMessage>
+                {errors.plant_type_id}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
             <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
               <Heading style={{ fontSize: 16, marginRight: 15 }}>Public</Heading>
@@ -355,18 +366,25 @@ function EditPlantProfileForm(props) {
                 : <Switch onValueChange={(value) => values.public = value} size="md" />}
             </HStack>
 
-            <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
-              <Heading style={{ fontSize: 16, marginRight: 15 }}>Grow Duration (days)</Heading>
-              <Input
-                onChangeText={handleChange('grow_duration')}
-                onBlur={handleBlur('grow_duration')}
-                value={values?.grow_duration?.toString()}
-                style={{ padding: 5 }}
-                w="40%"
-                size="2xl"
-                marginBottom="2%"
-              />
-            </HStack>
+            <FormControl isRequired isInvalid={errors.grow_duration && touched.grow_duration}>
+              <Center>
+                <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
+                  <FormControl.Label>Grow Duration (days)</FormControl.Label>
+                  <Input
+                    onChangeText={handleChange('grow_duration')}
+                    onBlur={handleBlur('grow_duration')}
+                    value={values?.grow_duration?.toString()}
+                    style={{ padding: 5 }}
+                    w="40%"
+                    size="2xl"
+                    marginBottom="2%"
+                  />
+                </HStack>
+                <FormControl.ErrorMessage>
+                  {errors.grow_duration}
+                </FormControl.ErrorMessage>
+              </Center>
+            </FormControl>
 
             <HStack space={2} padding={5}>
               <Heading alignSelf="left">
@@ -417,52 +435,61 @@ function EditPlantProfileForm(props) {
                   <Text w="5%" />
                 </HStack>
                 {selectedTypes.map((property) => (
-                  <HStack key={property} justifyContent="space-between">
-                    <Text w={Platform.OS === 'web' ? '25%' : '32%'} fontSize={Platform.OS === 'web' ? 'md' : 'xs'}>{property}</Text>
-                    <Input
-                      onChangeText={handleChange(`properties.${property}.min`)}
-                      onBlur={handleBlur(`properties.${property}.min`)}
-                      value={values.properties?.[property]?.min?.toString()}
-                      style={{ padding: 5 }}
-                      w="27%"
-                      size="2xl"
-                      marginBottom="2%"
-                    />
-                    <Input
-                      onChangeText={handleChange(`properties.${property}.max`)}
-                      onBlur={handleBlur(`properties.${property}.max`)}
-                      value={values.properties?.[property]?.max?.toString()}
-                      style={{ padding: 5 }}
-                      w="25%"
-                      size="2xl"
-                      marginBottom="2%"
-                    />
-                    <View w="10%">
-                      <Button
-                        borderRadius={100}
-                        w={10}
-                        h={10}
-                        onPress={() => handleDelete(property)}
+                  <FormControl
+                    isRequired
+                    isInvalid={
+                      touched.properties?.[property]?.min && errors.properties?.[property]?.min
+                    }
+                  >
+                    <HStack key={property} justifyContent="space-between">
+                      <FormControl.Label
+                        w={Platform.OS === 'web' ? '25%' : '32%'}
+                        fontSize={Platform.OS === 'web' ? 'md' : 'xs'}
                       >
-                        <Icon as={MaterialIcons} name="close" color="white" _dark={{ color: 'white' }} />
-                      </Button>
-                    </View>
-                  </HStack>
+                        {property}
+
+                      </FormControl.Label>
+                      <Input
+                        onChangeText={handleChange(`properties.${property}.min`)}
+                        onBlur={handleBlur(`properties.${property}.min`)}
+                        value={values.properties?.[property]?.min?.toString()}
+                        style={{ padding: 5 }}
+                        w="27%"
+                        size="2xl"
+                        marginBottom="2%"
+                      />
+                      <Input
+                        onChangeText={handleChange(`properties.${property}.max`)}
+                        onBlur={handleBlur(`properties.${property}.max`)}
+                        value={values.properties?.[property]?.max?.toString()}
+                        style={{ padding: 5 }}
+                        w="25%"
+                        size="2xl"
+                        marginBottom="2%"
+                      />
+                      <View w="10%">
+                        <Button
+                          borderRadius={100}
+                          w={10}
+                          h={10}
+                          onPress={() => handleDelete(property)}
+                        >
+                          <Icon as={MaterialIcons} name="close" color="white" _dark={{ color: 'white' }} />
+                        </Button>
+                      </View>
+                    </HStack>
+                    <Center>
+                      <FormControl.ErrorMessage>
+                        {errors.properties?.[property]?.min}
+                      </FormControl.ErrorMessage>
+                      <FormControl.ErrorMessage>
+                        {errors.properties?.[property]?.max}
+                      </FormControl.ErrorMessage>
+                    </Center>
+                  </FormControl>
                 ))}
               </VStack>
             ) : <Heading style={styles.error}>No property selected</Heading>}
-
-            {selectedTypes.map((property) => (
-              <View key={property}>
-                {touched.properties?.[property]?.min && errors.properties?.[property]?.min && (
-                <Text style={styles.error}>{errors.properties[property].min}</Text>
-                )}
-                {touched.properties?.[property]?.max && errors.properties?.[property]?.max && (
-                <Text style={styles.error}>{errors.properties[property].max}</Text>
-                )}
-              </View>
-            ))}
-
             <TouchableOpacity
               style={styles.button}
               onPress={selectedTypes.length > 0 ? handleSubmit : null}

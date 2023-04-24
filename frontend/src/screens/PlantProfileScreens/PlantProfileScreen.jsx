@@ -106,7 +106,6 @@ function PlantProfileScreen({ navigation }) {
         } catch (error) {
           /* empty */
         } finally {
-          console.log('Plant profiles fetched');
           setIsLoading(false);
         }
       };
@@ -154,14 +153,12 @@ function PlantProfileScreen({ navigation }) {
   const handleDelete = async (value) => {
     const userIds = value.users.map((user) => user.id);
     const updatedUsers = userIds.filter((id) => id !== userData.id);
-    console.log(value.id);
     const peooe = {
       id: value.id,
       user_ids: [2],
     };
     try {
       const response = await API.editPlantProfile(peooe);
-      console.log(response);
       setChanged(!changed);
       setEvent('success');
     } catch (error) { setEvent('error'); }
