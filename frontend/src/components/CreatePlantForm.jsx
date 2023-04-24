@@ -167,7 +167,7 @@ function CreatePlantForm(props) {
               <FormControl.Label>Device</FormControl.Label>
               <View style={{ width: '100%' }}>
                 {/* Devices search and select Dropdown */}
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Input
                     placeholder={showDropdown ? 'Search for a device' : selectedDevice}
                     value={searchTerm}
@@ -192,7 +192,7 @@ function CreatePlantForm(props) {
                   {
               filterDevices(searchTerm).map((device) => (
                 <View style={{
-                  flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                  flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                 }}
                 >
                   <TouchableOpacity
@@ -227,7 +227,7 @@ function CreatePlantForm(props) {
               <FormControl.Label>Plant Profile</FormControl.Label>
               <View style={{ width: '100%' }}>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Input
                     placeholder={showPPDropdown ? 'Search for a plant profile' : selectedPlantProfile}
                     value={searchPPTerm}
@@ -252,7 +252,7 @@ function CreatePlantForm(props) {
                   {
               filterPlantProfiles(searchPPTerm).map((plantProfile) => (
                 <View style={{
-                  flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                  flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                 }}
                 >
                   <TouchableOpacity
@@ -286,7 +286,7 @@ function CreatePlantForm(props) {
             <FormControl isRequired isInvalid={errors.plant_type_id && touched.plant_type_id}>
               <FormControl.Label>Plant Type</FormControl.Label>
               <View style={{ width: '100%' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Input
                     placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
                     value={searchPTTerm}
@@ -311,7 +311,7 @@ function CreatePlantForm(props) {
                   {
               filterPlantTypes(searchPTTerm).map((plantType) => (
                 <View style={{
-                  flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                  flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                 }}
                 >
                   <TouchableOpacity
@@ -341,16 +341,19 @@ function CreatePlantForm(props) {
               </FormControl.ErrorMessage>
             </FormControl>
 
-            <HStack space={2} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
-              <Heading style={{ fontSize: 16, marginRight: 15 }}>Outdoor</Heading>
-              <Switch onValueChange={(value) => values.outdoor = value} size="md" />
-            </HStack>
+            <Center>
+              <HStack space={2} justifyContent="center" width="80%" paddingTop={10}>
+                <Heading style={{ fontSize: 16, marginRight: 15 }}>Outdoor</Heading>
+                <Switch onValueChange={(value) => values.outdoor = value} size="md" />
+
+              </HStack>
+            </Center>
 
             <FormControl isInvalid={(errors.longitude && touched.longitude)
               || (errors.latitude && touched.latitude)}
             >
               <Center>
-                <HStack space={4} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
+                <HStack space={4} justifyContent="center" width="80%" paddingTop={10}>
                   <FormControl.Label>Longitude</FormControl.Label>
                   <Input
                     onChangeText={handleChange('longitude')}
@@ -399,7 +402,6 @@ function CreatePlantForm(props) {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
   },

@@ -304,7 +304,7 @@ function EditPlantProfileForm(props) {
               <FormControl.Label>Plant Type</FormControl.Label>
               <View style={{ width: '100%' }}>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Input
                     placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
                     value={searchPTTerm}
@@ -329,7 +329,7 @@ function EditPlantProfileForm(props) {
                   {
                   filterPlantTypes(searchPTTerm).map((plantType) => (
                     <View style={{
-                      flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                      flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                     }}
                     >
                       <TouchableOpacity
@@ -360,15 +360,17 @@ function EditPlantProfileForm(props) {
               </FormControl.ErrorMessage>
             </FormControl>
 
-            <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
-              <Heading style={{ fontSize: 16, marginRight: 15 }}>Public</Heading>
-              {values.public ? <Switch defaultIsChecked onValueChange={(value) => values.public = value} size="md" />
-                : <Switch onValueChange={(value) => values.public = value} size="md" />}
-            </HStack>
+            <Center>
+              <HStack space={2} justifyContent="center" width="80%" padding={5}>
+                <Heading style={{ fontSize: 16, marginRight: 15 }}>Public</Heading>
+                {values.public ? <Switch defaultIsChecked onValueChange={(value) => values.public = value} size="md" />
+                  : <Switch onValueChange={(value) => values.public = value} size="md" />}
+              </HStack>
+            </Center>
 
             <FormControl isRequired isInvalid={errors.grow_duration && touched.grow_duration}>
               <Center>
-                <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
+                <HStack space={2} justifyContent="center" width="80%" padding={5}>
                   <FormControl.Label>Grow Duration (days)</FormControl.Label>
                   <Input
                     onChangeText={handleChange('grow_duration')}
@@ -386,28 +388,29 @@ function EditPlantProfileForm(props) {
               </Center>
             </FormControl>
 
-            <HStack space={2} padding={5}>
-              <Heading>
-                Grow Properties
-                {' '}
-              </Heading>
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  backgroundColor: '#1E3438',
-                  borderRadius: 100,
-                  borderWidth: 1,
-                  borderColor: '#1E6738',
-                  height: 40,
-                  width: 40,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={handleAdd}
-              >
-                <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
-              </TouchableOpacity>
-            </HStack>
+            <Center>
+              <HStack space={2} padding={5}>
+                <Heading>
+                  Grow Properties
+                  {' '}
+                </Heading>
+                <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    backgroundColor: '#1E3438',
+                    borderRadius: 100,
+                    borderWidth: 1,
+                    borderColor: '#1E6738',
+                    height: 40,
+                    width: 40,
+                    justifyContent: 'center',
+                  }}
+                  onPress={handleAdd}
+                >
+                  <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
+                </TouchableOpacity>
+              </HStack>
+            </Center>
             <Divider />
 
             <Modal isOpen={showTypeButtons} onClose={() => setShowTypeButtons(false)}>
@@ -427,7 +430,7 @@ function EditPlantProfileForm(props) {
               </Modal.Content>
             </Modal>
             {selectedTypes.length > 0 ? (
-              <VStack space={4} w="90%" paddingTop={5}>
+              <VStack space={4} w="95%" paddingTop={5}>
                 <HStack justifyContent="space-between">
                   <Text w={Platform.OS === 'web' ? '40%' : '32%'} />
                   <Text w="27%">Minimum</Text>
@@ -489,7 +492,7 @@ function EditPlantProfileForm(props) {
                   </FormControl>
                 ))}
               </VStack>
-            ) : <Heading style={styles.error}>No property selected</Heading>}
+            ) : <Center><Heading style={styles.error}>No property selected</Heading></Center>}
             <TouchableOpacity
               style={styles.button}
               onPress={selectedTypes.length > 0 ? handleSubmit : null}
@@ -506,7 +509,6 @@ function EditPlantProfileForm(props) {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
   },

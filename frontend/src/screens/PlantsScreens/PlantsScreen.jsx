@@ -211,7 +211,7 @@ function PlantsScreen({ navigation }) {
 
         <View style={{ width: '95%' }}>
           {plants.map((plant) => (
-            <>
+            <View key={plant.id}>
               <Heading style={{ fontSize: 25, padding: 7, fontWeight: 'bold' }} key={plant.id}>{plant.name}</Heading>
               <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
 
@@ -266,7 +266,7 @@ function PlantsScreen({ navigation }) {
                   <Divider my={1} orientation="vertical" />
                   <VStack space={plant.plant_profile.grow_properties.length} w="40%" paddingLeft={1}>
                     {plant.plant_profile.grow_properties.map((property) => (
-                      <HStack justifyContent="space-between">
+                      <HStack key={property.id} justifyContent="space-between">
                         <View w="20%" marginBottom={10}>
                           {(() => getIconComponent(property.grow_property_type.description))()}
                         </View>
@@ -315,7 +315,7 @@ function PlantsScreen({ navigation }) {
                 </View>
 
               </View>
-            </>
+            </View>
           ))}
         </View>
 

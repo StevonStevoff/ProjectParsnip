@@ -120,7 +120,7 @@ function PlantDetailsScreen({ route, navigation }) {
           </Text>
 
           {route.params.plant.plant_profile.grow_properties.map((beans) => (
-            <>
+            <View key={beans.id}>
               <Text style={styles.centeredText}>
                 {beans.grow_property_type.name}
                 {' '}
@@ -135,7 +135,7 @@ function PlantDetailsScreen({ route, navigation }) {
                 ) : <Text style={styles.errorText}>No data for this range</Text>}
               </View>
 
-            </>
+            </View>
           ))}
 
         </View>

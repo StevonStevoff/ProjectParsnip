@@ -138,119 +138,119 @@ function CreatePlantProfileForm(props) {
 
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
   return (
-      <View style = {{ flex: 1 }} >
-        <Formik
-          initialValues={{
-            name: '',
-            description: '',
-            public: false,
-            grow_duration: '',
-            plant_type_id: '',
-            properties: selectedTypes.reduce((acc, property) => ({
-              ...acc,
-              [property]: { min: '', max: '' },
-            }), {}),
-            sensor_id: 1,
-            grow_property_type_id: 1,
-            plant_profile_id: 0,
-            user_ids: [userData.id],
-          }}
-          validationSchema={CreatePlantProfileSchema(selectedTypes)}
-          onSubmit={handleRegisterPlantProfile}
-        >
-          {({
-            handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting,
-          }) => (
-            <View style={styles.container}>
-              {filteredStatusArray.length !== 0 && (
+    <View style={{ flex: 1 }}>
+      <Formik
+        initialValues={{
+          name: '',
+          description: '',
+          public: false,
+          grow_duration: '',
+          plant_type_id: '',
+          properties: selectedTypes.reduce((acc, property) => ({
+            ...acc,
+            [property]: { min: '', max: '' },
+          }), {}),
+          sensor_id: 1,
+          grow_property_type_id: 1,
+          plant_profile_id: 0,
+          user_ids: [userData.id],
+        }}
+        validationSchema={CreatePlantProfileSchema(selectedTypes)}
+        onSubmit={handleRegisterPlantProfile}
+      >
+        {({
+          handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting,
+        }) => (
+          <View style={styles.container}>
+            {filteredStatusArray.length !== 0 && (
               <View style={{ padding: 5, width: '100%' }}>
                 <Alert w="100%" status={filteredStatusArray[0].status}>
                   <VStack space={2} flexShrink={1} w="100%">
                     <HStack flexShrink={1} space={2} justifyContent="space-between">
                       <HStack space={2} flexShrink={1}>
-                      <Alert.Icon mt="1" />
-                      <Text fontSize="md" color="coolGray.800">
-                        {filteredStatusArray[0].title}
-                      </Text>
-                    </HStack>
+                        <Alert.Icon mt="1" />
+                        <Text fontSize="md" color="coolGray.800">
+                          {filteredStatusArray[0].title}
+                        </Text>
+                      </HStack>
                       <IconButton
-                      variant="unstyled"
-                      _focus={{
-                        borderWidth: 0,
-                      }}
-                      icon={<CloseIcon size="3" />}
-                      _icon={{
-                        color: 'coolGray.600',
-                      }}
-                      onPress={handleClose}
-                    />
+                        variant="unstyled"
+                        _focus={{
+                          borderWidth: 0,
+                        }}
+                        icon={<CloseIcon size="3" />}
+                        _icon={{
+                          color: 'coolGray.600',
+                        }}
+                        onPress={handleClose}
+                      />
                     </HStack>
                   </VStack>
                 </Alert>
               </View>
-              )}
+            )}
 
-              <FormControl isRequired isInvalid={errors.name && touched.name}>
-                <FormControl.Label>Name</FormControl.Label>
-                <Input
-                  onChangeText={handleChange('name')}
-                  onBlur={handleBlur('name')}
-                  value={values.name}
-                  w="100%"
-                  size="2xl"
-                  marginBottom="2%"
-                />
-                <FormControl.ErrorMessage>
-                  {errors.name}
-                </FormControl.ErrorMessage>
-              </FormControl>
+            <FormControl isRequired isInvalid={errors.name && touched.name}>
+              <FormControl.Label>Name</FormControl.Label>
+              <Input
+                onChangeText={handleChange('name')}
+                onBlur={handleBlur('name')}
+                value={values.name}
+                w="100%"
+                size="2xl"
+                marginBottom="2%"
+              />
+              <FormControl.ErrorMessage>
+                {errors.name}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
-              <FormControl isRequired isInvalid={errors.description && touched.description}>
-                <FormControl.Label>Description</FormControl.Label>
-                <Input
-                  onChangeText={handleChange('description')}
-                  onBlur={handleBlur('description')}
-                  value={values.description}
-                  w="100%"
-                  size="2xl"
-                  marginBottom="2%"
-                />
-                <FormControl.ErrorMessage>
-                  {errors.description}
-                </FormControl.ErrorMessage>
-              </FormControl>
+            <FormControl isRequired isInvalid={errors.description && touched.description}>
+              <FormControl.Label>Description</FormControl.Label>
+              <Input
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                w="100%"
+                size="2xl"
+                marginBottom="2%"
+              />
+              <FormControl.ErrorMessage>
+                {errors.description}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
-              {/* Plant Types search and select Dropdown */}
-              <FormControl isRequired isInvalid={errors.plant_type_id && touched.plant_type_id}>
-                <FormControl.Label>Plant Type</FormControl.Label>
-                <View style={{ width: '100%' }}>
+            {/* Plant Types search and select Dropdown */}
+            <FormControl isRequired isInvalid={errors.plant_type_id && touched.plant_type_id}>
+              <FormControl.Label>Plant Type</FormControl.Label>
+              <View style={{ width: '100%' }}>
 
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Input
-                      placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
-                      value={searchPTTerm}
-                      onChangeText={(text) => {
-                        setSearchPTTerm(text);
-                      }}
-                      style={{ flex: 1, padding: 10 }}
-                      w="100%"
-                      size="2xl"
-                      marginBottom="2%"
-                      InputLeftElement={showPTDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
-                      InputRightElement={(
-                        <Pressable onPress={() => { setSearchPTTerm(''); setShowPTDropdown(!showPTDropdown); }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Input
+                    placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
+                    value={searchPTTerm}
+                    onChangeText={(text) => {
+                      setSearchPTTerm(text);
+                    }}
+                    style={{ flex: 1, padding: 10 }}
+                    w="100%"
+                    size="2xl"
+                    marginBottom="2%"
+                    InputLeftElement={showPTDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
+                    InputRightElement={(
+                      <Pressable onPress={() => { setSearchPTTerm(''); setShowPTDropdown(!showPTDropdown); }}>
                         <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
                       </Pressable>
                 )}
-                      isDisabled={showPTDropdown === false}
-                    />
-                  </View>
-                  {showPTDropdown && (
+                    isDisabled={showPTDropdown === false}
+                  />
+                </View>
+                {showPTDropdown && (
                   <ScrollView style={{ maxHeight: 100 }}>
                     {
                   filterPlantTypes(searchPTTerm).map((plantType) => (
                     <View style={{
-                      flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                      flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                     }}
                     >
                       <TouchableOpacity
@@ -269,44 +269,47 @@ function CreatePlantProfileForm(props) {
                   ))
                 }
                   </ScrollView>
-                  )}
-                  {searchPTTerm.length > 0
+                )}
+                {searchPTTerm.length > 0
               && foundPTLength < 1
               && showPTDropdown
               && <Text style={styles.error}>No results found</Text>}
 
-                </View>
-                <FormControl.ErrorMessage>
-                  {errors.plant_type_id}
-                </FormControl.ErrorMessage>
-              </FormControl>
+              </View>
+              <FormControl.ErrorMessage>
+                {errors.plant_type_id}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
-              <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
+            <Center>
+              <HStack space={2} justifyContent="center" width="80%" padding={5}>
                 <Heading style={{ fontSize: 16, marginRight: 15 }}>Public</Heading>
                 {values.public ? <Switch defaultIsChecked onValueChange={(value) => values.public = value} size="md" />
                   : <Switch onValueChange={(value) => values.public = value} size="md" />}
               </HStack>
+            </Center>
 
-              <FormControl isRequired isInvalid={errors.grow_duration && touched.grow_duration}>
-                <Center>
-                  <HStack space={2} alignItems="center" justifyContent="center" width="80%" padding={10}>
-                    <FormControl.Label>Grow Duration (days)</FormControl.Label>
-                    <Input
-                      onChangeText={handleChange('grow_duration')}
-                      onBlur={handleBlur('grow_duration')}
-                      value={values.grow_duration.toString()}
-                      style={{ padding: 5 }}
-                      w="40%"
-                      size="2xl"
-                      marginBottom="2%"
-                    />
-                  </HStack>
-                  <FormControl.ErrorMessage>
-                    {errors.grow_duration}
-                  </FormControl.ErrorMessage>
-                </Center>
-              </FormControl>
+            <FormControl isRequired isInvalid={errors.grow_duration && touched.grow_duration}>
+              <Center>
+                <HStack space={2} justifyContent="center" width="80%" padding={5}>
+                  <FormControl.Label>Grow Duration (days)</FormControl.Label>
+                  <Input
+                    onChangeText={handleChange('grow_duration')}
+                    onBlur={handleBlur('grow_duration')}
+                    value={values.grow_duration.toString()}
+                    style={{ padding: 5 }}
+                    w="40%"
+                    size="2xl"
+                    marginBottom="2%"
+                  />
+                </HStack>
+                <FormControl.ErrorMessage>
+                  {errors.grow_duration}
+                </FormControl.ErrorMessage>
+              </Center>
+            </FormControl>
 
+            <Center>
               <HStack space={2} padding={5}>
                 <Heading>
                   Grow Properties
@@ -322,56 +325,57 @@ function CreatePlantProfileForm(props) {
                     height: 40,
                     width: 40,
                     justifyContent: 'center',
-                    alignItems: 'center',
                   }}
                   onPress={handleAdd}
                 >
                   <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
                 </TouchableOpacity>
               </HStack>
-              <Divider />
+            </Center>
 
-              <Modal isOpen={showTypeButtons} onClose={() => setShowTypeButtons(false)}>
-                <Modal.Content maxWidth="400px">
-                  <Modal.CloseButton />
-                  <Modal.Header>Pick property type</Modal.Header>
-                  <Modal.Body>
+            <Divider />
 
-                    {availableTypes.map((type) => (
-                      <>
-                        <Button key={type} onPress={() => handleTypeSelect(type)}>{type}</Button>
-                        <Text> </Text>
+            <Modal isOpen={showTypeButtons} onClose={() => setShowTypeButtons(false)}>
+              <Modal.Content maxWidth="400px">
+                <Modal.CloseButton />
+                <Modal.Header>Pick property type</Modal.Header>
+                <Modal.Body>
 
-                      </>
-                    ))}
-                  </Modal.Body>
-                </Modal.Content>
-              </Modal>
+                  {availableTypes.map((type) => (
+                    <>
+                      <Button key={type} onPress={() => handleTypeSelect(type)}>{type}</Button>
+                      <Text> </Text>
 
-              {selectedTypes.length > 0 ? (
-                <VStack space={4} w="90%" paddingTop={5}>
-                  <HStack justifyContent="space-between">
-                    <Text w={Platform.OS === 'web' ? '40%' : '32%'} />
-                    <Text w="27%">Minimum</Text>
-                    <Text w="25%">Maximum</Text>
-                    <Text w="5%" />
-                  </HStack>
-                  {selectedTypes.map((property) => (
-                    <FormControl
-                      isRequired
-                      isInvalid={
+                    </>
+                  ))}
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+
+            {selectedTypes.length > 0 ? (
+              <VStack space={4} w="90%" paddingTop={5}>
+                <HStack justifyContent="space-between">
+                  <Text w={Platform.OS === 'web' ? '40%' : '32%'} />
+                  <Text w="27%">Minimum</Text>
+                  <Text w="25%">Maximum</Text>
+                  <Text w="5%" />
+                </HStack>
+                {selectedTypes.map((property) => (
+                  <FormControl
+                    isRequired
+                    isInvalid={
                       touched.properties?.[property]?.min && errors.properties?.[property]?.min
                     }
-                    >
-                      <HStack key={property} justifyContent="space-between">
-                        <FormControl.Label
+                  >
+                    <HStack key={property} justifyContent="space-between">
+                      <FormControl.Label
                         w={Platform.OS === 'web' ? '25%' : '32%'}
                         fontSize={Platform.OS === 'web' ? 'md' : 'xs'}
                       >
                         {property}
 
                       </FormControl.Label>
-                        <Input
+                      <Input
                         onChangeText={handleChange(`properties.${property}.min`)}
                         onBlur={handleBlur(`properties.${property}.min`)}
                         value={values.properties?.[property]?.min?.toString()}
@@ -380,7 +384,7 @@ function CreatePlantProfileForm(props) {
                         size="2xl"
                         marginBottom="2%"
                       />
-                        <Input
+                      <Input
                         onChangeText={handleChange(`properties.${property}.max`)}
                         onBlur={handleBlur(`properties.${property}.max`)}
                         value={values.properties?.[property]?.max?.toString()}
@@ -389,7 +393,7 @@ function CreatePlantProfileForm(props) {
                         size="2xl"
                         marginBottom="2%"
                       />
-                        <View w="10%">
+                      <View w="10%">
                         <Button
                           borderRadius={100}
                           w={10}
@@ -399,38 +403,37 @@ function CreatePlantProfileForm(props) {
                           <Icon as={MaterialIcons} name="close" color="white" _dark={{ color: 'white' }} />
                         </Button>
                       </View>
-                      </HStack>
-                      <Center>
-                        <FormControl.ErrorMessage>
+                    </HStack>
+                    <Center>
+                      <FormControl.ErrorMessage>
                         {errors.properties?.[property]?.min}
                       </FormControl.ErrorMessage>
-                        <FormControl.ErrorMessage>
+                      <FormControl.ErrorMessage>
                         {errors.properties?.[property]?.max}
                       </FormControl.ErrorMessage>
-                      </Center>
-                    </FormControl>
-                  ))}
+                    </Center>
+                  </FormControl>
+                ))}
 
-                </VStack>
-              ) : <Heading style={styles.error}>No property selected</Heading>}
+              </VStack>
+            ) : <Center><Heading style={styles.error}>No property selected</Heading></Center>}
 
-              <TouchableOpacity
-                style={styles.button}
-                onPress={selectedTypes.length > 0 ? handleSubmit : null}
-                disabled={isSubmitting}
-              >
-                <Text style={styles.buttonText}>Create Plant Profile</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </Formik>
-      </View>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={selectedTypes.length > 0 ? handleSubmit : null}
+              disabled={isSubmitting}
+            >
+              <Text style={styles.buttonText}>Create Plant Profile</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </Formik>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
   },

@@ -175,7 +175,7 @@ function EditPlantForm(props) {
               <FormControl.Label>Device</FormControl.Label>
               <View style={{ width: '100%' }}>
                 {/* Devices search and select Dropdown */}
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Input
                     placeholder={showDropdown ? 'Search for a device' : selectedDevice}
                     value={searchTerm}
@@ -200,7 +200,7 @@ function EditPlantForm(props) {
                   {
                   filterDevices(searchTerm).map((device) => (
                     <View style={{
-                      flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                      flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                     }}
                     >
                       <TouchableOpacity
@@ -235,7 +235,7 @@ function EditPlantForm(props) {
               <FormControl.Label>Plant Profile</FormControl.Label>
               <View style={{ width: '100%' }}>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Input
                     placeholder={showPPDropdown ? 'Search for a plant profile' : selectedPlantProfile}
                     value={searchPPTerm}
@@ -260,7 +260,7 @@ function EditPlantForm(props) {
                   {
                   filterPlantProfiles(searchPPTerm).map((plantProfile) => (
                     <View style={{
-                      flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                      flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                     }}
                     >
                       <TouchableOpacity
@@ -295,7 +295,7 @@ function EditPlantForm(props) {
               <FormControl.Label>Plant Type</FormControl.Label>
               <View style={{ width: '100%' }}>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Input
                     placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
                     value={searchPTTerm}
@@ -320,7 +320,7 @@ function EditPlantForm(props) {
                   {
                   filterPlantTypes(searchPTTerm).map((plantType) => (
                     <View style={{
-                      flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                      flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                     }}
                     >
                       <TouchableOpacity
@@ -351,17 +351,19 @@ function EditPlantForm(props) {
               </FormControl.ErrorMessage>
             </FormControl>
 
-            <HStack space={2} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
-              <Heading style={{ fontSize: 16, marginRight: 15 }}>Outdoor</Heading>
-              {values.outdoor ? <Switch defaultIsChecked onValueChange={(value) => values.outdoor = value} size="md" />
-                : <Switch onValueChange={(value) => values.outdoor = value} size="md" />}
-            </HStack>
+            <Center>
+              <HStack space={2} justifyContent="center" width="80%" paddingTop={10}>
+                <Heading style={{ fontSize: 16, marginRight: 15 }}>Outdoor</Heading>
+                {values.outdoor ? <Switch defaultIsChecked onValueChange={(value) => values.outdoor = value} size="md" />
+                  : <Switch onValueChange={(value) => values.outdoor = value} size="md" />}
+              </HStack>
+            </Center>
 
             <FormControl isInvalid={(errors.longitude && touched.longitude)
               || (errors.latitude && touched.latitude)}
             >
               <Center>
-                <HStack space={4} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
+                <HStack space={4} justifyContent="center" width="80%" paddingTop={10}>
 
                   <FormControl.Label>Longitude</FormControl.Label>
                   <Input
@@ -432,7 +434,6 @@ function EditPlantForm(props) {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
   },

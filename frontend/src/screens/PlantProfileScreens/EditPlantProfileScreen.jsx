@@ -1,4 +1,6 @@
-import { View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import {
+  View, ScrollView, KeyboardAvoidingView, Platform,
+} from 'react-native';
 import React from 'react';
 import {
   VStack,
@@ -8,6 +10,24 @@ import CloseBtn from '../../components/CloseBtn';
 import EditPlantProfileForm from '../../components/EditPlantProfileForm';
 
 function EditPlantProfileScreen({ route, navigation }) {
+  const editPlantProfileFormCont = (
+    <VStack space={10} alignItems="center" width="99%" flex={1}>
+      <ScrollView
+        style={{ maxHeight: '100%', width: '100%' }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+      >
+        <View style={{
+          width: '100%', height: '100%', justifyContent: 'center', padding: 10,
+        }}
+        >
+          <EditPlantProfileForm
+            plantTypes={route.params.plantTypes}
+            plantProfile={route.params.plantProfile}
+          />
+        </View>
+      </ScrollView>
+    </VStack>
+  );
   return (
     <View
       style={{
@@ -29,27 +49,17 @@ function EditPlantProfileScreen({ route, navigation }) {
         <CloseBtn navigation={navigation} />
       </View>
 
-      <KeyboardAvoidingView
-        behavior="padding"
-        keyboardVerticalOffset={useHeaderHeight()}
-      >
-        <VStack space={10} alignItems="center" width="99%" flex={1}>
-          <ScrollView
-            style={{ maxHeight: '100%', width: '100%' }}
-            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-          >
-            <View style={{
-              width: '100%', height: '100%', justifyContent: 'center', padding: 10,
-            }}
-            >
-              <EditPlantProfileForm
-                plantTypes={route.params.plantTypes}
-                plantProfile={route.params.plantProfile}
-              />
-            </View>
-          </ScrollView>
-        </VStack>
-      </KeyboardAvoidingView>
+      {Platform.OS === 'web' ? (
+        editPlantProfileFormCont
+      ) : (
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={Platform.OS === 'ios' ? useHeaderHeight() : -200}
+        >
+
+          {editPlantProfileFormCont}
+        </KeyboardAvoidingView>
+      )}
     </View>
   );
 }

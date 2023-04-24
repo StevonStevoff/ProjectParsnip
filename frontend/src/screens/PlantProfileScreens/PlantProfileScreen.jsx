@@ -357,7 +357,7 @@ function PlantProfileScreen({ navigation }) {
 
               <VStack space={plantProfile.grow_properties.length} w="90%">
                 {plantProfile.grow_properties.map((property) => (
-                  <HStack justifyContent="space-between">
+                  <HStack key={property.id} justifyContent="space-between">
                     <View w="30%">
                       {(() => getIconComponent(property.grow_property_type.description))()}
                     </View>

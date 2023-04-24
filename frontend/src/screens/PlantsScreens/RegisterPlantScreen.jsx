@@ -1,4 +1,6 @@
-import { View, ScrollView, KeyboardAvoidingView } from 'react-native';
+import {
+  View, ScrollView, KeyboardAvoidingView, Platform,
+} from 'react-native';
 import React from 'react';
 import {
   VStack,
@@ -8,6 +10,26 @@ import CloseBtn from '../../components/CloseBtn';
 import CreatePlantForm from '../../components/CreatePlantForm';
 
 function RegisterPlantScreen({ route, navigation }) {
+  const createPlantFormCont = (
+    <VStack space={1} alignItems="center" width="100%" flex={1}>
+      <ScrollView
+        style={{ maxHeight: '100%', width: '100%' }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+      >
+        <View style={{
+          width: '100%', height: '100%', justifyContent: 'center', padding: 10,
+        }}
+        >
+          <CreatePlantForm
+            plantTypes={route.params.plantTypes}
+            plantProfiles={route.params.plantProfiles}
+            devices={route.params.devices}
+          />
+        </View>
+      </ScrollView>
+    </VStack>
+  );
+
   return (
     <View
       style={{
@@ -29,29 +51,17 @@ function RegisterPlantScreen({ route, navigation }) {
         <CloseBtn navigation={navigation} />
       </View>
 
-      <KeyboardAvoidingView
-        behavior="padding"
-        keyboardVerticalOffset={useHeaderHeight()}
-      >
+      {Platform.OS === 'web' ? (
+        createPlantFormCont
+      ) : (
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={Platform.OS === 'ios' ? useHeaderHeight() : -200}
+        >
 
-        <VStack space={10} alignItems="center" width="100%" flex={1}>
-          <ScrollView
-            style={{ maxHeight: '100%', width: '100%' }}
-            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-          >
-            <View style={{
-              width: '100%', height: '100%', justifyContent: 'center', padding: 10,
-            }}
-            >
-              <CreatePlantForm
-                plantTypes={route.params.plantTypes}
-                plantProfiles={route.params.plantProfiles}
-                devices={route.params.devices}
-              />
-            </View>
-          </ScrollView>
-        </VStack>
-      </KeyboardAvoidingView>
+          {createPlantFormCont}
+        </KeyboardAvoidingView>
+      )}
     </View>
   );
 }
