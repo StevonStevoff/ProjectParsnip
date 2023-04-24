@@ -146,3 +146,4 @@ async def send_push_notification(notification: Notification, session: AsyncSessi
             response.validate_response()
         except DeviceNotRegisteredError:
             user.push_token = None
+            session.commit()
