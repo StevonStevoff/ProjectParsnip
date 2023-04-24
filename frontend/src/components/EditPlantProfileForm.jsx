@@ -360,7 +360,7 @@ function EditPlantProfileForm(props) {
               <Input
                 onChangeText={handleChange('grow_duration')}
                 onBlur={handleBlur('grow_duration')}
-                value={values.grow_duration.toString()}
+                value={values?.grow_duration?.toString()}
                 style={{ padding: 5 }}
                 w="40%"
                 size="2xl"
