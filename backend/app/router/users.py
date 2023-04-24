@@ -7,7 +7,7 @@ import app.router.imgutils as imgutils
 from app.database import get_async_session
 from app.models import User
 from app.router.utils import get_object_or_404, model_list_to_schema
-from app.schemas import UserRead, UserUpdate
+from app.schemas import PushToken, UserRead, UserUpdate
 from app.users import current_active_user, fastapi_users
 
 router = APIRouter()
@@ -132,11 +132,11 @@ async def update_user_profile_picture(
     },
 )
 async def set_push_notification_token(
-    token: str,
+    push_token: PushToken,
     current_user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
 ):
-    current_user.push_token = token
+    current_user.push_token = push_token.token
     await session.commit()
     await session.refresh(current_user)
 

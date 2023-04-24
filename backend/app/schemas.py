@@ -240,3 +240,7 @@ class NotificationBase(BaseModel):
 
 class NotificationRead(BaseRead, NotificationBase):
     plant: PlantRead
+
+
+class PushToken(BaseModel):
+    token: str
