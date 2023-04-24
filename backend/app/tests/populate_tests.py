@@ -163,6 +163,12 @@ async def add_devices():
                 model_name="unit testing model",
                 owner_id=2,
                 users=[user_2],
+                auth_token=(
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOjEsInRva2"
+                    "VuX3V1aWQiOiJhMWY4NzBhZDA3YTQ0OTMyYTI3MzNiMDNjZjBjM2YwYiJ9.IRKc"
+                    "JCmJQWmD69gv4k-CqQji0cRUo8NsXQE5TB_egu8"
+                ),
+                token_uuid="a1f870ad07a44932a2733b03cf0c3f0b",
             )
         )
         test_devices.append(

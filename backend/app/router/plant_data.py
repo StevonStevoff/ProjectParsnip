@@ -1,10 +1,11 @@
 from datetime import timezone
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Security, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.authentication import device_auth_header, verify_device_token
 from app.database import get_async_session
 from app.models import Device, Plant, PlantData, PlantProfile, Sensor, SensorReading
 from app.notifications import check_plant_properties
@@ -28,8 +29,10 @@ router = APIRouter()
 async def create_plant_data(
     plant_data_create: PlantDataCreate,
     background_tasks: BackgroundTasks,
+    device_token: str = Security(device_auth_header),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[PlantDataRead]:
+    await verify_device_token(device_token, session)
     # Grab device and associated plants
     device_query = await session.execute(
         select(Device)

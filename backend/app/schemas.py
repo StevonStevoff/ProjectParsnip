@@ -75,6 +75,7 @@ class DeviceBase(BaseModel):
 
 class DeviceRead(BaseRead, DeviceBase):
     owner: UserRead
+    auth_token: Optional[str]
     users: list[UserRead]
     sensors: list[SensorRead]
 
@@ -89,6 +90,10 @@ class DeviceUpdate(DeviceBase):
     sensor_ids: Optional[list[int]]
     new_owner_id: Optional[int]
     user_ids: Optional[list[int]]
+
+
+class DeviceToken(BaseModel):
+    token: str
 
 
 class PlantTypeBase(BaseModel):
