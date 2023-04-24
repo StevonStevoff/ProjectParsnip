@@ -18,6 +18,8 @@ import {
   CloseIcon,
   Text,
   Button,
+  Input,
+  NativeBaseProvider, Center,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -34,8 +36,11 @@ function PlantProfileScreen({ navigation }) {
   const [plantProfiles, setPlantProfiles] = useState([]);
   const [changed, setChanged] = useState(false);
 
+  const [searchPTTerm, setSearchPTTerm] = useState('');
+
   const [selectedButton, setSelectedButton] = useState('My Profiles');
 
+  const [isLoading, setIsLoading] = useState(false);
   const handleButtonPress = (value) => {
     setSelectedButton(value);
   };
@@ -46,6 +51,7 @@ function PlantProfileScreen({ navigation }) {
     status: 'error',
     title: 'An error has occured!',
   }];
+
   const [event, setEvent] = useState('');
 
   const filteredStatusArray = statusArray.filter((status) => status.status === event);
@@ -97,8 +103,14 @@ function PlantProfileScreen({ navigation }) {
             );
             setPlantProfiles(filteredProfiles);
           }
-        } catch (error) { /* empty */ }
+        } catch (error) {
+          /* empty */
+        } finally {
+          console.log('Plant profiles fetched');
+          setIsLoading(false);
+        }
       };
+      setIsLoading(true);
       fetchPlantsProfiles();
 
       return () => { /* empty */
@@ -139,28 +151,59 @@ function PlantProfileScreen({ navigation }) {
     } catch (error) { setEvent('error'); }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (value) => {
+    const userIds = value.users.map((user) => user.id);
+    const updatedUsers = userIds.filter((id) => id !== userData.id);
+    console.log(value.id);
+    const peooe = {
+      id: value.id,
+      user_ids: [2],
+    };
     try {
-      try {
-        const propertiesArray = plantProfiles.filter(
-          (plantProfile) => plantProfile.id === id,
-        )[0].grow_properties;
-        console.log(propertiesArray);
-        await Promise.all(
-          propertiesArray.map(async (property) => {
-            await API.deleteGrowProperty(property.id);
-          }),
-        );
-      } catch (error) { /* empty */ }
-
-      await API.deletePlantProfile(id).then(() => {
-        setPlantProfiles(plantProfiles.filter((plantProfile) => plantProfile.id !== id));
-
-        setEvent('success');
-      });
+      const response = await API.editPlantProfile(peooe);
+      console.log(response);
+      setChanged(!changed);
+      setEvent('success');
     } catch (error) { setEvent('error'); }
+    // try {
+    //   try {
+    //     const propertiesArray = plantProfiles.filter(
+    //       (plantProfile) => plantProfile.id === id,
+    //     )[0].grow_properties;
+    //     await Promise.all(
+    //       propertiesArray.map(async (property) => {
+    //         await API.deleteGrowProperty(property.id);
+    //       }),
+    //     );
+    //   } catch (error) { /* empty */ }
+
+    //   await API.deletePlantProfile(id).then(() => {
+    //     setPlantProfiles(plantProfiles.filter((plantProfile) => plantProfile.id !== id));
+
+    //     setEvent('success');
+    //   });
+    // } catch (error) { setEvent('error'); }
   };
 
+  const filterPlantProfiles = (aSearchTerm) => {
+    if (aSearchTerm === '') {
+      return plantProfiles;
+    }
+    const filtered = plantProfiles.filter(
+      (prof) => prof.name.toLowerCase().includes(aSearchTerm.toLowerCase()),
+    );
+    return filtered;
+  };
+
+  if (isLoading) {
+    return (
+      <NativeBaseProvider>
+        <Center flex={1}>
+          <ActivityIndicator size="large" color="#4da707" />
+        </Center>
+      </NativeBaseProvider>
+    );
+  }
   return (
     <ScrollView style={styles.scrollView}>
 
@@ -225,19 +268,32 @@ function PlantProfileScreen({ navigation }) {
           </View>
         )}
 
-        <HStack space={3}>
-          <Heading>Your Plant Profiles</Heading>
-          <TouchableOpacity
-            style={styles.detailsButton}
-            onPress={() => navigation.navigate('RegisterPlantProfileScreen', { plantTypes, userData })}
-          >
-            <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
-          </TouchableOpacity>
-        </HStack>
+        <VStack space={2} alignItems="center" w="90%">
+          <HStack space={3}>
+            <Heading>Your Plant Profiles</Heading>
+            <TouchableOpacity
+              style={styles.detailsButton}
+              onPress={() => navigation.navigate('RegisterPlantProfileScreen', { plantTypes, userData })}
+            >
+              <Icon as={MaterialIcons} name="add" color="white" _dark={{ color: 'white' }} />
+            </TouchableOpacity>
+          </HStack>
+
+          <Input
+            placeholder="Search Plant Profiles"
+            value={searchPTTerm}
+            onChangeText={(text) => {
+              setSearchPTTerm(text);
+            }}
+            style={{ flex: 1, padding: 10 }}
+            w="100%"
+            size="2xl"
+          />
+        </VStack>
 
         <View style={{ width: '95%', paddingTop: 10 }}>
-          {plantProfiles.map((plantProfile) => (
-            <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
+          {filterPlantProfiles(searchPTTerm).map((plantProfile) => (
+            <View key={plantProfile.id} style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
 
               <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
                 <Heading
@@ -252,7 +308,7 @@ function PlantProfileScreen({ navigation }) {
                 </Heading>
 
                 {selectedButton === 'My Profiles' ? (
-                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {plantProfile.creator.id !== userData.id ? (
                       <TouchableOpacity
@@ -278,7 +334,7 @@ function PlantProfileScreen({ navigation }) {
                         </TouchableOpacity>
                         <TouchableOpacity
                           style={styles.detailsButton}
-                          onPress={() => handleDelete(plantProfile.id)}
+                          onPress={() => handleDelete(plantProfile)}
                         >
                           <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
                         </TouchableOpacity>
@@ -325,6 +381,7 @@ function PlantProfileScreen({ navigation }) {
               </VStack>
 
             </View>
+
           ))}
         </View>
 

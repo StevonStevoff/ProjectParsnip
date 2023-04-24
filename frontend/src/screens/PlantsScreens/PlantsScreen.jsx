@@ -98,7 +98,6 @@ function PlantsScreen({ navigation }) {
               const data = response.data.filter((item) => item.sensor_readings.some(
                 (reading) => reading.grow_property.grow_property_type.id === growPropertyTypeId,
               ));
-                  console.log(data);
               const latestRecord = data.length > 0 ? data.reduce(
                 (prev, current) => (prev.timestamp > current.timestamp ? prev : current),
               ) : null;
@@ -286,7 +285,7 @@ function PlantsScreen({ navigation }) {
                                     ? 'N/A'
                                     : latestValue?.[plant.id]?.[property.grow_property_type.id]}
                                 </Text>
-                                <Icon as={MaterialIcons} name="priority-high" color="rose.600" _dark={{ color: 'rose.600' }} size={5} />
+                                <Icon as={MaterialIcons} name="priority-high" color="red.600" _dark={{ color: 'red.600' }} size={5} />
 
                               </>
 
