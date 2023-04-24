@@ -64,7 +64,7 @@ function PlantDetailsScreen({ route, navigation }) {
   function filterSensorDataByType(filteredData, dataIds) {
     return dataIds.reduce((acc, dataId) => {
       const values = filteredData.flatMap((plant) => plant.sensor_readings
-        .filter((reading) => reading.grow_property.grow_property_type.id === dataId)
+        .filter((reading) => reading?.grow_property?.grow_property_type.id === dataId)
         .map((reading) => reading.value));
 
       return {
@@ -146,7 +146,7 @@ function PlantDetailsScreen({ route, navigation }) {
         >
           <PaperProvider theme={colorScheme === 'dark' ? darkTheme : theme} darkTheme={darkTheme}>
             <DatePickerModal
-              locale="en-GB"
+              locale="en"
               mode="range"
               visible={open}
               onDismiss={onDismiss}

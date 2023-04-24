@@ -387,7 +387,7 @@ function EditPlantProfileForm(props) {
             </FormControl>
 
             <HStack space={2} padding={5}>
-              <Heading alignSelf="left">
+              <Heading>
                 Grow Properties
                 {' '}
               </Heading>

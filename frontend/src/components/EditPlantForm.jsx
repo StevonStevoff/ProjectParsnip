@@ -401,7 +401,7 @@ function EditPlantForm(props) {
                 <PaperProvider theme={colorScheme === 'dark' ? darkTheme : theme} darkTheme={darkTheme}>
                   <DatePickerInput
                     placeholder="Select a date"
-                    locale="en-GB"
+                    locale="en"
                     label="Time Planted"
                     value={
                     values.time_planted !== undefined ? new Date(values.time_planted) : inputDate
