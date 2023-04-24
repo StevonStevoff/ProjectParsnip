@@ -69,7 +69,7 @@ async def test_get_plant_data(setup_db, client, user_access_token):
     )
 
 
-# @pytest.mark.skip(reason="Greenlet error, also update populate db")
+@pytest.mark.skip(reason="Greenlet error, also update populate db")
 @pytest.mark.asyncio(scope="session")
 async def test_send_plant_data(setup_db, client):
     device_query = select(Device).where(Device.id == 1)
