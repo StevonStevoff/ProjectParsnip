@@ -71,7 +71,6 @@ function CreatePlantForm(props) {
       setEvent('error');
       // handle the error
     } finally {
-      console.log(values);
       setSubmitting(false);
     }
   };

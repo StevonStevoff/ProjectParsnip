@@ -46,10 +46,16 @@ function PlantProfileScreen({ navigation }) {
   };
   const statusArray = [{
     status: 'success',
-    title: 'Plant successfully deleted!',
+    title: 'Plant profile successfully deleted!',
   }, {
     status: 'error',
     title: 'An error has occured!',
+  }, {
+    status: 'successFav',
+    title: 'Plant profile has been added!',
+  }, {
+    status: 'successUnFav',
+    title: 'Plant profile has been removed!',
   }];
 
   const [event, setEvent] = useState('');
@@ -134,6 +140,7 @@ function PlantProfileScreen({ navigation }) {
       peooe = {
         id: value.id,
         user_ids: updatedUsers,
+        addId: false,
       };
     } else {
       // User was not found in the array, add it
@@ -141,46 +148,48 @@ function PlantProfileScreen({ navigation }) {
       peooe = {
         id: value.id,
         user_ids: userIds,
+        addId: true,
       };
     }
     try {
       await API.editPlantProfile(peooe);
       setChanged(!changed);
-      setEvent('success');
+      if (peooe.addId) { setEvent('successFav'); } else { setEvent('successUnFav'); }
     } catch (error) { setEvent('error'); }
   };
 
-  const handleDelete = async (value) => {
-    const userIds = value.users.map((user) => user.id);
-    const updatedUsers = userIds.filter((id) => id !== userData.id);
-    const peooe = {
-      id: value.id,
-      user_ids: [2],
-    };
-    try {
-      const response = await API.editPlantProfile(peooe);
-      setChanged(!changed);
-      setEvent('success');
-    } catch (error) { setEvent('error'); }
-    // try {
-    //   try {
-    //     const propertiesArray = plantProfiles.filter(
-    //       (plantProfile) => plantProfile.id === id,
-    //     )[0].grow_properties;
-    //     await Promise.all(
-    //       propertiesArray.map(async (property) => {
-    //         await API.deleteGrowProperty(property.id);
-    //       }),
-    //     );
-    //   } catch (error) { /* empty */ }
+  // const handleDelete = async (value) => {
 
-    //   await API.deletePlantProfile(id).then(() => {
-    //     setPlantProfiles(plantProfiles.filter((plantProfile) => plantProfile.id !== id));
+  //   const userIds = value.users.map((user) => user.id);
+  //   const updatedUsers = userIds.filter((id) => id !== userData.id);
+  //   const peooe = {
+  //     id: value.id,
+  //     user_ids: [2],
+  //   };
+  //   try {
+  //     const response = await API.editPlantProfile(peooe);
+  //     setChanged(!changed);
+  //     setEvent('success');
+  //   } catch (error) { setEvent('error'); }
+  //   // try {
+  //   //   try {
+  //   //     const propertiesArray = plantProfiles.filter(
+  //   //       (plantProfile) => plantProfile.id === id,
+  //   //     )[0].grow_properties;
+  //   //     await Promise.all(
+  //   //       propertiesArray.map(async (property) => {
+  //   //         await API.deleteGrowProperty(property.id);
+  //   //       }),
+  //   //     );
+  //   //   } catch (error) { /* empty */ }
 
-    //     setEvent('success');
-    //   });
-    // } catch (error) { setEvent('error'); }
-  };
+  //   //   await API.deletePlantProfile(id).then(() => {
+  //   //     setPlantProfiles(plantProfiles.filter((plantProfile) => plantProfile.id !== id));
+
+  //   //     setEvent('success');
+  //   //   });
+  //   // } catch (error) { setEvent('error'); }
+  // };
 
   const filterPlantProfiles = (aSearchTerm) => {
     if (aSearchTerm === '') {
@@ -315,7 +324,7 @@ function PlantProfileScreen({ navigation }) {
                         <Icon
                           as={MaterialIcons}
                           name="favorite"
-                          color="white"
+                          color={plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white'}
                           _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
                         />
                       </TouchableOpacity>
@@ -329,12 +338,14 @@ function PlantProfileScreen({ navigation }) {
                         >
                           <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           style={styles.detailsButton}
                           onPress={() => handleDelete(plantProfile)}
                         >
-                          <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
-                        </TouchableOpacity>
+                          <Icon as={MaterialIcons}
+                          name="delete" color="white"
+                           _dark={{ color: 'white' }} />
+                        </TouchableOpacity> */}
 
                       </>
                     )}
@@ -347,7 +358,7 @@ function PlantProfileScreen({ navigation }) {
                     <Icon
                       as={MaterialIcons}
                       name="favorite"
-                      color="white"
+                      color={plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white'}
                       _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
                     />
                   </TouchableOpacity>

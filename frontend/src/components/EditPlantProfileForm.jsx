@@ -55,7 +55,7 @@ function EditPlantProfileForm(props) {
   const [selectedPlantType, setSelectedPlantType] = useState(plantProfile.plant_type.name);
   const [foundPTLength, setfoundPTLength] = useState('');
 
-  const dataObject = Object.entries(plantProfile.grow_properties).reduce((acc, [key, value]) => {
+  const dataObject = Object.entries(plantProfile.grow_properties).reduce((acc, [value]) => {
     acc[value.grow_property_type.name] = {
       min: value.min,
       max: value.max,

@@ -275,9 +275,10 @@ function PlantsScreen({ navigation }) {
                           {property.min}
                         </Text>
                         <HStack style={{ marginBottom: 1 }}>
-                          {(latestValue?.[plant.id]?.[property.grow_property_type.id] >= property.max
-                            || latestValue?.
-                              [plant.id]?.[property.grow_property_type.id] <= property.min)
+                          {(latestValue?.[plant.id]?.[property.grow_property_type.id]
+                              >= property.max
+                              || latestValue?.
+                                [plant.id]?.[property.grow_property_type.id] <= property.min)
                             ? (
 
                               <>

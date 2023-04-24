@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
-  KeyboardAvoidingView,
 } from 'react-native';
 import { Formik } from 'formik';
 import {
@@ -36,7 +35,7 @@ function CreatePlantProfileForm(props) {
 
   const statusArray = [{
     status: 'success',
-    title: 'Plant Profile successfully edited!',
+    title: 'Plant Profile successfully created!',
   }, {
     status: 'error',
     title: 'An error has occured!',
