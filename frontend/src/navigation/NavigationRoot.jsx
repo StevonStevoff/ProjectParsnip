@@ -120,7 +120,7 @@ function NavigationRoot() {
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
           console.log(response);
-          //navigationRef.navigate('plants/PlantsRoot');
+          navigationRef.current.navigate('Notifications');
         });
 
       return () => {
