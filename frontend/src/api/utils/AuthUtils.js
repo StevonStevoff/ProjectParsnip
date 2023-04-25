@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-cond-assign */
 import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
