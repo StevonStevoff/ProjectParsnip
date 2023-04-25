@@ -297,9 +297,15 @@ function PlantProfileScreen({ navigation }) {
           />
         </VStack>
 
-        <View style={{ width: '95%', paddingTop: 10 }}>
+        <View style={{ width: '95%', paddingTop: 10, ...styles.mainAllPlantaContainer }}>
           {filterPlantProfiles(searchPTTerm).map((plantProfile) => (
-            <TouchableOpacity key={plantProfile.id} onPress={() => navigation.navigate('PlantProfileDetails', { plantProfile })}>
+            <TouchableOpacity
+              key={plantProfile.id}
+              onPress={() => navigation.navigate('PlantProfileDetails', { plantProfile })}
+              style={
+                styles.plantContainerButton
+              }
+            >
               <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
 
                 <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
@@ -402,15 +408,39 @@ function PlantProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  mainAllPlantaContainer: {
+    ...Platform.select({
+      web: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+      },
+      default: {
+      },
+    }),
+  },
+  plantContainerButton: {
+    ...Platform.select({
+      web: {
+        padding: 10,
+        flexGrow: 1,
+        minWidth: 450,
+        maxWidth: 600,
+        flexBasis: 0,
+      },
+      default: {
+      },
+    }),
+  },
   plantContainer: {
     backgroundColor: '#262626',
     paddingBottom: 15,
     paddingLeft: 2,
     paddingRight: 2,
-    width: '100%',
     borderRadius: 10,
     marginBottom: 10,
     alignItems: 'center',
+    height: Platform.OS === 'web' ? 280 : null,
   },
   detailsButton: {
     marginRight: 5,

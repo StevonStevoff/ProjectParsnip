@@ -217,9 +217,14 @@ function PlantsScreen({ navigation }) {
           </TouchableOpacity>
         </HStack>
 
-        <View style={{ width: '95%' }}>
+        <View style={{ width: '95%', ...styles.mainAllPlantaContainer }}>
           {plants.map((plant) => (
-            <View key={plant.id}>
+            <View
+              key={plant.id}
+              style={
+              styles.plantContainerButton
+            }
+            >
               <Heading style={{ fontSize: 25, padding: 7, fontWeight: 'bold' }} key={plant.id}>{plant.name}</Heading>
               <TouchableOpacity onPress={() => navigation.navigate('PlantDetails', { plant })}>
                 <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
@@ -254,7 +259,7 @@ function PlantsScreen({ navigation }) {
                     </TouchableOpacity>
                   </View>
 
-                  <HStack w="100%">
+                  <HStack w="100%" h={Platform.OS === 'web' ? 180 : null}>
                     <VStack w="50%" style={styles.plantDetailsContianer} paddingRight={1}>
                       <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
                         {' '}
@@ -330,6 +335,30 @@ function PlantsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  mainAllPlantaContainer: {
+    ...Platform.select({
+      web: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+      },
+      default: {
+      },
+    }),
+  },
+  plantContainerButton: {
+    ...Platform.select({
+      web: {
+        padding: 10,
+        flexGrow: 1,
+        minWidth: 450,
+        maxWidth: 600,
+        flexBasis: 0,
+      },
+      default: {
+      },
+    }),
+  },
   plantContainer: {
     backgroundColor: '#262626',
     paddingBottom: 15,
@@ -339,6 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     alignItems: 'center',
+    height: Platform.OS === 'web' ? 280 : null,
   },
   detailsButton: {
     marginRight: 5,
