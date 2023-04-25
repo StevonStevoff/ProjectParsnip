@@ -118,8 +118,8 @@ function EditPlantForm(props) {
           plant_type_id: plant.plant_type.id.toString(),
           time_planted: plant.time_planted !== null ? new Date(plant.time_planted) : undefined,
           outdoor: plant.outdoor,
-          latitude: plant.latitude,
-          longitude: plant.longitude,
+          latitude: plant.latitude !== null ? plant.latitude : 0,
+          longitude: plant.longitude !== null ? plant.latitude : 0,
         }}
         validationSchema={EditPlantSchema}
         onSubmit={handleEditPlant}
@@ -369,7 +369,7 @@ function EditPlantForm(props) {
                   <Input
                     onChangeText={handleChange('longitude')}
                     onBlur={handleBlur('longitude')}
-                    value={values.longitude.toString()}
+                    value={values?.longitude?.toString()}
                     style={{ padding: 5 }}
                     w="20%"
                     size="2xl"
@@ -380,7 +380,7 @@ function EditPlantForm(props) {
                   <Input
                     onChangeText={handleChange('latitude')}
                     onBlur={handleBlur('latitude')}
-                    value={values.latitude.toString()}
+                    value={values?.latitude?.toString()}
                     style={{ padding: 5 }}
                     w="20%"
                     size="2xl"

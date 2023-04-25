@@ -55,7 +55,7 @@ function EditPlantProfileForm(props) {
   const [selectedPlantType, setSelectedPlantType] = useState(plantProfile.plant_type.name);
   const [foundPTLength, setfoundPTLength] = useState('');
 
-  const dataObject = Object.entries(plantProfile.grow_properties).reduce((acc, [value]) => {
+  const dataObject = Object.entries(plantProfile.grow_properties).reduce((acc, [key, value]) => {
     acc[value.grow_property_type.name] = {
       min: value.min,
       max: value.max,
@@ -328,9 +328,11 @@ function EditPlantProfileForm(props) {
                 <ScrollView style={{ maxHeight: 100 }}>
                   {
                   filterPlantTypes(searchPTTerm).map((plantType) => (
-                    <View style={{
-                      flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
-                    }}
+                    <View
+                      key={plantType.id}
+                      style={{
+                        flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
+                      }}
                     >
                       <TouchableOpacity
                         onPress={() => {
@@ -420,11 +422,11 @@ function EditPlantProfileForm(props) {
                 <Modal.Body>
 
                   {availableTypes.map((type) => (
-                    <>
-                      <Button key={type} onPress={() => handleTypeSelect(type)}>{type}</Button>
+                    <View key={type}>
+                      <Button onPress={() => handleTypeSelect(type)}>{type}</Button>
                       <Text> </Text>
 
-                    </>
+                    </View>
                   ))}
                 </Modal.Body>
               </Modal.Content>
@@ -439,12 +441,13 @@ function EditPlantProfileForm(props) {
                 </HStack>
                 {selectedTypes.map((property) => (
                   <FormControl
+                    key={property}
                     isRequired
                     isInvalid={
                       touched.properties?.[property]?.min && errors.properties?.[property]?.min
                     }
                   >
-                    <HStack key={property} justifyContent="space-between">
+                    <HStack justifyContent="space-between">
                       <FormControl.Label
                         w={Platform.OS === 'web' ? '25%' : '32%'}
                         fontSize={Platform.OS === 'web' ? 'md' : 'xs'}

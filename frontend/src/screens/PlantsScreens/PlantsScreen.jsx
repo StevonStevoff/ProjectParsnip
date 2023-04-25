@@ -213,6 +213,7 @@ function PlantsScreen({ navigation }) {
           {plants.map((plant) => (
             <View key={plant.id}>
               <Heading style={{ fontSize: 25, padding: 7, fontWeight: 'bold' }} key={plant.id}>{plant.name}</Heading>
+              <TouchableOpacity onPress={() => navigation.navigate('PlantDetails', { plant })}>
               <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
 
                 <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
@@ -308,14 +309,15 @@ function PlantsScreen({ navigation }) {
                   </VStack>
 
                 </HStack>
-
+{/* 
                 <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                   <TouchableOpacity style={styles.plantDetailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
                     <Text style={styles.createText}>  Plant Details  </Text>
                   </TouchableOpacity>
-                </View>
+                </View> */}
 
               </View>
+              </TouchableOpacity>
             </View>
           ))}
         </View>

@@ -248,9 +248,11 @@ function CreatePlantProfileForm(props) {
                   <ScrollView style={{ maxHeight: 100 }}>
                     {
                   filterPlantTypes(searchPTTerm).map((plantType) => (
-                    <View style={{
-                      flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
-                    }}
+                    <View
+                      key={plantType.id}
+                      style={{
+                        flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
+                      }}
                     >
                       <TouchableOpacity
                         onPress={() => {
@@ -341,11 +343,10 @@ function CreatePlantProfileForm(props) {
                 <Modal.Body>
 
                   {availableTypes.map((type) => (
-                    <>
-                      <Button key={type} onPress={() => handleTypeSelect(type)}>{type}</Button>
+                    <View key={type}>
+                      <Button onPress={() => handleTypeSelect(type)}>{type}</Button>
                       <Text> </Text>
-
-                    </>
+                    </View>
                   ))}
                 </Modal.Body>
               </Modal.Content>
@@ -361,12 +362,13 @@ function CreatePlantProfileForm(props) {
                 </HStack>
                 {selectedTypes.map((property) => (
                   <FormControl
+                    key={property}
                     isRequired
                     isInvalid={
                       touched.properties?.[property]?.min && errors.properties?.[property]?.min
                     }
                   >
-                    <HStack key={property} justifyContent="space-between">
+                    <HStack justifyContent="space-between">
                       <FormControl.Label
                         w={Platform.OS === 'web' ? '25%' : '32%'}
                         fontSize={Platform.OS === 'web' ? 'md' : 'xs'}
