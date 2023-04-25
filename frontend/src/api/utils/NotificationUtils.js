@@ -9,11 +9,11 @@ const NotificationUtils = {
 
   async getAllNotifications() {
     try {
-        const response = await API.getUsersNotifications();
-        return response.data;
+      const response = await API.getUsersNotifications();
+      return response.data;
     } catch (error) {
-        console.error(error);
-        return [];
+      console.error(error);
+      return [];
     }
   },
 };

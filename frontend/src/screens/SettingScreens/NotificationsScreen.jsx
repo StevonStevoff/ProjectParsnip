@@ -8,9 +8,10 @@ import {
   Text, Box, Heading, SectionList, Center, Button,
 } from 'native-base';
 import { useIsFocused } from '@react-navigation/native';
+import NotificationBox from '../../components/NotificationBox';
 import NotificationUtils from '../../api/utils/NotificationUtils';
 
-function NotificationsScreen({ nagivation }) {
+function NotificationsScreen({ navigation }) {
   const { width } = useWindowDimensions();
   
   const isFocused = useIsFocused();
@@ -44,7 +45,7 @@ function NotificationsScreen({ nagivation }) {
   };
 
   const renderNotification = ({ item }) => (
-    <Text>Notification: {item.text}</Text>
+    <NotificationBox item={item} navigation={navigation} />
   );
 
   if (isLoading) {
