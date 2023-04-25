@@ -355,7 +355,7 @@ const API = {
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
-  
+
     return response;
   },
 };
