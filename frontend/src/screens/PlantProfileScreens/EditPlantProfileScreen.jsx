@@ -21,6 +21,7 @@ function EditPlantProfileScreen({ route, navigation }) {
         }}
         >
           <EditPlantProfileForm
+            navigation={navigation}
             plantTypes={route.params.plantTypes}
             plantProfile={route.params.plantProfile}
           />
@@ -46,7 +47,7 @@ function EditPlantProfileScreen({ route, navigation }) {
           zIndex: 1,
         }}
       >
-        <CloseBtn navigation={navigation} />
+        <CloseBtn navigation={navigation} /> 
       </View>
 
       {Platform.OS === 'web' ? (

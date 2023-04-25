@@ -156,7 +156,15 @@ function PlantsScreen({ navigation }) {
     } catch (error) { setEvent('error'); }
   };
 
-  // console.log(Object.keys(latestValue).length)
+  const isInRange = (plantIdValue, growPropertyTypeId, propMin, propMax) => (
+    latestValue?.[plantIdValue]?.[growPropertyTypeId] >= propMax
+  || latestValue?.[plantIdValue]?.[growPropertyTypeId] <= propMin
+  || latestValue?.[plantIdValue]?.[growPropertyTypeId] === undefined);
+
+  const isAValue = (plantIdValue, growPropertyTypeId) => (
+    latestValue?.[plantIdValue]?.[growPropertyTypeId] === -999
+  || latestValue?.[plantIdValue]?.[growPropertyTypeId] === undefined);
+
   return (
     <ScrollView style={styles.scrollView}>
 
@@ -214,109 +222,102 @@ function PlantsScreen({ navigation }) {
             <View key={plant.id}>
               <Heading style={{ fontSize: 25, padding: 7, fontWeight: 'bold' }} key={plant.id}>{plant.name}</Heading>
               <TouchableOpacity onPress={() => navigation.navigate('PlantDetails', { plant })}>
-              <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
+                <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
 
-                <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
-                  <Text
-                    style={{
-                      fontSize: Platform.OS === 'web' ? 20 : 14, color: '#4da705', flex: 3, fontWeight: 'bold',
-                    }}
-                    key={plant.id}
-                  >
-                    {plant.plant_type.name}
-                    {' · '}
-                    {plant.plant_profile.name}
-                    {' · '}
-                    {plant.device.name}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.detailsButton}
-                    onPress={() => navigation.navigate('EditPlantScreen', {
-                      plantTypes, plantProfiles, devices, plant,
-                    })}
-                  >
-                    <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
-                  </TouchableOpacity>
-                  {/* To be Changed to handleEdit */}
-                  <TouchableOpacity
-                    style={styles.detailsButton}
-                    onPress={() => handleDelete(plant.id)}
-                  >
-                    <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
-                  </TouchableOpacity>
-                </View>
-
-                <HStack w="100%">
-                  <VStack w="50%" style={styles.plantDetailsContianer} paddingRight={1}>
-                    <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
-                      {' '}
-                      {plant.outdoor ? 'Outdoor' : 'Indoor'}
+                  <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
+                    <Text
+                      style={{
+                        fontSize: Platform.OS === 'web' ? 20 : 14, color: '#4da705', flex: 3, fontWeight: 'bold',
+                      }}
+                      key={plant.id}
+                    >
+                      {plant.plant_type.name}
+                      {' · '}
+                      {plant.plant_profile.name}
+                      {' · '}
+                      {plant.device.name}
                     </Text>
+                    <TouchableOpacity
+                      style={styles.detailsButton}
+                      onPress={() => navigation.navigate('EditPlantScreen', {
+                        plantTypes, plantProfiles, devices, plant,
+                      })}
+                    >
+                      <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
+                    </TouchableOpacity>
+                    {/* To be Changed to handleEdit */}
+                    <TouchableOpacity
+                      style={styles.detailsButton}
+                      onPress={() => handleDelete(plant.id)}
+                    >
+                      <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
+                    </TouchableOpacity>
+                  </View>
 
-                    <HStack w="100%" style={styles.plantDetailsContianer}>
-                      <Text fontSize={Platform.OS === 'web' ? 18 : 10} style={styles.plantContainerText}> Time planted: </Text>
-                      {plant.time_planted === null
-                        ? <Text style={styles.plantContainerText}> Not set</Text>
-                        : (
-                          <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
-                            {new Date(plant.time_planted).toLocaleDateString()}
-                          </Text>
-                        )}
-                    </HStack>
-                  </VStack>
-                  <Divider my={1} orientation="vertical" />
-                  <VStack space={plant.plant_profile.grow_properties.length} w="40%" paddingLeft={1}>
-                    {plant.plant_profile.grow_properties.map((property) => (
-                      <HStack key={property.id} justifyContent="space-between">
-                        <View w="20%" marginBottom={10}>
-                          {(() => getIconComponent(property.grow_property_type.description))()}
-                        </View>
+                  <HStack w="100%">
+                    <VStack w="50%" style={styles.plantDetailsContianer} paddingRight={1}>
+                      <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
+                        {' '}
+                        {plant.outdoor ? 'Outdoor' : 'Indoor'}
+                      </Text>
 
-                        <Text fontSize={15}>
-                          {property.min}
-                        </Text>
-                        <HStack style={{ marginBottom: 1 }}>
-                          {(latestValue?.[plant.id]?.[property.grow_property_type.id]
-                              >= property.max
-                              || latestValue?.
-                                [plant.id]?.[property.grow_property_type.id] <= property.min)
-                            ? (
-
-                              <>
-                                <Text fontSize={Platform.OS === 'web' ? 18 : 13} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
-                                  {latestValue?.
-                                    [plant.id]?.[property.grow_property_type.id] === -999
-                                    ? 'N/A'
-                                    : latestValue?.[plant.id]?.[property.grow_property_type.id]}
-                                </Text>
-                                <Icon as={MaterialIcons} name="priority-high" color="red.600" _dark={{ color: 'red.600' }} size={5} />
-
-                              </>
-
-                            )
-                            : (
-                              <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={{ color: 'green', fontWeight: 'bold' }}>
-                                {latestValue?.[plant.id]?.[property.grow_property_type.id]}
-                              </Text>
-                            )}
-                        </HStack>
-                        <Text fontSize={15}>
-                          {property.max}
-                        </Text>
-
+                      <HStack w="100%" style={styles.plantDetailsContianer}>
+                        <Text fontSize={Platform.OS === 'web' ? 18 : 10} style={styles.plantContainerText}> Time planted: </Text>
+                        {plant.time_planted === null
+                          ? <Text style={styles.plantContainerText}> Not set</Text>
+                          : (
+                            <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
+                              {new Date(plant.time_planted).toLocaleDateString()}
+                            </Text>
+                          )}
                       </HStack>
-                    ))}
-                  </VStack>
+                    </VStack>
+                    <Divider my={1} orientation="vertical" />
+                    <VStack space={plant.plant_profile.grow_properties.length} w="40%" paddingLeft={1}>
+                      {plant.plant_profile.grow_properties.map((property) => (
+                        <HStack key={property.id} justifyContent="space-between">
+                          <View w="20%" marginBottom={10}>
+                            {(() => getIconComponent(property.grow_property_type.description))()}
+                          </View>
 
-                </HStack>
-{/* 
-                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                  <TouchableOpacity style={styles.plantDetailsButton} onPress={() => navigation.navigate('PlantDetails', { plant })}>
-                    <Text style={styles.createText}>  Plant Details  </Text>
-                  </TouchableOpacity>
-                </View> */}
+                          <Text fontSize={15}>
+                            {property.min}
+                          </Text>
+                          <HStack style={{ marginBottom: 1 }}>
+                            {isInRange(
+                              plant.id,
+                              property.grow_property_type.id,
+                              property.min,
+                              property.max,
+                            )
+                              ? (
+                                <>
+                                  <Text fontSize={Platform.OS === 'web' ? 18 : 13} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
+                                    {isAValue(plant.id, property.grow_property_type.id)
+                                      ? 'N/A'
+                                      : latestValue?.[plant.id]?.[property.grow_property_type.id]}
+                                  </Text>
+                                  <Icon as={MaterialIcons} name="priority-high" color="red.600" _dark={{ color: 'red.600' }} size={5} />
 
-              </View>
+                                </>
+
+                              )
+                              : (
+                                <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={{ color: 'green', fontWeight: 'bold' }}>
+                                  {latestValue?.[plant.id]?.[property.grow_property_type.id]}
+                                </Text>
+                              )}
+                          </HStack>
+                          <Text fontSize={15}>
+                            {property.max}
+                          </Text>
+
+                        </HStack>
+                      ))}
+                    </VStack>
+
+                  </HStack>
+                </View>
               </TouchableOpacity>
             </View>
           ))}

@@ -29,10 +29,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import EditPlantProfileSchema from '../utils/validationSchema/EditPlantProfileSchema';
 import API from '../api/API';
 
-function EditPlantProfileForm(props) {
-  const { plantTypes } = props;
-  const { plantProfile } = props;
-
+function EditPlantProfileForm({ plantTypes, plantProfile, navigation }) {
   const statusArray = [{
     status: 'success',
     title: 'Plant Profile successfully edited!',
@@ -189,6 +186,7 @@ function EditPlantProfileForm(props) {
       } catch (error) { /* empty */ }
 
       setEvent('success');
+      navigation.goBack();
     } catch (error) {
       setEvent('error');
       // handle the error
