@@ -314,6 +314,17 @@ const API = {
 
     return response;
   },
+
+  async getUsersNotifications(cancel = false) {
+    const response = await api.request({
+      url: '/notifications/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+  
+    return response;
+  },
 };
 
 // defining the cancel API object for ProductAPI

@@ -107,7 +107,7 @@ function NavigationRoot() {
       setIsLoading(false);
     });
 
-    if (Platform.OS !== 'web') {
+    if ((Platform.OS !== 'web') && (isUserLoggedIn)) {
       registerForPushNotificationsAsync().then((token) => {
         API.registerPushToken({ token });
       });
