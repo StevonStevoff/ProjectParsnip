@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable camelcase */
 /* eslint-disable no-use-before-define */
 import qs from 'qs';
@@ -35,7 +36,6 @@ const API = {
     });
     return response;
   },
-
   async loginUser({ username, password }, cancel = false) {
     const response = await api.request({
       url: '/auth/jwt/login',
@@ -55,7 +55,6 @@ const API = {
     this.setJWTtoken(response.data.access_token);
     return response;
   },
-
   setJWTtoken(token) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
   },
@@ -68,7 +67,6 @@ const API = {
     });
     return response;
   },
-
   async getAuthenticatedUser(cancel = false) {
     const response = await api.request({
       url: '/authenticated-route',
@@ -103,7 +101,6 @@ const API = {
     });
     return response;
   },
-
   async getCurrentUsersPlants(cancel = false) {
     const response = await api.request({
       url: '/plants/me',
@@ -114,7 +111,6 @@ const API = {
 
     return response;
   },
-
   async getPlantData(id, cancel = false) {
     const response = await api.request({
       url: `/plants/${id}/data`,
@@ -125,7 +121,6 @@ const API = {
 
     return response;
   },
-
   async deletePlant(id, cancel = false) {
     const response = await api.request({
       url: `/plants/${id}`,
@@ -137,7 +132,6 @@ const API = {
 
     return response;
   },
-
   async editPlant({
     id, name, device_id, plant_profile_id, plant_type_id,
     time_planted, outdoor, latitude, longitude,
@@ -164,7 +158,6 @@ const API = {
     });
     return response;
   },
-
   async getUserInfo(cancel = false) {
     const response = await api.request({
       url: '/users/me',
@@ -175,7 +168,6 @@ const API = {
 
     return response;
   },
-
   async getAllUsers(cancel = false) {
     const response = await api.request({
       url: '/users/',
@@ -185,7 +177,6 @@ const API = {
     });
     return response;
   },
-
   async updateUserInfo({ name, email, username }, cancel = false) {
     const response = await api.request({
       url: '/users/me',
@@ -198,6 +189,36 @@ const API = {
       headers: {
         'Content-Type': 'application/json',
       },
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+  async getAllPlantTypes(cancel = false) {
+    const response = await api.request({
+      url: '/plant_types/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+  async getAllDevices(cancel = false) {
+    const response = await api.request({
+      url: '/devices/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
+  },
+  async getAllPlantProfiles(cancel = false) {
+    const response = await api.request({
+      url: '/plant_profiles/me',
+      method: 'GET',
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
@@ -282,37 +303,49 @@ const API = {
     return response;
   },
 
-  async getAllPlantTypes(cancel = false) {
+  async uploadProfileImage(image, cancel = false) {
+    const formData = new FormData();
+    formData.append('image', image);
+
     const response = await api.request({
-      url: '/plant_types/me',
-      method: 'GET',
+      url: '/users/pfp',
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
 
     return response;
   },
-
-  async getAllDevices(cancel = false) {
+  async getRefreshToken(cancel = false) {
     const response = await api.request({
-      url: '/devices/me',
-      method: 'GET',
+      url: '/auth/jwt/refresh',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
-
+    this.setJWTtoken(response.data.access_token);
     return response;
   },
-
-  async getAllPlantProfiles(cancel = false) {
+  async getProfilePicture(userID, cancel = false) {
     const response = await api.request({
-      url: '/plant_profiles/me',
+      url: `/users/${userID}/pfp`,
       method: 'GET',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      responseType: 'blob',
       signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
         : undefined,
     });
 
-    return response;
+    return response.data;
   },
 
   async getUsersNotifications(cancel = false) {

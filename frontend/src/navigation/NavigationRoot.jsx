@@ -15,6 +15,7 @@ import AuthUtils from '../api/utils/AuthUtils';
 import { loadState, saveState } from '../utils/localStorage'; // Import the utility functions
 import API from '../api/API';
 import * as Notifications from 'expo-notifications';
+import { setNavigationRef } from '../api/utils/AuthErrorHandler';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -60,6 +61,14 @@ function NavigationRoot() {
   };
 
   const initialState = loadState('navState');
+
+  useEffect(() => {
+    setNavigationRef(navigationRef);
+    AuthUtils.isUserAuthenticated().then((isLoggedIn) => {
+      setIsUserLoggedIn(isLoggedIn);
+      setIsLoading(false);
+    });
+  }, []);
 
   const linking = {
     prefixes: ['myapp://', 'https://myapp.com'],

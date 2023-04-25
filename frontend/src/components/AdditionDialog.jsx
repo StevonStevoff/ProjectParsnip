@@ -14,7 +14,6 @@ function AdditionDialog({
 
   const handleOnClose = () => {
     setSelectedItem(null);
-    setSelectionOptions([]);
     onClose();
   };
   const handleConfirm = () => {
