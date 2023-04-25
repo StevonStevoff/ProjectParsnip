@@ -11,6 +11,7 @@ import { useIsFocused } from '@react-navigation/native';
 import DeviceUtils from '../../api/utils/DeviceUtils';
 import DeviceDetailsInfo from '../../components/DeviceDetailsInfo';
 import PlantInfoTable from '../../components/PlantInfoTable';
+import AuthUtils from '../../api/utils/AuthUtils';
 
 function DevicesDetailsScreen({ navigation, route }) {
   const { item } = route.params;
@@ -44,6 +45,19 @@ function DevicesDetailsScreen({ navigation, route }) {
       await DeviceUtils.updateDevice(currentDevice);
     }
   };
+
+  const getProfilePictures = async () => {
+    deviceUsers.map(async (user) => {
+      if (!user.profile_picture_URL) {
+        user.profile_picture_URL = await AuthUtils.getProfilePicture(user.id);
+      }
+      return user;
+    });
+  };
+
+  useEffect(() => {
+    getProfilePictures();
+  }, [deviceUsers]);
 
   useEffect(() => {
     addUsersOwnerFlag();

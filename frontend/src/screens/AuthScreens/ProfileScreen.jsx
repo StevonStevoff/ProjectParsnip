@@ -42,8 +42,10 @@ function ProfileScreen({ navigation }) {
       <ProfilePicture
         name={user.name}
         username={user.username}
+        profilePic={user.profile_picture_URL}
         setEditMode={setEditMode}
         editMode={editMode}
+        setUser={setUser}
       />
 
       <VStack space={3} alignItems="center" width="90%">
