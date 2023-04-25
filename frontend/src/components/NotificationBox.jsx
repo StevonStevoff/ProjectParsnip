@@ -9,11 +9,14 @@ import {
   import CardSensors from './CardSensors';
 
 function NotificationBox({ item }) {
+  const date = item.timestamp.substring(0, item.timestamp.indexOf('T'));
+
   return (
     <Box 
       borderBottomWidth='2'
+      overflow='hidden'
       _dark={{
-        borderColor: '#18181b',
+        borderColor: 'primary.400',
         backgroundColor: '#2d2d30',
       }}
       _web={{
@@ -21,26 +24,44 @@ function NotificationBox({ item }) {
         borderWidth: 0,
       }}
       _light={{
+        borderColor: 'primary.400',
         backgroundColor: 'gray.50',
       }}
     >
-      <HStack
-        space={[2, 3]}
+      <VStack
+        space={1}
         justifyContent='space-between'
+        padding={2}
       >
-        <VStack>
-          <Text>
-            {item.plant_id}
+        <HStack>
+          <Text
+            fontSize={15}
+            fontWeight='700'
+            _light={{
+              color: 'primary.950',
+            }}
+            _dark={{
+              color: 'primary.500',
+            }}
+          >
+            {item.plant.name}
           </Text>
-          <Text>
-            {item.text}
+          <Spacer />
+          <Text 
+            _light={{
+              color: 'gray.500'
+            }}
+            _dark={{
+              color: 'gray.100'
+            }}
+          >
+            {date}
           </Text>
-        </VStack>
-        <Spacer />
+        </HStack>
         <Text>
-          {item.timestamp}
+          {item.text}
         </Text>
-      </HStack>
+      </VStack>
     </Box>
   );
 }

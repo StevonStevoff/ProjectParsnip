@@ -67,18 +67,20 @@ function NotificationsScreen({ navigation }) {
 
   if (width > 750) {
     return (
-      <View style={styles.webContainer}>
-        <View style={styles.container}>
-          <Heading>Notifications</Heading>
-          <FlatList
-            data={notifications}
-            renderItem={renderNotification}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={styles.container}
-            refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
-          />
+      <Center flex={1}>
+        <View style={styles.webContainer}>
+          <View style={styles.container}>
+            <Heading>Notifications</Heading>
+            <FlatList
+              data={notifications}
+              renderItem={renderNotification}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.container}
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            />
+          </View>
         </View>
-      </View>
+      </Center>
     );
   }
 
@@ -90,7 +92,7 @@ function NotificationsScreen({ navigation }) {
         renderItem={renderNotification}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.container}
-        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     </View>
   );
@@ -105,6 +107,7 @@ const styles = StyleSheet.create({
     height: '85%',
   },
   webContainer: {
+    width: '60%',
     flex: 1,
     padding: 10,
     height: '85%',
