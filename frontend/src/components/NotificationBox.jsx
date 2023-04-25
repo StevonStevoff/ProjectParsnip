@@ -38,7 +38,7 @@ function NotificationBox({ item }) {
             fontSize={15}
             fontWeight='700'
             _light={{
-              color: 'primary.950',
+              color: 'primary.900',
             }}
             _dark={{
               color: 'primary.500',

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import {
   View, useWindowDimensions, StyleSheet, RefreshControl, FlatList, TouchableOpacity,
   ActivityIndicator,
+  Touchable,
 } from 'react-native';
 import {
   Text, Box, Heading, SectionList, Center, Button,
@@ -19,8 +20,6 @@ function NotificationsScreen({ navigation }) {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const [notifications, setNotifications] = React.useState([]);
-
-  const margin = 10;
 
   const fetchNotifiationData = async () => {
     setIsLoading(true);
@@ -45,7 +44,9 @@ function NotificationsScreen({ navigation }) {
   };
 
   const renderNotification = ({ item }) => (
-    <NotificationBox item={item} navigation={navigation} />
+    <TouchableOpacity onPress={() => navigation.navigate('PlantsRoot')}>
+      <NotificationBox item={item} navigation={navigation} />
+    </TouchableOpacity>
   );
 
   if (isLoading) {
@@ -105,6 +106,8 @@ const styles = StyleSheet.create({
     paddingBottom: '2%',
     margin: '.5%',
     height: '85%',
+    overflow: 'hidden',
+    rounded: 'lg',
   },
   webContainer: {
     width: '60%',
