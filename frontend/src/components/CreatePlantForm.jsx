@@ -7,7 +7,19 @@ import {
 } from 'react-native';
 import { Formik } from 'formik';
 import {
-  Icon, VStack, HStack, Alert, IconButton, CloseIcon, Input, Text, Heading, Pressable, Switch,
+  Icon,
+  VStack,
+  HStack,
+  Alert,
+  IconButton,
+  CloseIcon,
+  Input,
+  Text,
+  Heading,
+  Pressable,
+  Switch,
+  FormControl,
+  Center,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import RegisterPlantSchema from '../utils/validationSchema/CreatePlantSchema';
@@ -59,7 +71,6 @@ function CreatePlantForm(props) {
       setEvent('error');
       // handle the error
     } finally {
-      console.log(values);
       setSubmitting(false);
     }
   };
@@ -136,46 +147,51 @@ function CreatePlantForm(props) {
             </View>
             )}
 
-            <Heading style={styles.label}>Name</Heading>
-            <Input
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              value={values.name}
-              w="100%"
-              size="2xl"
-              marginBottom="2%"
-            />
-            {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
+            <FormControl isRequired isInvalid={errors.name && touched.name}>
+              <FormControl.Label>Name</FormControl.Label>
+              <Input
+                onChangeText={handleChange('name')}
+                onBlur={handleBlur('name')}
+                value={values.name}
+                w="100%"
+                size="2xl"
+                marginBottom="2%"
+              />
+              <FormControl.ErrorMessage>
+                {errors.name}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
-            <Heading style={styles.label}>Device</Heading>
-            <View style={{ width: '100%' }}>
-              {/* Devices search and select Dropdown */}
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Input
-                  placeholder={showDropdown ? 'Search for a device' : selectedDevice}
-                  value={searchTerm}
-                  onChangeText={(text) => {
-                    setSearchTerm(text);
-                  }}
-                  style={{ flex: 1, padding: 10 }}
-                  w="100%"
-                  size="2xl"
-                  marginBottom="2%"
-                  InputLeftElement={showDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
-                  InputRightElement={(
-                    <Pressable onPress={() => { setSearchTerm(''); setShowDropdown(!showDropdown); }}>
-                      <Icon as={MaterialIcons} name={showDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={showDropdown ? 8 : 8} />
-                    </Pressable>
+            <FormControl isRequired isInvalid={errors.device_id && touched.device_id}>
+              <FormControl.Label>Device</FormControl.Label>
+              <View style={{ width: '100%' }}>
+                {/* Devices search and select Dropdown */}
+                <View style={{ flexDirection: 'row' }}>
+                  <Input
+                    placeholder={showDropdown ? 'Search for a device' : selectedDevice}
+                    value={searchTerm}
+                    onChangeText={(text) => {
+                      setSearchTerm(text);
+                    }}
+                    style={{ flex: 1, padding: 10 }}
+                    w="100%"
+                    size="2xl"
+                    marginBottom="2%"
+                    InputLeftElement={showDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
+                    InputRightElement={(
+                      <Pressable onPress={() => { setSearchTerm(''); setShowDropdown(!showDropdown); }}>
+                        <Icon as={MaterialIcons} name={showDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={showDropdown ? 8 : 8} />
+                      </Pressable>
             )}
-                  isDisabled={showDropdown === false}
-                />
-              </View>
-              {showDropdown && (
-              <ScrollView style={{ maxHeight: 100 }}>
-                {
+                    isDisabled={showDropdown === false}
+                  />
+                </View>
+                {showDropdown && (
+                <ScrollView style={{ maxHeight: 100 }}>
+                  {
               filterDevices(searchTerm).map((device) => (
                 <View style={{
-                  flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                  flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                 }}
                 >
                   <TouchableOpacity
@@ -193,48 +209,49 @@ function CreatePlantForm(props) {
                 </View>
               ))
             }
-              </ScrollView>
-              )}
-              {searchTerm.length > 0
+                </ScrollView>
+                )}
+                {searchTerm.length > 0
               && foundDLength < 1
               && showDropdown
               && <Text style={styles.error}>No results found</Text>}
 
-            </View>
-            {touched.device_id && errors.device_id && (
-            <Text style={styles.error}>{errors.device_id}</Text>
-            )}
-
-            {/* Plant Profiles search and select Dropdown */}
-            <Heading style={styles.label}>Plant Profile</Heading>
-            <View style={{ width: '100%' }}>
-
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Input
-                  placeholder={showPPDropdown ? 'Search for a plant profile' : selectedPlantProfile}
-                  value={searchPPTerm}
-                  onChangeText={(text) => {
-                    setSearchPPTerm(text);
-                  }}
-                  style={{ flex: 1, padding: 10 }}
-                  w="100%"
-                  size="2xl"
-                  marginBottom="2%"
-                  InputLeftElement={showPPDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
-                  InputRightElement={(
-                    <Pressable onPress={() => { setSearchPPTerm(''); setShowPPDropdown(!showPPDropdown); }}>
-                      <Icon as={MaterialIcons} name={showPPDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
-                    </Pressable>
-            )}
-                  isDisabled={showPPDropdown === false}
-                />
               </View>
-              {showPPDropdown && (
-              <ScrollView style={{ maxHeight: 100, color: 'green' }}>
-                {
+              <FormControl.ErrorMessage>
+                {errors.device_id}
+              </FormControl.ErrorMessage>
+            </FormControl>
+
+            <FormControl isRequired isInvalid={errors.plant_profile_id && touched.plant_profile_id}>
+              <FormControl.Label>Plant Profile</FormControl.Label>
+              <View style={{ width: '100%' }}>
+
+                <View style={{ flexDirection: 'row' }}>
+                  <Input
+                    placeholder={showPPDropdown ? 'Search for a plant profile' : selectedPlantProfile}
+                    value={searchPPTerm}
+                    onChangeText={(text) => {
+                      setSearchPPTerm(text);
+                    }}
+                    style={{ flex: 1, padding: 10 }}
+                    w="100%"
+                    size="2xl"
+                    marginBottom="2%"
+                    InputLeftElement={showPPDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
+                    InputRightElement={(
+                      <Pressable onPress={() => { setSearchPPTerm(''); setShowPPDropdown(!showPPDropdown); }}>
+                        <Icon as={MaterialIcons} name={showPPDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
+                      </Pressable>
+            )}
+                    isDisabled={showPPDropdown === false}
+                  />
+                </View>
+                {showPPDropdown && (
+                <ScrollView style={{ maxHeight: 100, color: 'green' }}>
+                  {
               filterPlantProfiles(searchPPTerm).map((plantProfile) => (
                 <View style={{
-                  flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                  flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                 }}
                 >
                   <TouchableOpacity
@@ -252,47 +269,48 @@ function CreatePlantForm(props) {
                 </View>
               ))
             }
-              </ScrollView>
-              )}
-              {searchPPTerm.length > 0
+                </ScrollView>
+                )}
+                {searchPPTerm.length > 0
               && foundPPLength < 1
               && showPPDropdown
               && <Text style={styles.error}>No results found</Text>}
 
-            </View>
-            {touched.plant_profile_id && errors.plant_profile_id && (
-            <Text style={styles.error}>{errors.plant_profile_id}</Text>
-            )}
-
-            {/* Plant Types search and select Dropdown */}
-            <Heading style={styles.label}>Plant Type</Heading>
-            <View style={{ width: '100%' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Input
-                  placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
-                  value={searchPTTerm}
-                  onChangeText={(text) => {
-                    setSearchPTTerm(text);
-                  }}
-                  style={{ flex: 1, padding: 10 }}
-                  w="100%"
-                  size="2xl"
-                  marginBottom="2%"
-                  InputLeftElement={showPTDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
-                  InputRightElement={(
-                    <Pressable onPress={() => { setSearchPTTerm(''); setShowPTDropdown(!showPTDropdown); }}>
-                      <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
-                    </Pressable>
-            )}
-                  isDisabled={showPTDropdown === false}
-                />
               </View>
-              {showPTDropdown && (
-              <ScrollView style={{ maxHeight: 100 }}>
-                {
+              <FormControl.ErrorMessage>
+                {errors.plant_profile_id}
+              </FormControl.ErrorMessage>
+            </FormControl>
+
+            <FormControl isRequired isInvalid={errors.plant_type_id && touched.plant_type_id}>
+              <FormControl.Label>Plant Type</FormControl.Label>
+              <View style={{ width: '100%' }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Input
+                    placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
+                    value={searchPTTerm}
+                    onChangeText={(text) => {
+                      setSearchPTTerm(text);
+                    }}
+                    style={{ flex: 1, padding: 10 }}
+                    w="100%"
+                    size="2xl"
+                    marginBottom="2%"
+                    InputLeftElement={showPTDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
+                    InputRightElement={(
+                      <Pressable onPress={() => { setSearchPTTerm(''); setShowPTDropdown(!showPTDropdown); }}>
+                        <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
+                      </Pressable>
+            )}
+                    isDisabled={showPTDropdown === false}
+                  />
+                </View>
+                {showPTDropdown && (
+                <ScrollView style={{ maxHeight: 100 }}>
+                  {
               filterPlantTypes(searchPTTerm).map((plantType) => (
                 <View style={{
-                  flexDirection: 'row', alignItems: 'left', width: '100%', borderBottomWidth: 1, padding: 5,
+                  flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
                 }}
                 >
                   <TouchableOpacity
@@ -310,53 +328,63 @@ function CreatePlantForm(props) {
                 </View>
               ))
             }
-              </ScrollView>
-              )}
-              {searchPTTerm.length > 0
+                </ScrollView>
+                )}
+                {searchPTTerm.length > 0
               && foundPTLength < 1
               && showPTDropdown
               && <Text style={styles.error}>No results found</Text>}
-            </View>
-            {touched.plant_type_id && errors.plant_type_id && (
-            <Text style={styles.error}>{errors.plant_type_id}</Text>
-            )}
+              </View>
+              <FormControl.ErrorMessage>
+                {errors.plant_type_id}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
-            <HStack space={2} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
-              <Heading style={{ fontSize: 16, marginRight: 15 }}>Outdoor</Heading>
-              <Switch onValueChange={(value) => values.outdoor = value} size="md" />
-            </HStack>
+            <Center>
+              <HStack space={2} justifyContent="center" width="80%" paddingTop={10}>
+                <Heading style={{ fontSize: 16, marginRight: 15 }}>Outdoor</Heading>
+                <Switch onValueChange={(value) => values.outdoor = value} size="md" />
 
-            <HStack space={4} alignItems="center" justifyContent="center" width="80%" paddingTop={10}>
-              <Heading style={{ fontSize: 14 }}>Longitude</Heading>
-              <Input
-                onChangeText={handleChange('longitude')}
-                onBlur={handleBlur('longitude')}
-                value={values.longitude}
-                style={{ padding: 5 }}
-                w="20%"
-                size="2xl"
-                marginBottom="2%"
-              />
+              </HStack>
+            </Center>
 
-              <Heading style={{ fontSize: 14 }}>Latitude</Heading>
-              <Input
-                onChangeText={handleChange('latitude')}
-                onBlur={handleBlur('latitude')}
-                value={values.latitude}
-                style={{ padding: 5 }}
-                w="20%"
-                size="2xl"
-                marginBottom="2%"
-              />
+            <FormControl isInvalid={(errors.longitude && touched.longitude)
+              || (errors.latitude && touched.latitude)}
+            >
+              <Center>
+                <HStack space={4} justifyContent="center" width="80%" paddingTop={10}>
+                  <FormControl.Label>Longitude</FormControl.Label>
+                  <Input
+                    onChangeText={handleChange('longitude')}
+                    onBlur={handleBlur('longitude')}
+                    value={values.longitude}
+                    style={{ padding: 5 }}
+                    w="20%"
+                    size="2xl"
+                    marginBottom="2%"
+                  />
 
-            </HStack>
-            {touched.longitude && errors.longitude && (
-            <Text style={styles.error}>{errors.longitude}</Text>
-            )}
+                  <FormControl.Label>Latitude</FormControl.Label>
+                  <Input
+                    onChangeText={handleChange('latitude')}
+                    onBlur={handleBlur('latitude')}
+                    value={values.latitude}
+                    style={{ padding: 5 }}
+                    w="20%"
+                    size="2xl"
+                    marginBottom="2%"
+                  />
 
-            {touched.latitude && errors.latitude && (
-            <Text style={styles.error}>{errors.latitude}</Text>
-            )}
+                </HStack>
+              </Center>
+              <FormControl.ErrorMessage>
+                {errors.longitude}
+              </FormControl.ErrorMessage>
+
+              <FormControl.ErrorMessage>
+                {errors.latitude}
+              </FormControl.ErrorMessage>
+            </FormControl>
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
               <Text style={styles.buttonText}>Register Plant</Text>
@@ -373,7 +401,6 @@ function CreatePlantForm(props) {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
   },

@@ -7,24 +7,23 @@ import {
 } from 'native-base';
 import { useHeaderHeight } from '@react-navigation/elements';
 import CloseBtn from '../../components/CloseBtn';
-import EditPlantForm from '../../components/EditPlantForm';
+import EditPlantProfileForm from '../../components/EditPlantProfileForm';
 
-function EditPlantScreen({ route, navigation }) {
-  const editPlantFormCont = (
-    <VStack space={1} alignItems="center" width="99%" flex={1} justifyContent="center">
+function EditPlantProfileScreen({ route, navigation }) {
+  const editPlantProfileFormCont = (
+    <VStack space={10} alignItems="center" width="99%" flex={1}>
       <ScrollView
         style={{ maxHeight: '100%', width: '100%' }}
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
       >
         <View style={{
-          width: '100%', height: '100%', padding: 10, justifyContent: 'center',
+          width: '100%', height: '100%', justifyContent: 'center', padding: 10,
         }}
         >
-          <EditPlantForm
+          <EditPlantProfileForm
+            navigation={navigation}
             plantTypes={route.params.plantTypes}
-            plantProfiles={route.params.plantProfiles}
-            devices={route.params.devices}
-            plant={route.params.plant}
+            plantProfile={route.params.plantProfile}
           />
         </View>
       </ScrollView>
@@ -52,18 +51,18 @@ function EditPlantScreen({ route, navigation }) {
       </View>
 
       {Platform.OS === 'web' ? (
-        editPlantFormCont
+        editPlantProfileFormCont
       ) : (
         <KeyboardAvoidingView
           behavior="padding"
           keyboardVerticalOffset={Platform.OS === 'ios' ? useHeaderHeight() : -200}
         >
 
-          {editPlantFormCont}
+          {editPlantProfileFormCont}
         </KeyboardAvoidingView>
       )}
     </View>
   );
 }
 
-export default EditPlantScreen;
+export default EditPlantProfileScreen;

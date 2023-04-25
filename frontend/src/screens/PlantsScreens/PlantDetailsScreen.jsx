@@ -62,10 +62,10 @@ function PlantDetailsScreen({ route, navigation }) {
     return dayOfMonth;
   });
 
-  function filterSensorDataByType(filteredDataWithinRange, dataIds) {
+  function filterSensorDataByType(filteredData, dataIds) {
     return dataIds.reduce((acc, dataId) => {
-      const values = filteredDataWithinRange.flatMap((plant) => plant.sensor_readings
-        .filter((reading) => reading.grow_property.grow_property_type.id === dataId)
+      const values = filteredData.flatMap((plant) => plant.sensor_readings
+        .filter((reading) => reading?.grow_property?.grow_property_type.id === dataId)
         .map((reading) => reading.value));
 
       return {
@@ -75,7 +75,7 @@ function PlantDetailsScreen({ route, navigation }) {
     }, {});
   }
 
-  const dataIds = [1, 2, 3];
+  const dataIds = [1, 2, 3, 4];
   const filteredDataByType = filterSensorDataByType(filteredDataWithinRange, dataIds);
 
   if (isLoading) {
@@ -137,7 +137,7 @@ function PlantDetailsScreen({ route, navigation }) {
           </Text>
 
           {route.params.plant.plant_profile.grow_properties.map((beans) => (
-            <>
+            <View key={beans.id}>
               <Text style={styles.centeredText}>
                 {beans.grow_property_type.name}
                 {' '}
@@ -153,7 +153,7 @@ function PlantDetailsScreen({ route, navigation }) {
                   ) : <Text style={styles.errorText}>No data for this range</Text>}
               </View>
 
-            </>
+            </View>
           ))}
 
         </View>
@@ -164,7 +164,7 @@ function PlantDetailsScreen({ route, navigation }) {
         >
           <PaperProvider theme={colorScheme === 'dark' ? darkTheme : theme} darkTheme={darkTheme}>
             <DatePickerModal
-              locale="en-GB"
+              locale="en"
               mode="range"
               visible={open}
               onDismiss={onDismiss}
