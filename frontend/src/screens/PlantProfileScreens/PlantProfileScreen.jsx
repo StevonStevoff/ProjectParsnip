@@ -299,46 +299,47 @@ function PlantProfileScreen({ navigation }) {
 
         <View style={{ width: '95%', paddingTop: 10 }}>
           {filterPlantProfiles(searchPTTerm).map((plantProfile) => (
-            <View key={plantProfile.id} style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
+            <TouchableOpacity key={plantProfile.id} onPress={() => navigation.navigate('PlantProfileDetails', { plantProfile })}>
+              <View style={styles.plantContainer} backgroundColor={colorScheme === 'light' ? '#f3f3f3' : null}>
 
-              <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
-                <Heading
-                  style={{
-                    fontSize: 20, color: '#4da705', flex: 3, fontWeight: 'bold',
-                  }}
-                  key={plantProfile.id}
-                >
-                  {plantProfile.name}
-                  {' · '}
-                  {plantProfile.plant_type.name}
-                </Heading>
+                <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
+                  <Heading
+                    style={{
+                      fontSize: 20, color: '#4da705', flex: 3, fontWeight: 'bold',
+                    }}
+                    key={plantProfile.id}
+                  >
+                    {plantProfile.name}
+                    {' · '}
+                    {plantProfile.plant_type.name}
+                  </Heading>
 
-                {selectedButton === 'My Profiles' ? (
-                // eslint-disable-next-line react/jsx-no-useless-fragment
-                  <>
-                    {plantProfile.creator.id !== userData.id ? (
-                      <TouchableOpacity
-                        style={styles.detailsButton}
-                        onPress={() => handleFavourite(plantProfile)}
-                      >
-                        <Icon
-                          as={MaterialIcons}
-                          name="favorite"
-                          color={plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white'}
-                          _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
-                        />
-                      </TouchableOpacity>
-                    ) : (
-                      <>
+                  {selectedButton === 'My Profiles' ? (
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                    <>
+                      {plantProfile.creator.id !== userData.id ? (
                         <TouchableOpacity
                           style={styles.detailsButton}
-                          onPress={() => navigation.navigate('EditPlantProfileScreen', {
-                            plantTypes, plantProfile,
-                          })}
+                          onPress={() => handleFavourite(plantProfile)}
                         >
-                          <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
+                          <Icon
+                            as={MaterialIcons}
+                            name="favorite"
+                            color={plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white'}
+                            _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
+                          />
                         </TouchableOpacity>
-                        {/* <TouchableOpacity
+                      ) : (
+                        <>
+                          <TouchableOpacity
+                            style={styles.detailsButton}
+                            onPress={() => navigation.navigate('EditPlantProfileScreen', {
+                              plantTypes, plantProfile,
+                            })}
+                          >
+                            <Icon as={MaterialIcons} name="edit" color="white" _dark={{ color: 'white' }} />
+                          </TouchableOpacity>
+                          {/* <TouchableOpacity
                           style={styles.detailsButton}
                           onPress={() => handleDelete(plantProfile)}
                         >
@@ -347,48 +348,49 @@ function PlantProfileScreen({ navigation }) {
                            _dark={{ color: 'white' }} />
                         </TouchableOpacity> */}
 
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <TouchableOpacity
-                    style={styles.detailsButton}
-                    onPress={() => handleFavourite(plantProfile)}
-                  >
-                    <Icon
-                      as={MaterialIcons}
-                      name="favorite"
-                      color={plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white'}
-                      _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
-                    />
-                  </TouchableOpacity>
-                ) }
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.detailsButton}
+                      onPress={() => handleFavourite(plantProfile)}
+                    >
+                      <Icon
+                        as={MaterialIcons}
+                        name="favorite"
+                        color={plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white'}
+                        _dark={{ color: plantProfile.users.some((user) => user.id === userData.id) ? 'red.500' : 'white' }}
+                      />
+                    </TouchableOpacity>
+                  ) }
+
+                </View>
+
+                <VStack space={plantProfile.grow_properties.length} w="90%">
+                  {plantProfile.grow_properties.map((property) => (
+                    <HStack key={property.id} justifyContent="space-between">
+                      <View w="30%">
+                        {(() => getIconComponent(property.grow_property_type.description))()}
+                      </View>
+
+                      <Text fontSize={Platform.OS === 'web' ? 'md' : 'sm'} w="30%">
+                        {property.grow_property_type.name}
+                      </Text>
+                      <Text w="10%">→</Text>
+                      <Text w="20%">
+                        {property.min}
+                      </Text>
+                      <Text w="20%">-</Text>
+                      <Text w="20%">
+                        {property.max}
+                      </Text>
+                    </HStack>
+                  ))}
+                </VStack>
 
               </View>
-
-              <VStack space={plantProfile.grow_properties.length} w="90%">
-                {plantProfile.grow_properties.map((property) => (
-                  <HStack key={property.id} justifyContent="space-between">
-                    <View w="30%">
-                      {(() => getIconComponent(property.grow_property_type.description))()}
-                    </View>
-
-                    <Text fontSize={Platform.OS === 'web' ? 'md' : 'sm'} w="30%">
-                      {property.grow_property_type.name}
-                    </Text>
-                    <Text w="10%">→</Text>
-                    <Text w="20%">
-                      {property.min}
-                    </Text>
-                    <Text w="20%">-</Text>
-                    <Text w="20%">
-                      {property.max}
-                    </Text>
-                  </HStack>
-                ))}
-              </VStack>
-
-            </View>
+            </TouchableOpacity>
 
           ))}
         </View>

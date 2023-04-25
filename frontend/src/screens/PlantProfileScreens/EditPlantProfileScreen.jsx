@@ -47,7 +47,7 @@ function EditPlantProfileScreen({ route, navigation }) {
           zIndex: 1,
         }}
       >
-        <CloseBtn navigation={navigation} /> 
+        <CloseBtn navigation={navigation} />
       </View>
 
       {Platform.OS === 'web' ? (

@@ -52,6 +52,7 @@ function EditPlantProfileForm({ plantTypes, plantProfile, navigation }) {
   const [selectedPlantType, setSelectedPlantType] = useState(plantProfile.plant_type.name);
   const [foundPTLength, setfoundPTLength] = useState('');
 
+  // eslint-disable-next-line no-unused-vars
   const dataObject = Object.entries(plantProfile.grow_properties).reduce((acc, [key, value]) => {
     acc[value.grow_property_type.name] = {
       min: value.min,
