@@ -1,0 +1,62 @@
+\hypertarget{class_lora_sensor}{}\doxysection{Lora\+Sensor Class Reference}
+\label{class_lora_sensor}\index{LoraSensor@{LoraSensor}}
+Inheritance diagram for Lora\+Sensor\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_lora_sensor}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_lora_sensor_a8498ab42c850cfd18ddc7fed84ef22ae}\label{class_lora_sensor_a8498ab42c850cfd18ddc7fed84ef22ae}} 
+{\bfseries Lora\+Sensor} (int id)
+\item 
+int \mbox{\hyperlink{class_lora_sensor_ab611df41ee441bc592cb34fba3e3e6a9}{get\+Id}} () const override
+\item 
+std\+::map$<$ std\+::string, float $>$ \mbox{\hyperlink{class_lora_sensor_a06d6931594493d31f7dafa6239d7b28c}{read}} () const override
+\item 
+\mbox{\Hypertarget{class_lora_sensor_afea73f1f1184fcd1256debe89d40dac9}\label{class_lora_sensor_afea73f1f1184fcd1256debe89d40dac9}} 
+float {\bfseries get\+Temperature} () const
+\item 
+\mbox{\Hypertarget{class_lora_sensor_a097392452b9f9def0b9d7a64fe5c1688}\label{class_lora_sensor_a097392452b9f9def0b9d7a64fe5c1688}} 
+float {\bfseries get\+Humidity} () const
+\item 
+\mbox{\Hypertarget{class_lora_sensor_a59c1648d62ee65d1efcfc8e5cc590b11}\label{class_lora_sensor_a59c1648d62ee65d1efcfc8e5cc590b11}} 
+float {\bfseries get\+Heat\+Index} () const
+\item 
+\mbox{\Hypertarget{class_lora_sensor_aaf13586612b3c0650abdfa201343f78c}\label{class_lora_sensor_aaf13586612b3c0650abdfa201343f78c}} 
+float {\bfseries get\+Heat\+IndexC} () const
+\item 
+\mbox{\Hypertarget{class_lora_sensor_af7c3bee78c1f95fc9cfe51c80bfac8d6}\label{class_lora_sensor_af7c3bee78c1f95fc9cfe51c80bfac8d6}} 
+std\+::tuple$<$ float, float $>$ {\bfseries get\+Temperature\+And\+Humidity} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_lora_sensor_ab611df41ee441bc592cb34fba3e3e6a9}\label{class_lora_sensor_ab611df41ee441bc592cb34fba3e3e6a9}} 
+\index{LoraSensor@{LoraSensor}!getId@{getId}}
+\index{getId@{getId}!LoraSensor@{LoraSensor}}
+\doxysubsubsection{\texorpdfstring{getId()}{getId()}}
+{\footnotesize\ttfamily int Lora\+Sensor\+::get\+Id (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_sensor}{Sensor}}.
+
+\mbox{\Hypertarget{class_lora_sensor_a06d6931594493d31f7dafa6239d7b28c}\label{class_lora_sensor_a06d6931594493d31f7dafa6239d7b28c}} 
+\index{LoraSensor@{LoraSensor}!read@{read}}
+\index{read@{read}!LoraSensor@{LoraSensor}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily std\+::map$<$ std\+::string, float $>$ Lora\+Sensor\+::read (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_sensor}{Sensor}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+lib/lora/Lora\+Sensor.\+h\item 
+lib/lora/Lora\+Sensor.\+cpp\end{DoxyCompactItemize}

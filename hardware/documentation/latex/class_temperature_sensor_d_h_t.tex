@@ -1,0 +1,62 @@
+\hypertarget{class_temperature_sensor_d_h_t}{}\doxysection{Temperature\+Sensor\+DHT Class Reference}
+\label{class_temperature_sensor_d_h_t}\index{TemperatureSensorDHT@{TemperatureSensorDHT}}
+Inheritance diagram for Temperature\+Sensor\+DHT\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_temperature_sensor_d_h_t}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_a5ebcc97f147b6873508454d809f1a145}\label{class_temperature_sensor_d_h_t_a5ebcc97f147b6873508454d809f1a145}} 
+{\bfseries Temperature\+Sensor\+DHT} (int id, int temperature\+Sensor\+Pin, u\+\_\+int8\+\_\+t dht\+Type)
+\item 
+int \mbox{\hyperlink{class_temperature_sensor_d_h_t_a445ca4ff8ccebb2d26d61ff93b872a61}{get\+Id}} () const override
+\item 
+std\+::map$<$ std\+::string, float $>$ \mbox{\hyperlink{class_temperature_sensor_d_h_t_a6fc46d70175752904cae4cad1c8179fa}{read}} () const override
+\item 
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_a26772721fec0693628c848fe6a0093fa}\label{class_temperature_sensor_d_h_t_a26772721fec0693628c848fe6a0093fa}} 
+float {\bfseries get\+Temperature} () const
+\item 
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_abad9648042352c4861a355b8ab1c3b3c}\label{class_temperature_sensor_d_h_t_abad9648042352c4861a355b8ab1c3b3c}} 
+float {\bfseries get\+Humidity} () const
+\item 
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_ad0a686db989a73994725aeae3ef0779a}\label{class_temperature_sensor_d_h_t_ad0a686db989a73994725aeae3ef0779a}} 
+float {\bfseries get\+Heat\+Index} () const
+\item 
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_a4681f8036ab85b67a363fd9329e19b6d}\label{class_temperature_sensor_d_h_t_a4681f8036ab85b67a363fd9329e19b6d}} 
+float {\bfseries get\+Heat\+IndexC} () const
+\item 
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_a35f44a757a6e497b48fb4dbe2cb8d2ef}\label{class_temperature_sensor_d_h_t_a35f44a757a6e497b48fb4dbe2cb8d2ef}} 
+std\+::tuple$<$ float, float $>$ {\bfseries get\+Temperature\+And\+Humidity} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_a445ca4ff8ccebb2d26d61ff93b872a61}\label{class_temperature_sensor_d_h_t_a445ca4ff8ccebb2d26d61ff93b872a61}} 
+\index{TemperatureSensorDHT@{TemperatureSensorDHT}!getId@{getId}}
+\index{getId@{getId}!TemperatureSensorDHT@{TemperatureSensorDHT}}
+\doxysubsubsection{\texorpdfstring{getId()}{getId()}}
+{\footnotesize\ttfamily int Temperature\+Sensor\+DHT\+::get\+Id (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_sensor}{Sensor}}.
+
+\mbox{\Hypertarget{class_temperature_sensor_d_h_t_a6fc46d70175752904cae4cad1c8179fa}\label{class_temperature_sensor_d_h_t_a6fc46d70175752904cae4cad1c8179fa}} 
+\index{TemperatureSensorDHT@{TemperatureSensorDHT}!read@{read}}
+\index{read@{read}!TemperatureSensorDHT@{TemperatureSensorDHT}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily std\+::map$<$ std\+::string, float $>$ Temperature\+Sensor\+DHT\+::read (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_sensor}{Sensor}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+lib/temperature\+Sensors/Temperature\+Sensor\+DHT.\+h\item 
+lib/temperature\+Sensors/Temperature\+Sensor\+DHT.\+cpp\end{DoxyCompactItemize}

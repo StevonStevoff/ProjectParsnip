@@ -1,0 +1,34 @@
+\hypertarget{_lora_sensor_8h_source}{}\doxysection{Lora\+Sensor.\+h}
+\label{_lora_sensor_8h_source}\index{lib/lora/LoraSensor.h@{lib/lora/LoraSensor.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef LoraSensor\_h}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define LorSensor\_h}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}../Sensor.h"{}}}
+\DoxyCodeLine{5 }
+\DoxyCodeLine{6 \textcolor{comment}{// \#include <LoRa.h>}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <map>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <tuple>}}
+\DoxyCodeLine{10 }
+\DoxyCodeLine{11 \textcolor{keyword}{class }\mbox{\hyperlink{class_lora_sensor}{LoraSensor}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_sensor}{Sensor}}}
+\DoxyCodeLine{12 \{}
+\DoxyCodeLine{13 \textcolor{keyword}{public}:}
+\DoxyCodeLine{14     \mbox{\hyperlink{class_lora_sensor}{LoraSensor}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
+\DoxyCodeLine{15     \textcolor{keywordtype}{int} getId() \textcolor{keyword}{const override};}
+\DoxyCodeLine{16     std::map<std::string, float> read() \textcolor{keyword}{const override};}
+\DoxyCodeLine{17 }
+\DoxyCodeLine{18     \textcolor{keywordtype}{float} getTemperature() \textcolor{keyword}{const};}
+\DoxyCodeLine{19     \textcolor{keywordtype}{float} getHumidity() \textcolor{keyword}{const};}
+\DoxyCodeLine{20     \textcolor{keywordtype}{float} getHeatIndex() \textcolor{keyword}{const};}
+\DoxyCodeLine{21     \textcolor{keywordtype}{float} getHeatIndexC() \textcolor{keyword}{const};}
+\DoxyCodeLine{22     std::tuple<float, float> getTemperatureAndHumidity() \textcolor{keyword}{const};}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{24 \textcolor{keyword}{private}:}
+\DoxyCodeLine{25     \textcolor{keywordtype}{int} id\_;}
+\DoxyCodeLine{26 \};}
+\DoxyCodeLine{27 }
+\DoxyCodeLine{28 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,22 @@
+\hypertarget{_sensor_8h_source}{}\doxysection{Sensor.\+h}
+\label{_sensor_8h_source}\index{lib/sensorBase/Sensor.h@{lib/sensorBase/Sensor.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef Sensor\_h}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define Sensor\_h}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <map>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{6 }
+\DoxyCodeLine{7 \textcolor{keyword}{class }\mbox{\hyperlink{class_sensor}{Sensor}}}
+\DoxyCodeLine{8 \{}
+\DoxyCodeLine{9 \textcolor{keyword}{public}:}
+\DoxyCodeLine{10     \textcolor{keyword}{virtual} \textcolor{keywordtype}{int} getId() \textcolor{keyword}{const} = 0;}
+\DoxyCodeLine{11     \textcolor{keyword}{virtual} std::map<std::string, float> read() \textcolor{keyword}{const} = 0;}
+\DoxyCodeLine{12 }
+\DoxyCodeLine{13 \textcolor{keyword}{private}:}
+\DoxyCodeLine{14 \};}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

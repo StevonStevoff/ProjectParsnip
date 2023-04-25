@@ -1,0 +1,32 @@
+\hypertarget{_transmitter_8h_source}{}\doxysection{Transmitter.\+h}
+\label{_transmitter_8h_source}\index{lib/transmitterBase/Transmitter.h@{lib/transmitterBase/Transmitter.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef Transmitter\_h}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define Transmitter\_h}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}Arduino.h"{}}}
+\DoxyCodeLine{5 }
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include <map>}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{9 }
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#include "{}Sensor.h"{}}}
+\DoxyCodeLine{11 }
+\DoxyCodeLine{12 \textcolor{keyword}{class }\mbox{\hyperlink{class_transmitter}{Transmitter}}}
+\DoxyCodeLine{13 \{}
+\DoxyCodeLine{14 \textcolor{keyword}{public}:}
+\DoxyCodeLine{15     \mbox{\hyperlink{class_transmitter}{Transmitter}}(String deviceServerAddress = \textcolor{stringliteral}{"{}https://parsnipbackend.azurewebsites.net"{}});}
+\DoxyCodeLine{16 }
+\DoxyCodeLine{17     std::map<std::string, float> readSensors();}
+\DoxyCodeLine{18     \textcolor{keywordtype}{void} addSensor(\mbox{\hyperlink{class_sensor}{Sensor}} *sensor);}
+\DoxyCodeLine{19     \textcolor{keywordtype}{void} removeSensor(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
+\DoxyCodeLine{20     \textcolor{keywordtype}{void} sendSensorData();}
+\DoxyCodeLine{21 }
+\DoxyCodeLine{22 \textcolor{keyword}{private}:}
+\DoxyCodeLine{23     std::vector<Sensor *> sensors\_;}
+\DoxyCodeLine{24 \};}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

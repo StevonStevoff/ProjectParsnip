@@ -1,0 +1,50 @@
+\hypertarget{class_device}{}\doxysection{Device Class Reference}
+\label{class_device}\index{Device@{Device}}
+Inheritance diagram for Device\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_device}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_device_a3b0797c3fa7475efe311e5db6d37a34b}\label{class_device_a3b0797c3fa7475efe311e5db6d37a34b}} 
+{\bfseries Device} (String device\+Server\+Address=\char`\"{}https\+://parsnipbackend.\+azurewebsites.\+net\char`\"{})
+\item 
+\mbox{\Hypertarget{class_device_ad318f4f54aa3becf74eea9b381bf7d09}\label{class_device_ad318f4f54aa3becf74eea9b381bf7d09}} 
+Auto\+Connect \& {\bfseries get\+Portal} ()
+\item 
+\mbox{\Hypertarget{class_device_a212c0ddaccbacaa5a875271123ddd095}\label{class_device_a212c0ddaccbacaa5a875271123ddd095}} 
+std\+::map$<$ std\+::string, float $>$ {\bfseries read\+Sensors} ()
+\item 
+\mbox{\Hypertarget{class_device_a57639ae35493dc92532dee17feac5485}\label{class_device_a57639ae35493dc92532dee17feac5485}} 
+void {\bfseries add\+Sensor} (\mbox{\hyperlink{class_sensor}{Sensor}} $\ast$sensor)
+\item 
+\mbox{\Hypertarget{class_device_aa9908f7545b5ee49a65c1cb0d1099978}\label{class_device_aa9908f7545b5ee49a65c1cb0d1099978}} 
+void {\bfseries remove\+Sensor} (int id)
+\item 
+\mbox{\Hypertarget{class_device_a05936cde52afde8e160467818dbc307e}\label{class_device_a05936cde52afde8e160467818dbc307e}} 
+void {\bfseries handle\+Client\+Request} ()
+\item 
+\mbox{\Hypertarget{class_device_ad1f495438bed35a84427ce711e409755}\label{class_device_ad1f495438bed35a84427ce711e409755}} 
+void {\bfseries begin\+Server} ()
+\item 
+\mbox{\Hypertarget{class_device_a884f5154578695213815fd45b007dd83}\label{class_device_a884f5154578695213815fd45b007dd83}} 
+void {\bfseries send\+Sensor\+Data} ()
+\item 
+\mbox{\Hypertarget{class_device_a9a404e69944b1ae62a92a6a70219a1ab}\label{class_device_a9a404e69944b1ae62a92a6a70219a1ab}} 
+String {\bfseries on\+Handle\+Auth\+Token} (Auto\+Connect\+Aux \&page, Page\+Argument \&args)
+\item 
+\mbox{\Hypertarget{class_device_a1646409eabee2d30e5c6aab43ea351e0}\label{class_device_a1646409eabee2d30e5c6aab43ea351e0}} 
+String {\bfseries on\+Load\+Auth\+Page} (Auto\+Connect\+Aux \&page, Page\+Argument \&args)
+\item 
+\mbox{\Hypertarget{class_device_af665b2e896eda1789584ea7d0068ec1f}\label{class_device_af665b2e896eda1789584ea7d0068ec1f}} 
+String {\bfseries get\+Authentication\+Token} ()
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+lib/device\+Base/Device.\+h\item 
+lib/device\+Base/Device.\+cpp\end{DoxyCompactItemize}
