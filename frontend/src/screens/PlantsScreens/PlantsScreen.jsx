@@ -267,7 +267,7 @@ function PlantsScreen({ navigation }) {
                       </Text>
 
                       <HStack w="100%" style={styles.plantDetailsContianer}>
-                        <Text fontSize={Platform.OS === 'web' ? 18 : 10} style={styles.plantContainerText}> Time planted: </Text>
+                        <Text fontSize={Platform.OS === 'web' ? '2vh' : 10} style={styles.plantContainerText}> Time planted: </Text>
                         {plant.time_planted === null
                           ? <Text style={styles.plantContainerText}> Not set</Text>
                           : (
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
       web: {
         padding: 10,
         flexGrow: 1,
-        minWidth: 450,
+        minWidth: 400,
         maxWidth: 600,
         flexBasis: 0,
       },

@@ -380,7 +380,7 @@ function PlantProfileScreen({ navigation }) {
                         {(() => getIconComponent(property.grow_property_type.description))()}
                       </View>
 
-                      <Text fontSize={Platform.OS === 'web' ? 'md' : 'sm'} w="30%">
+                      <Text fontSize={Platform.OS === 'web' ? '1.5vh' : 'sm'} w="30%">
                         {property.grow_property_type.name}
                       </Text>
                       <Text w="10%">→</Text>
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
       web: {
         padding: 10,
         flexGrow: 1,
-        minWidth: 450,
+        minWidth: 400,
         maxWidth: 600,
         flexBasis: 0,
       },
