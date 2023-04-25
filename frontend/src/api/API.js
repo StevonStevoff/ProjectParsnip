@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-use-before-define */
 import qs from 'qs';
+// eslint-disable-next-line import/no-cycle
 import api from './config/axiosConfigs';
 import defineCancelApiObject from './config/axiosUtils';
 

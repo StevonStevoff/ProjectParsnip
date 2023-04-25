@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import AuthUtils from './AuthUtils';
 
 let consecutive401Errors = 0;
