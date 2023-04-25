@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
       web: {
         padding: 10,
         flexGrow: 1,
-        minWidth: 400,
+        minWidth: 450,
         maxWidth: 600,
         flexBasis: 0,
       },

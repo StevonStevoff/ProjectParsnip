@@ -2,6 +2,7 @@ import { en, registerTranslation } from 'react-native-paper-dates';
 import React, { useState, useEffect } from 'react';
 import { NativeBaseProvider, Center } from 'native-base';
 import { ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import NavigationRoot from './src/navigation/NavigationRoot';
 import defaultTheme from './src/stylesheets/defaultTheme';
 import API from './src/api/API';
@@ -15,13 +16,15 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const checkConnection = async () => {
+    setLoading(true);
     try {
       const response = await API.checkAPIConnection();
       const connected = response.status === 200;
       setIsConnected(connected);
-      setLoading(false);
     } catch (error) {
       setIsConnected(false);
+      console.log(error);
+    } finally {
       setLoading(false);
     }
   };
