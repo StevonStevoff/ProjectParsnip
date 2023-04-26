@@ -121,15 +121,30 @@ function PlantsScreen({ navigation }) {
     fetchLatestValues();
   }, [plants]);
 
-  useEffect(() => {
-    const fetchPlantsProfiles = async () => {
-      try {
-        const response = await API.getAllPlantProfiles();
-        setPlantProfiles(response.data);
-      } catch (error) { /* empty */ }
-    };
-    fetchPlantsProfiles();
-  }, []);
+  // useEffect(() => {
+  //   const fetchPlantsProfiles = async () => {
+  //     try {
+  //       const response = await API.getAllPlantProfiles();
+  //       setPlantProfiles(response.data);
+  //     } catch (error) { /* empty */ }
+  //   };
+  //   fetchPlantsProfiles();
+  // }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPlantsProfiles = async () => {
+        try {
+          const response = await API.getAllPlantProfiles();
+          setPlantProfiles(response.data);
+        } catch (error) { /* empty */ }
+      };
+      fetchPlantsProfiles();
+
+      return () => { /* empty */
+      };
+    }, []),
+  );
 
   useEffect(() => {
     const fetchDevices = async () => {
@@ -418,14 +433,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     width: '100%',
     left: -40,
-  },
-  propertyTypesConatiner: {
-    width: '100%',
-    padding: 20,
-    borderColor: 'grey',
-    textAlign: 'center',
-    justifyContent: 'left',
-    alignItems: 'center',
   },
 });
 
