@@ -311,7 +311,7 @@ function PlantProfileScreen({ navigation }) {
                 <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
                   <Heading
                     style={{
-                      fontSize: 20, color: '#4da705', flex: 3, fontWeight: 'bold',
+                      fontSize: Platform.OS === 'web' ? 20 : 14, color: '#4da705', flex: 3, fontWeight: 'bold',
                     }}
                     key={plantProfile.id}
                   >
@@ -454,6 +454,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+    height: 40,
+    width: 40,
   },
   createText: {
     color: '#fff',
