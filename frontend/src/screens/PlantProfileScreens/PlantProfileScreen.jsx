@@ -210,6 +210,7 @@ function PlantProfileScreen({ navigation }) {
       </NativeBaseProvider>
     );
   }
+
   return (
     <ScrollView style={styles.scrollView}>
 
@@ -373,7 +374,7 @@ function PlantProfileScreen({ navigation }) {
 
                 </View>
 
-                <VStack space={plantProfile.grow_properties.length} w="90%">
+                <VStack space={4} w="90%">
                   {plantProfile.grow_properties.map((property) => (
                     <HStack key={property.id} justifyContent="space-between">
                       <View w="30%">
@@ -393,6 +394,18 @@ function PlantProfileScreen({ navigation }) {
                       </Text>
                     </HStack>
                   ))}
+                  {
+                  // eslint-disable-next-line no-unused-vars
+                  Array.from(Array(4 - plantProfile.grow_properties.length)).map((_, i) => (
+                    <HStack key={i} justifyContent="space-between">
+                      <Text w="10%"> </Text>
+                      <Text w="20%" opacity={10}>
+                        NOT  SET
+                      </Text>
+                      <Text w="10%"> </Text>
+                    </HStack>
+                  ))
+}
                 </VStack>
 
               </View>

@@ -89,6 +89,16 @@ function PlantDetailsScreen({ route, navigation }) {
   if (plantsData.length === 0) {
     return (
       <Center flex={1}>
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+        >
+          <CloseBtn navigation={navigation} />
+        </View>
         <Text>No plants data has been record yet.</Text>
       </Center>
     );
@@ -182,19 +192,6 @@ function PlantDetailsScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  createPlantButton: {
-    marginRight: 10,
-    marginLeft: 120,
-    marginTop: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 15,
-    paddingLeft: 15,
-    backgroundColor: '#1E6738',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
   detailsButton: {
     marginRight: 5,
     marginLeft: 5,
@@ -226,11 +223,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     fontWeight: 'bold',
-  },
-  scrollView: {
-    marginHorizontal: 40,
-    width: '100%',
-    left: -40,
   },
 });
 

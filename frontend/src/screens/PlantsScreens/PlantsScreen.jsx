@@ -274,7 +274,7 @@ function PlantsScreen({ navigation }) {
                     </TouchableOpacity>
                   </View>
 
-                  <HStack w="100%" h={Platform.OS === 'web' ? 180 : null}>
+                  <HStack w="100%" h={Platform.OS === 'web' ? 220 : null}>
                     <VStack w="50%" style={styles.plantDetailsContianer} paddingRight={1}>
                       <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
                         {' '}
@@ -294,9 +294,21 @@ function PlantsScreen({ navigation }) {
                     </VStack>
                     <Divider my={1} orientation="vertical" />
                     <VStack space={plant.plant_profile.grow_properties.length} w="40%" paddingLeft={1}>
+                      <HStack justifyContent="space-between">
+                        <Text w="19%" />
+                        <Text fontSize={11}>
+                          Min
+                        </Text>
+                        <Text fontSize={12}>
+                          Current
+                        </Text>
+                        <Text fontSize={11}>
+                          Max
+                        </Text>
+                      </HStack>
                       {plant.plant_profile.grow_properties.map((property) => (
                         <HStack key={property.id} justifyContent="space-between">
-                          <View w="20%" marginBottom={10}>
+                          <View w="20%">
                             {(() => getIconComponent(property.grow_property_type.description))()}
                           </View>
 
@@ -312,7 +324,7 @@ function PlantsScreen({ navigation }) {
                             )
                               ? (
                                 <>
-                                  <Text fontSize={Platform.OS === 'web' ? 18 : 13} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
+                                  <Text fontSize={Platform.OS === 'web' ? 18 : 13} style={{ color: 'red', fontWeight: 'bold', marginTop: -3 }}>
                                     {isAValue(plant.id, property.grow_property_type.id)
                                       ? 'N/A'
                                       : latestValue?.[plant.id]?.[property.grow_property_type.id]}
@@ -383,7 +395,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     alignItems: 'center',
-    height: Platform.OS === 'web' ? 280 : null,
+    height: Platform.OS === 'web' ? 310 : null,
   },
   detailsButton: {
     marginRight: 5,
