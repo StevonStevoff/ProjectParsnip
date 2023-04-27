@@ -1,20 +1,18 @@
 #ifndef Device_h
 #define Device_h
 
-#include "Arduino.h"
-
 #include <vector>
 #include <map>
-#include <string>
 
 #include "Sensor.h"
+
 #include "LoraSensor.h"
+#include "Wire.h"
+
 #include "DeviceServerInterface.h"
 #include <algorithm>
-#include <string>
 #include <EEPROM.h>
 #include <AutoConnect.h>
-#include "Arduino.h"
 
 class Device
 {
@@ -29,6 +27,7 @@ public:
     void handleClientRequest();
     void beginServer();
     void sendSensorData();
+    void beginPortal(const char *ssid = NULL, const char *password = NULL);
 
     String onHandleAuthToken(AutoConnectAux &page, PageArgument &args);
     String onLoadAuthPage(AutoConnectAux &page, PageArgument &args);

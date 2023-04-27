@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include "Arduino.h"
+#include "Wire.h"
 
 #include "../SensorBase/Sensor.h"
 
@@ -16,8 +17,6 @@ public:
     std::map<std::string, float> readSensors();
     void addSensor(Sensor *sensor);
     void removeSensor(int id);
-
-
 
 private:
     std::vector<Sensor *> sensors_;

@@ -41,7 +41,7 @@ int DeviceServerInterface::sendPlantData(String payload)
     String address = this->baseUrl + "/plant_data";
     this->setHttpUrl(address);
 
-    //creates headers for the payload
+    // creates headers for the payload
     this->http.addHeader("Content-Type", "application/json");
 
     this->http.setAuthorization("admin", "string");

@@ -36,7 +36,7 @@ String Device::onLoadAuthPage(AutoConnectAux &page, PageArgument &args)
 
 Device::Device(String deviceServerAddress) : Portal(server), sensors_()
 {
-    //initalize reading sensors
+    // initalize reading sensors
     Wire.begin();
     this->deviceServerInterface = new DeviceServerInterface(deviceServerAddress);
     AutoConnectConfig Config;
@@ -56,7 +56,15 @@ Device::Device(String deviceServerAddress) : Portal(server), sensors_()
     auxHandleToken.on(std::bind(&Device::onHandleAuthToken, this, std::placeholders::_1, std::placeholders::_2));
 
     this->Portal.join({auxInputToken, auxHandleToken});
-    this->Portal.begin();
+}
+
+void Device::beginPortal(const char *ssid, const char *password)
+{
+    if (ssid == NULL || password == NULL)
+    {
+        this->Portal.begin();
+    }
+    this->Portal.begin(ssid, password);
 }
 
 String Device::getAuthenticationToken()

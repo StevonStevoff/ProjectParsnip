@@ -1,3 +1,6 @@
+#ifndef DeviceServerInterface_h
+#define DeviceServerInterface_h
+
 #ifdef ESP32
 #include <HTTPClient.h>
 #endif
@@ -6,6 +9,8 @@
 #include <ESP8266HTTPClient.h>
 #endif
 
+// #include <string>
+#include "Arduino.h"
 #include <map>
 
 class DeviceServerInterface
@@ -23,3 +28,5 @@ private:
     String baseUrl;
     String authToken;
 };
+
+#endif

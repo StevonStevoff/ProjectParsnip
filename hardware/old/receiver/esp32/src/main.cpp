@@ -18,9 +18,6 @@ void setup()
     Serial.println();
     Serial.println(F("start"));
 
-    // initalize sensors
-    Wire.begin();
-
     TemperatureSensorDHT *temperatureSensor = new TemperatureSensorDHT(1, 4, 11);
     LightSensor *lightSensor = new LightSensor(2);
     LoraSensor *loraSensor = new LoraSensor(4);
@@ -37,5 +34,10 @@ void setup()
 
 void loop()
 {
+    delay(1000);
+    device->readSensors();
+
     device->sendSensorData();
+
+    device->handleClientRequest();
 }
