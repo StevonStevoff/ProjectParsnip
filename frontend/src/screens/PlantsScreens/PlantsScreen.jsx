@@ -7,7 +7,7 @@ import {
   Appearance,
   Platform,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Icon,
   Heading,
@@ -94,7 +94,7 @@ function PlantsScreen({ navigation }) {
   }, []);
 
   // Get latest value for each grow property type for each plant
-  useEffect(() => {
+  useMemo(() => {
     const fetchLatestValues = async () => {
       setIsLoading(true);
       try {
@@ -211,7 +211,8 @@ function PlantsScreen({ navigation }) {
           onClose={handleDeleteClose}
           onConfirm={handleDelete}
           warningMessage="Are you sure you want to delete this plant? This action cannot be undone."
-          actionBtnText="Delete Plant"
+          headerMessage="Delete Plant"
+          actionBtnText="Delete"
         />
         {filteredStatusArray.length !== 0 && (
           <View style={{ padding: 5, width: '90%' }}>

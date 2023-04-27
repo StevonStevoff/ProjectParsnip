@@ -54,6 +54,7 @@ function DeviceDetailsInfo({
         isOpen={warningDialogOpen}
         onClose={handlePopUpWindowClose}
         onConfirm={handleDeletionConfirmation}
+        headerMessage="Remove item from device"
         warningMessage="Are you sure you want to procede. This action cannot be undone."
         actionBtnText="Delete"
       />

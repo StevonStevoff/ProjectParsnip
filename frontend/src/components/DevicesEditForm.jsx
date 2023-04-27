@@ -91,6 +91,7 @@ function DeviceEditForm({ navigation, device, editDevice }) {
         onClose={handleDeleteClose}
         onConfirm={handleDeleteConfirm}
         warningMessage="Are you sure you want to delete this device? This action cannot be undone."
+        headerMessage="Remove item from device"
         actionBtnText="Delete Device"
       />
 
