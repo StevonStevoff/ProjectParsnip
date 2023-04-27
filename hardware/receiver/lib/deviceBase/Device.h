@@ -11,7 +11,7 @@
 #include "LoraSensor.h"
 #include "DeviceServerInterface.h"
 #include <algorithm>
-#include <string>  
+#include <string>
 #include <EEPROM.h>
 #include <AutoConnect.h>
 
@@ -33,6 +33,8 @@ public:
     String onLoadAuthPage(AutoConnectAux &page, PageArgument &args);
 
     String getAuthenticationToken();
+
+    std::vector<Sensor *> getSensors();
 
 private:
     WebServer server;

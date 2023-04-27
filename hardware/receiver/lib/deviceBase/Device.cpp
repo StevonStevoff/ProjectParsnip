@@ -6,7 +6,7 @@ typedef struct
     char token[257]; // 32 bytes for the token + 1 byte for the null terminator
 } EEPROM_CONFIG_t;
 
-String Device::onHandleAuthToken(AutoConnectAux& page, PageArgument& args)
+String Device::onHandleAuthToken(AutoConnectAux &page, PageArgument &args)
 {
     String input = args.arg(1);
 
@@ -22,7 +22,7 @@ String Device::onHandleAuthToken(AutoConnectAux& page, PageArgument& args)
     return String();
 }
 
-String Device::onLoadAuthPage(AutoConnectAux& page, PageArgument& args)
+String Device::onLoadAuthPage(AutoConnectAux &page, PageArgument &args)
 {
     EEPROM_CONFIG_t eepromConfig;
     EEPROM.begin(sizeof(eepromConfig));
@@ -47,13 +47,13 @@ Device::Device(String deviceServerAddress) : Portal(server), sensors_()
 
     ACText(confirmation, "Your device token has been saved!");
 
-    AutoConnectAux auxInputToken = AutoConnectAux("/auth", "Authentication", true, { input, save, text });
-    AutoConnectAux auxHandleToken = AutoConnectAux("/handleAuth", "Handle Input", false, { confirmation });
+    AutoConnectAux auxInputToken = AutoConnectAux("/auth", "Authentication", true, {input, save, text});
+    AutoConnectAux auxHandleToken = AutoConnectAux("/handleAuth", "Handle Input", false, {confirmation});
 
     auxInputToken.on(std::bind(&Device::onLoadAuthPage, this, std::placeholders::_1, std::placeholders::_2));
     auxHandleToken.on(std::bind(&Device::onHandleAuthToken, this, std::placeholders::_1, std::placeholders::_2));
 
-    this->Portal.join({ auxInputToken, auxHandleToken });
+    this->Portal.join({auxInputToken, auxHandleToken});
     this->Portal.begin();
 }
 
@@ -67,7 +67,7 @@ String Device::getAuthenticationToken()
     return eepromConfig.token;
 }
 
-AutoConnect& Device::getPortal()
+AutoConnect &Device::getPortal()
 {
     return this->Portal;
 }
@@ -82,7 +82,7 @@ void Device::beginServer()
     this->getPortal().begin();
 }
 
-void Device::addSensor(Sensor* sensor)
+void Device::addSensor(Sensor *sensor)
 {
     this->sensors_.push_back(sensor);
 }
@@ -90,13 +90,18 @@ void Device::addSensor(Sensor* sensor)
 void Device::removeSensor(int id)
 {
     auto it = std::find_if(this->sensors_.begin(), sensors_.end(),
-        [&](const Sensor* s)
-        { return s->getId() == id; });
+                           [&](const Sensor *s)
+                           { return s->getId() == id; });
 
     if (it != this->sensors_.end())
     {
         this->sensors_.erase(it);
     }
+}
+
+std::vector<Sensor *> Device::getSensors()
+{
+    return this->sensors_;
 }
 
 void Device::readSensors()
@@ -106,63 +111,66 @@ void Device::readSensors()
     for (auto sensor : sensors_)
     {
         std::map<std::string, float> values = sensor->read();
-
         // Combines all the sensor readings into one map
-        
-        //checks if the program should read it's own sensor data or wait for more Lora packets
-        if (sensor->getId() == 4) {
-            auto loraSensor = static_cast<LoraSensor*>(sensor);
-            if (loraSensor->recieved) {
-                if (values.size() > 1) {
-                    this->lastSensorRead = values;                    
+
+        // checks if the program should read it's own sensor data or wait for more Lora packets
+        if (sensor->getId() == 4)
+        {
+            auto loraSensor = static_cast<LoraSensor *>(sensor);
+            if (loraSensor->recieved)
+            {
+                if (values.size() > 1)
+                {
+                    this->lastSensorRead = values;
                 }
                 return;
-            }            
+            }
         }
-        else {
+        else
+        {
             sensor_readings.insert(values.begin(), values.end());
         }
     }
-     this->lastSensorRead = sensor_readings;
-
-    
+    this->lastSensorRead = sensor_readings;
 }
 
 // make a method that packages the data and sends it to the backend using the http client
 void Device::sendSensorData()
 {
     readSensors();
-    this->deviceServerInterface->setAuthenticationToken(this->getAuthenticationToken());   
+    this->deviceServerInterface->setAuthenticationToken(this->getAuthenticationToken());
 
-    //checks whether it's time to send data
-     if (millis() - this->lastSendTime > 3600000) // 3600000 is 60mins
-     {
-         //creates a json object to POST to the API from the sensor data
-         String payloadStr = "{";
+    // checks whether it's time to send data
+    if (millis() - this->lastSendTime > 3600000) // 3600000 is 60mins
+    {
+        // creates a json object to POST to the API from the sensor data
+        String payloadStr = "{";
 
-         for (auto x = this->lastSensorRead.begin(); x != this->lastSensorRead.end(); ++x) {
+        for (auto x = this->lastSensorRead.begin(); x != this->lastSensorRead.end(); ++x)
+        {
 
-             char floatStr[10];
-             dtostrf(x->second, 5, 2, floatStr); // convert float to char array with 2 decimal places
-             String keyValuePair = "\"" + String(x->first.c_str()) + "\":" + String(floatStr) + ",";
-             payloadStr.concat(keyValuePair);
-         }
-         payloadStr.remove(payloadStr.length() - 1); // remove the last comma
-         payloadStr += "}"; // end the json object
+            char floatStr[10];
+            dtostrf(x->second, 5, 2, floatStr); // convert float to char array with 2 decimal places
+            String keyValuePair = "\"" + String(x->first.c_str()) + "\":" + String(floatStr) + ",";
+            payloadStr.concat(keyValuePair);
+        }
+        payloadStr.remove(payloadStr.length() - 1); // remove the last comma
+        payloadStr += "}";                          // end the json object
 
-         this->lastSendTime = millis();
+        this->lastSendTime = millis();
 
-         for (auto sensor : sensors_)
-         {
-             //resets Lora sensor's recieved flag
-             if (sensor->getId() == 4) {
-                 static_cast<LoraSensor*>(sensor)->recieved = false; 
-             }
-         }
-     }
-     //deals with the case where the millis() counter has overflowed
-     else if(millis() < this->lastSendTime)
-     {
-         this->lastSendTime = 0;
-     }
+        for (auto sensor : sensors_)
+        {
+            // resets Lora sensor's recieved flag
+            if (sensor->getId() == 4)
+            {
+                static_cast<LoraSensor *>(sensor)->recieved = false;
+            }
+        }
+    }
+    // deals with the case where the millis() counter has overflowed
+    else if (millis() < this->lastSendTime)
+    {
+        this->lastSendTime = 0;
+    }
 }
