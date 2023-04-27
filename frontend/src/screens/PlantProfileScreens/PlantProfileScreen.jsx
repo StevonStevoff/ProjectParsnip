@@ -413,7 +413,11 @@ function PlantProfileScreen({ navigation }) {
 
           ))}
           {filterPlantProfiles(searchPTTerm).length === 0
-          && (<Heading opacity={10} paddingTop={10}>No Plant Profiles Found!</Heading>)}
+          && (
+          <Center>
+            <Heading opacity={10} paddingTop={10}>No Plant Profiles Found!</Heading>
+          </Center>
+          )}
         </View>
 
       </View>
