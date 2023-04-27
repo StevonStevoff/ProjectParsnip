@@ -36,6 +36,8 @@ String Device::onLoadAuthPage(AutoConnectAux &page, PageArgument &args)
 
 Device::Device(String deviceServerAddress) : Portal(server), sensors_()
 {
+    //initalize reading sensors
+    Wire.begin();
     this->deviceServerInterface = new DeviceServerInterface(deviceServerAddress);
     AutoConnectConfig Config;
     Config.autoReconnect = true;

@@ -10,9 +10,7 @@
 DeviceESP8266 *device;
 
 void setup()
-{
-    //initalize sensors
-    Wire.begin();
+{ 
 
     TemperatureSensorAHTX* temperatureSensor = new TemperatureSensorAHTX(1, 4);
     LightSensor* lightSensor = new LightSensor(2);

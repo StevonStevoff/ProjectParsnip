@@ -7,18 +7,16 @@
 #endif
 
 #include <map>
-#include <string>
 
 class DeviceServerInterface
 {
 public:
     DeviceServerInterface(String baseUrl);
     void setAuthenticationToken(String authToken);
-    int sendPlantData(std::map<std::string, float> sensorReadings);
+    int sendPlantData(String payload);
     String getAuthenticationToken();
     String getDeviceSensorIds();
     void setHttpUrl(String url);
-    void setAuthHeader();
 
 private:
     HTTPClient http;
