@@ -18,6 +18,7 @@ import {
   CloseIcon,
   Text,
   Divider,
+  Center,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -34,6 +35,7 @@ function PlantsScreen({ navigation }) {
   const [devices, setDevices] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
   const [latestValue, setLatestValue] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const statusArray = [{
     status: 'success',
@@ -59,10 +61,13 @@ function PlantsScreen({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       const fetchPlants = async () => {
+        setIsLoading(true);
         try {
           const response = await API.getCurrentUsersPlants();
           setPlants(response.data);
-        } catch (error) { /* empty */ }
+        } catch (error) { /* empty */ } finally {
+          setIsLoading(false);
+        }
       };
       fetchPlants();
 
@@ -121,16 +126,6 @@ function PlantsScreen({ navigation }) {
     fetchLatestValues();
   }, [plants]);
 
-  // useEffect(() => {
-  //   const fetchPlantsProfiles = async () => {
-  //     try {
-  //       const response = await API.getAllPlantProfiles();
-  //       setPlantProfiles(response.data);
-  //     } catch (error) { /* empty */ }
-  //   };
-  //   fetchPlantsProfiles();
-  // }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       const fetchPlantsProfiles = async () => {
@@ -179,6 +174,14 @@ function PlantsScreen({ navigation }) {
   const isAValue = (plantIdValue, growPropertyTypeId) => (
     latestValue?.[plantIdValue]?.[growPropertyTypeId] === -999
   || latestValue?.[plantIdValue]?.[growPropertyTypeId] === undefined);
+
+  if (isLoading) {
+    return (
+      <Center flex={1}>
+        <ActivityIndicator size="large" color="#00ff00" />
+      </Center>
+    );
+  }
 
   return (
     <ScrollView style={styles.scrollView}>

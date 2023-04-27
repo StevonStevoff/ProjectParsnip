@@ -412,6 +412,8 @@ function PlantProfileScreen({ navigation }) {
             </TouchableOpacity>
 
           ))}
+          {filterPlantProfiles(searchPTTerm).length === 0
+          && (<Heading opacity={10} paddingTop={10}>No Plant Profiles Found!</Heading>)}
         </View>
 
       </View>
