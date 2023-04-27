@@ -25,6 +25,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
 import getIconComponent from '../../utils/SensorIcons';
+import WarningDialog from '../../components/WarningDialog';
 
 function PlantsScreen({ navigation }) {
   const colorScheme = Appearance.getColorScheme();
@@ -36,6 +37,8 @@ function PlantsScreen({ navigation }) {
   const [plantProfiles, setPlantProfiles] = useState([]);
   const [latestValue, setLatestValue] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
+  const [plantDeletedId, setPlantDeletedId] = useState(0);
 
   const statusArray = [{
     status: 'success',
@@ -50,6 +53,10 @@ function PlantsScreen({ navigation }) {
 
   const handleClose = () => {
     setEvent('');
+  };
+
+  const handleDeleteClose = () => {
+    setIsWarningDialogOpen(false);
   };
 
   useEffect(() => {
@@ -160,10 +167,11 @@ function PlantsScreen({ navigation }) {
     );
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    setIsWarningDialogOpen(false);
     try {
-      await API.deletePlant(id).then(() => {
-        setPlants(plants.filter((plant) => plant.id !== id));
+      await API.deletePlant(plantDeletedId).then(() => {
+        setPlants(plants.filter((plant) => plant.id !== plantDeletedId));
         setEvent('success');
       });
     } catch (error) { setEvent('error'); }
@@ -198,6 +206,13 @@ function PlantsScreen({ navigation }) {
         }}
       >
 
+        <WarningDialog
+          isOpen={isWarningDialogOpen}
+          onClose={handleDeleteClose}
+          onConfirm={handleDelete}
+          warningMessage="Are you sure you want to delete this plant? This action cannot be undone."
+          actionBtnText="Delete Plant"
+        />
         {filteredStatusArray.length !== 0 && (
           <View style={{ padding: 5, width: '90%' }}>
             <Alert w="100%" status={filteredStatusArray[0].status}>
@@ -274,7 +289,7 @@ function PlantsScreen({ navigation }) {
                     {/* To be Changed to handleEdit */}
                     <TouchableOpacity
                       style={styles.detailsButton}
-                      onPress={() => handleDelete(plant.id)}
+                      onPress={() => {setIsWarningDialogOpen(true);setPlantDeletedId(plant.id);}}
                     >
                       <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
                     </TouchableOpacity>
