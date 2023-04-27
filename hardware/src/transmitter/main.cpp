@@ -5,13 +5,13 @@
 #include "DerivedLoraSensor.h"
 #include "MoistureSensor.h"
 
-// #if defined(ESP32)
-// // #include <DeviceESP32.h>
-// // DeviceESP32 *transmitter;
-// #elif defined(ESP8266)
+#if defined(ESP32)
+#include <TransmitterESP32.h>
+TransmitterESP32 *transmitter;
+#elif defined(ESP8266)
 #include <TransmitterESP8266.h>
 TransmitterESP8266 *transmitter;
-// #endif
+#endif
 
 void setup()
 {
@@ -21,11 +21,11 @@ void setup()
     LoraSensorTransmitter *loraSensor = new DerivedLoraSensor(4);
     MoistureSensor *moistureSensor = new MoistureSensor(3);
 
-    // #if defined(ESP32)
-    //     // transmitter = new DeviceESP32();
-    // #elif defined(ESP8266)
+#if defined(ESP32)
+    transmitter = new TransmitterESP32();
+#elif defined(ESP8266)
     transmitter = new TransmitterESP8266();
-    // #endif
+#endif
 
     // add sensors
     transmitter->addSensor(temperatureSensor);

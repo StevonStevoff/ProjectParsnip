@@ -15,8 +15,8 @@ Inheritance diagram for Device\+:\begin{figure}[H]
 \mbox{\Hypertarget{class_device_ad318f4f54aa3becf74eea9b381bf7d09}\label{class_device_ad318f4f54aa3becf74eea9b381bf7d09}} 
 Auto\+Connect \& {\bfseries get\+Portal} ()
 \item 
-\mbox{\Hypertarget{class_device_a212c0ddaccbacaa5a875271123ddd095}\label{class_device_a212c0ddaccbacaa5a875271123ddd095}} 
-std\+::map$<$ std\+::string, float $>$ {\bfseries read\+Sensors} ()
+\mbox{\Hypertarget{class_device_add6eb62ac67be5ea339485fe6a992180}\label{class_device_add6eb62ac67be5ea339485fe6a992180}} 
+void {\bfseries read\+Sensors} ()
 \item 
 \mbox{\Hypertarget{class_device_a57639ae35493dc92532dee17feac5485}\label{class_device_a57639ae35493dc92532dee17feac5485}} 
 void {\bfseries add\+Sensor} (\mbox{\hyperlink{class_sensor}{Sensor}} $\ast$sensor)
@@ -33,6 +33,9 @@ void {\bfseries begin\+Server} ()
 \mbox{\Hypertarget{class_device_a884f5154578695213815fd45b007dd83}\label{class_device_a884f5154578695213815fd45b007dd83}} 
 void {\bfseries send\+Sensor\+Data} ()
 \item 
+\mbox{\Hypertarget{class_device_a4d47fffff6db21f3539ee6ce315a9298}\label{class_device_a4d47fffff6db21f3539ee6ce315a9298}} 
+void {\bfseries begin\+Portal} (const char $\ast$ssid=NULL, const char $\ast$password=NULL)
+\item 
 \mbox{\Hypertarget{class_device_a9a404e69944b1ae62a92a6a70219a1ab}\label{class_device_a9a404e69944b1ae62a92a6a70219a1ab}} 
 String {\bfseries on\+Handle\+Auth\+Token} (Auto\+Connect\+Aux \&page, Page\+Argument \&args)
 \item 
@@ -41,10 +44,13 @@ String {\bfseries on\+Load\+Auth\+Page} (Auto\+Connect\+Aux \&page, Page\+Argume
 \item 
 \mbox{\Hypertarget{class_device_af665b2e896eda1789584ea7d0068ec1f}\label{class_device_af665b2e896eda1789584ea7d0068ec1f}} 
 String {\bfseries get\+Authentication\+Token} ()
+\item 
+\mbox{\Hypertarget{class_device_a1d90b8118fb7fded2f83d6140eb5769a}\label{class_device_a1d90b8118fb7fded2f83d6140eb5769a}} 
+std\+::vector$<$ \mbox{\hyperlink{class_sensor}{Sensor}} $\ast$ $>$ {\bfseries get\+Sensors} ()
 \end{DoxyCompactItemize}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-lib/device\+Base/Device.\+h\item 
-lib/device\+Base/Device.\+cpp\end{DoxyCompactItemize}
+lib/receiver\+Base/Device.\+h\item 
+lib/receiver\+Base/Device.\+cpp\end{DoxyCompactItemize}

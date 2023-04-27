@@ -1,0 +1,32 @@
+\hypertarget{_moisture_sensor_8h_source}{}\doxysection{Moisture\+Sensor.\+h}
+\label{_moisture_sensor_8h_source}\index{lib/soilMoistureSensors/MoistureSensor.h@{lib/soilMoistureSensors/MoistureSensor.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef MoistureSensor\_h}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define MoistureSensor\_h}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}../SensorBase/Sensor.h"{}}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <limits>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include "{}Arduino.h"{}}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include <tuple>}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#define air\_moist 380}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#define water\_moist 45}}
+\DoxyCodeLine{10 }
+\DoxyCodeLine{11 \textcolor{keyword}{class }\mbox{\hyperlink{class_moisture_sensor}{MoistureSensor}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_sensor}{Sensor}}}
+\DoxyCodeLine{12 \{}
+\DoxyCodeLine{13 \textcolor{keyword}{public}:}
+\DoxyCodeLine{14     \mbox{\hyperlink{class_moisture_sensor}{MoistureSensor}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
+\DoxyCodeLine{15     \textcolor{keywordtype}{int} getId() \textcolor{keyword}{const override};}
+\DoxyCodeLine{16     std::map<std::string, float> read() \textcolor{keyword}{const override};}
+\DoxyCodeLine{17 }
+\DoxyCodeLine{18     \textcolor{keywordtype}{float} getMoist() \textcolor{keyword}{const};}
+\DoxyCodeLine{19 }
+\DoxyCodeLine{20 \textcolor{keyword}{private}:}
+\DoxyCodeLine{21     \textcolor{keyword}{const} uint8\_t MoistureSensorPin = A0;}
+\DoxyCodeLine{22     \textcolor{keywordtype}{int} id\_;}
+\DoxyCodeLine{23     \textcolor{keywordtype}{bool} sensorWorking;}
+\DoxyCodeLine{24 \};}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

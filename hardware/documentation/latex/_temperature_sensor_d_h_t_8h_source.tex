@@ -5,9 +5,9 @@
 \DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef TemperatureSensorDHT\_h}}
 \DoxyCodeLine{2 \textcolor{preprocessor}{\#define TemperatureSensorDHT\_h}}
 \DoxyCodeLine{3 }
-\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}Sensor.h"{}}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}../SensorBase/Sensor.h"{}}}
 \DoxyCodeLine{5 \textcolor{preprocessor}{\#include "{}DHT.h"{}}}
-\DoxyCodeLine{6 }
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <limits>}}
 \DoxyCodeLine{7 \textcolor{preprocessor}{\#include <tuple>}}
 \DoxyCodeLine{8 }
 \DoxyCodeLine{9 \textcolor{keyword}{class }\mbox{\hyperlink{class_temperature_sensor_d_h_t}{TemperatureSensorDHT}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_sensor}{Sensor}}}
@@ -19,18 +19,15 @@
 \DoxyCodeLine{15 }
 \DoxyCodeLine{16     \textcolor{keywordtype}{float} getTemperature() \textcolor{keyword}{const};}
 \DoxyCodeLine{17     \textcolor{keywordtype}{float} getHumidity() \textcolor{keyword}{const};}
-\DoxyCodeLine{18     \textcolor{keywordtype}{float} getHeatIndex() \textcolor{keyword}{const};}
-\DoxyCodeLine{19     \textcolor{keywordtype}{float} getHeatIndexC() \textcolor{keyword}{const};}
-\DoxyCodeLine{20     std::tuple<float, float> getTemperatureAndHumidity() \textcolor{keyword}{const};}
-\DoxyCodeLine{21 }
-\DoxyCodeLine{22 \textcolor{keyword}{private}:}
-\DoxyCodeLine{23     DHT *dht;}
-\DoxyCodeLine{24     u\_int8\_t dhtType;}
-\DoxyCodeLine{25     \textcolor{keywordtype}{int} temperatureSensorPin;}
-\DoxyCodeLine{26     \textcolor{keywordtype}{int} id\_;}
-\DoxyCodeLine{27     \textcolor{keywordtype}{bool} sensorWorking;}
-\DoxyCodeLine{28 \};}
-\DoxyCodeLine{29 }
-\DoxyCodeLine{30 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19 \textcolor{keyword}{private}:}
+\DoxyCodeLine{20     DHT *dht;}
+\DoxyCodeLine{21     u\_int8\_t dhtType;}
+\DoxyCodeLine{22     \textcolor{keywordtype}{int} temperatureSensorPin;}
+\DoxyCodeLine{23     \textcolor{keywordtype}{int} id\_;}
+\DoxyCodeLine{24     \textcolor{keywordtype}{bool} sensorWorking;}
+\DoxyCodeLine{25 \};}
+\DoxyCodeLine{26 }
+\DoxyCodeLine{27 \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

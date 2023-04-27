@@ -71,9 +71,11 @@ $(function() {
 <p >Install PlatformIO shell commands: <a href="https://docs.platformio.org/en/stable/core/installation/shell-commands.html#unix-and-unix-like">https://docs.platformio.org/en/stable/core/installation/shell-commands.html#unix-and-unix-like</a></p>
 <p >Supported Platforms: ESP32 ESP8266</p>
 <p >Supported Sensors: DHT11 Temperature &amp; Humidity DHT21 Temperature &amp; Humidity DHT22 Temperature &amp; Humidity</p>
-<p >To compile code, go into a esp32 or esp8266 directory and run: pio run</p>
-<p >To compile and upload code to a device: pio run &ndash;target upload Note: You may have to change the platformio.ini file and change the upload_port and monitor_port to the correct port.</p>
-<p >To monitor the device (device must be plugged into the port) run: pio device monitor </p>
+<p >platformio.ini has all the information about the platforms, dependencies and structure.</p>
+<p >To compile code, go into a esp32 or esp8266 directory and run: pio run -e esp32 pio run -e esp32_transmitter pio run -e esp8266 pio run -e esp8266_transmitter</p>
+<p >To compile and upload code to a device: pio run -e &lt;enironment&gt; &ndash;target upload Note: You may have to change the platformio.ini file and change the upload_port and monitor_port to the correct port.</p>
+<p >To monitor the device (device must be plugged into the port) run: pio device monitor</p>
+<p >To run Doxyfile (documentation generator): doxygen Doxyfile </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

@@ -1,0 +1,34 @@
+\hypertarget{_lora_sensor_transmitter_8h_source}{}\doxysection{Lora\+Sensor\+Transmitter.\+h}
+\label{_lora_sensor_transmitter_8h_source}\index{lib/lora/LoraSensorTransmitter.h@{lib/lora/LoraSensorTransmitter.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef LoraSensorTransmitter\_h}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define LoraSensorTransmitter\_h}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}Sensor.h"{}}}
+\DoxyCodeLine{5 }
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <LoRa.h>}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <map>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <tuple>}}
+\DoxyCodeLine{10 \textcolor{comment}{// defines pins for lora}}
+\DoxyCodeLine{11 \textcolor{preprocessor}{\#define ss 15}}
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#define rst -\/1}}
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#define dio0 10}}
+\DoxyCodeLine{14 }
+\DoxyCodeLine{15 \textcolor{keyword}{class }\mbox{\hyperlink{class_lora_sensor_transmitter}{LoraSensorTransmitter}}}
+\DoxyCodeLine{16 \{}
+\DoxyCodeLine{17 \textcolor{keyword}{public}:}
+\DoxyCodeLine{18     \mbox{\hyperlink{class_lora_sensor_transmitter}{LoraSensorTransmitter}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
+\DoxyCodeLine{19     \textcolor{keywordtype}{int} getId() \textcolor{keyword}{const};}
+\DoxyCodeLine{20     \textcolor{comment}{// creates abstract method for transmitting data}}
+\DoxyCodeLine{21     \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} transmit(std::map<std::string, float> sensor\_readings) = 0;}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23 \textcolor{keyword}{protected}:}
+\DoxyCodeLine{24     \textcolor{keywordtype}{int} id\_;}
+\DoxyCodeLine{25     \textcolor{keywordtype}{bool} sensorWorking;}
+\DoxyCodeLine{26 \};}
+\DoxyCodeLine{27 }
+\DoxyCodeLine{28 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

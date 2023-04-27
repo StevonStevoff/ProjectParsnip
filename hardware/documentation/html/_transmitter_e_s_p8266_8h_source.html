@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Project Parsnip: Hardware: transmitter/esp8266/src/TransmitterESP8266.h Source File</title>
+<title>Project Parsnip: Hardware: lib/transmitterESP8266/TransmitterESP8266.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,22 +62,30 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_bea2e225011181c2b93d5c0525f39fc8.html">transmitter</a></li><li class="navelem"><a class="el" href="dir_0683fb99f6d380ef710a9ffdd5645296.html">esp8266</a></li><li class="navelem"><a class="el" href="dir_924c849fb09731f7ebca2ba147cea5a7.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_345e5dbde6f8484fa055edefee8b0e84.html">transmitterESP8266</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle"><div class="title">TransmitterESP8266.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef TRANSMITTER_ESP8266_H</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define TRANSMITTER_ESP8266_H</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef TransmitterESP8266_h</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define TransmitterESP8266_h</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;Transmitter.h&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">class </span>TransmittterESP8266() : <a class="code hl_class" href="class_transmitter.html">Transmitter</a>() {}</div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclass_transmitter_html"><div class="ttname"><a href="class_transmitter.html">Transmitter</a></div><div class="ttdef"><b>Definition:</b> Transmitter.h:13</div></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;DeviceTransmitter.h&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="class_transmitter_e_s_p8266.html">    7</a></span><span class="keyword">class </span><a class="code hl_class" href="class_transmitter_e_s_p8266.html">TransmitterESP8266</a> : <span class="keyword">public</span> <a class="code hl_class" href="class_device_transmitter.html">DeviceTransmitter</a></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>  <a class="code hl_class" href="class_transmitter_e_s_p8266.html">TransmitterESP8266</a>();</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>};</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclass_device_transmitter_html"><div class="ttname"><a href="class_device_transmitter.html">DeviceTransmitter</a></div><div class="ttdef"><b>Definition:</b> DeviceTransmitter.h:14</div></div>
+<div class="ttc" id="aclass_transmitter_e_s_p8266_html"><div class="ttname"><a href="class_transmitter_e_s_p8266.html">TransmitterESP8266</a></div><div class="ttdef"><b>Definition:</b> TransmitterESP8266.h:8</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

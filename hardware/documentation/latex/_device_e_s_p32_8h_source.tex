@@ -1,5 +1,5 @@
 \hypertarget{_device_e_s_p32_8h_source}{}\doxysection{Device\+ESP32.\+h}
-\label{_device_e_s_p32_8h_source}\index{receiver/esp32/src/DeviceESP32.h@{receiver/esp32/src/DeviceESP32.h}}
+\label{_device_e_s_p32_8h_source}\index{lib/deviceESP32/DeviceESP32.h@{lib/deviceESP32/DeviceESP32.h}}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef DeviceESP32\_h}}
@@ -7,17 +7,23 @@
 \DoxyCodeLine{3 }
 \DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}Device.h"{}}}
 \DoxyCodeLine{5 }
-\DoxyCodeLine{6 \textcolor{preprocessor}{\#include "{}WiFi.h"{}}}
-\DoxyCodeLine{7 \textcolor{preprocessor}{\#include "{}WebServer.h"{}}}
-\DoxyCodeLine{8 }
-\DoxyCodeLine{9 \textcolor{keyword}{class }\mbox{\hyperlink{class_device_e_s_p32}{DeviceESP32}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_device}{Device}}}
-\DoxyCodeLine{10 \{}
-\DoxyCodeLine{11 \textcolor{keyword}{public}:}
-\DoxyCodeLine{12   \mbox{\hyperlink{class_device_e_s_p32}{DeviceESP32}}(String deviceServerAddress = \textcolor{stringliteral}{"{}https://parsnipbackend.azurewebsites.net"{}});}
-\DoxyCodeLine{13 }
-\DoxyCodeLine{14 \textcolor{keyword}{private}:}
-\DoxyCodeLine{15 \};}
-\DoxyCodeLine{16 }
-\DoxyCodeLine{17 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{6 \textcolor{comment}{// \#define ESP32}}
+\DoxyCodeLine{7 \textcolor{comment}{// \#define DHTTYPE DHT11}}
+\DoxyCodeLine{8 \textcolor{comment}{// \#define DHTPIN 4}}
+\DoxyCodeLine{9 }
+\DoxyCodeLine{10 \textcolor{comment}{// \#ifdef ESP32      // Check if using ESP32 board}}
+\DoxyCodeLine{11 \textcolor{preprocessor}{\#include "{}WiFi.h"{}} \textcolor{comment}{//wifi library}}
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#include "{}WebServer.h"{}}}
+\DoxyCodeLine{13 \textcolor{comment}{// \#endif}}
+\DoxyCodeLine{14 }
+\DoxyCodeLine{15 \textcolor{keyword}{class }\mbox{\hyperlink{class_device_e_s_p32}{DeviceESP32}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_device}{Device}}}
+\DoxyCodeLine{16 \{}
+\DoxyCodeLine{17 \textcolor{keyword}{public}:}
+\DoxyCodeLine{18   \mbox{\hyperlink{class_device_e_s_p32}{DeviceESP32}}(String deviceServerAddress = \textcolor{stringliteral}{"{}https://parsnipbackend.azurewebsites.net"{}});}
+\DoxyCodeLine{19 }
+\DoxyCodeLine{20 \textcolor{keyword}{private}:}
+\DoxyCodeLine{21 \};}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23 \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

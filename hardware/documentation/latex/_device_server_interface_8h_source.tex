@@ -2,32 +2,37 @@
 \label{_device_server_interface_8h_source}\index{lib/deviceServerInterface/DeviceServerInterface.h@{lib/deviceServerInterface/DeviceServerInterface.h}}
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifdef ESP32}}
-\DoxyCodeLine{2 \textcolor{preprocessor}{\#include <HTTPClient.h>}}
-\DoxyCodeLine{3 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{4 }
-\DoxyCodeLine{5 \textcolor{preprocessor}{\#ifdef ESP8266}}
-\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <ESP8266HTTPClient.h>}}
-\DoxyCodeLine{7 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{8 }
-\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <map>}}
-\DoxyCodeLine{10 \textcolor{preprocessor}{\#include <string>}}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef DeviceServerInterface\_h}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define DeviceServerInterface\_h}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#ifdef ESP32}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <HTTPClient.h>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#ifdef ESP8266}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <ESP8266HTTPClient.h>}}
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#endif}}
 \DoxyCodeLine{11 }
-\DoxyCodeLine{12 \textcolor{keyword}{class }\mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}}}
-\DoxyCodeLine{13 \{}
-\DoxyCodeLine{14 \textcolor{keyword}{public}:}
-\DoxyCodeLine{15     \mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}}(String baseUrl);}
-\DoxyCodeLine{16     \textcolor{keywordtype}{void} setAuthenticationToken(String authToken);}
-\DoxyCodeLine{17     \textcolor{keywordtype}{int} sendPlantData(std::map<std::string, float> sensorReadings);}
-\DoxyCodeLine{18     String getAuthenticationToken();}
-\DoxyCodeLine{19     String getDeviceSensorIds();}
-\DoxyCodeLine{20     \textcolor{keywordtype}{void} setHttpUrl(String url);}
-\DoxyCodeLine{21     \textcolor{keywordtype}{void} setAuthHeader();}
-\DoxyCodeLine{22 }
-\DoxyCodeLine{23 \textcolor{keyword}{private}:}
-\DoxyCodeLine{24     HTTPClient http;}
-\DoxyCodeLine{25     String baseUrl;}
-\DoxyCodeLine{26     String authToken;}
-\DoxyCodeLine{27 \};}
+\DoxyCodeLine{12 \textcolor{comment}{// \#include <string>}}
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#include "{}Arduino.h"{}}}
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#include <map>}}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16 \textcolor{keyword}{class }\mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}}}
+\DoxyCodeLine{17 \{}
+\DoxyCodeLine{18 \textcolor{keyword}{public}:}
+\DoxyCodeLine{19     \mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}}(String baseUrl);}
+\DoxyCodeLine{20     \textcolor{keywordtype}{void} setAuthenticationToken(String authToken);}
+\DoxyCodeLine{21     \textcolor{keywordtype}{int} sendPlantData(String payload);}
+\DoxyCodeLine{22     String getAuthenticationToken();}
+\DoxyCodeLine{23     String getDeviceSensorIds();}
+\DoxyCodeLine{24     \textcolor{keywordtype}{void} setHttpUrl(String url);}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26 \textcolor{keyword}{private}:}
+\DoxyCodeLine{27     HTTPClient http;}
+\DoxyCodeLine{28     String baseUrl;}
+\DoxyCodeLine{29     String authToken;}
+\DoxyCodeLine{30 \};}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32 \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

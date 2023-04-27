@@ -90,9 +90,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad318f4f54aa3becf74eea9b381bf7d09 inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="ad318f4f54aa3becf74eea9b381bf7d09" name="ad318f4f54aa3becf74eea9b381bf7d09"></a>
 AutoConnect &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getPortal</b> ()</td></tr>
 <tr class="separator:ad318f4f54aa3becf74eea9b381bf7d09 inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a212c0ddaccbacaa5a875271123ddd095 inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="a212c0ddaccbacaa5a875271123ddd095" name="a212c0ddaccbacaa5a875271123ddd095"></a>
-std::map&lt; std::string, float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>readSensors</b> ()</td></tr>
-<tr class="separator:a212c0ddaccbacaa5a875271123ddd095 inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add6eb62ac67be5ea339485fe6a992180 inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="add6eb62ac67be5ea339485fe6a992180" name="add6eb62ac67be5ea339485fe6a992180"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>readSensors</b> ()</td></tr>
+<tr class="separator:add6eb62ac67be5ea339485fe6a992180 inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57639ae35493dc92532dee17feac5485 inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="a57639ae35493dc92532dee17feac5485" name="a57639ae35493dc92532dee17feac5485"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addSensor</b> (<a class="el" href="class_sensor.html">Sensor</a> *sensor)</td></tr>
 <tr class="separator:a57639ae35493dc92532dee17feac5485 inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,6 +108,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>beginServer</b> ()</t
 <tr class="memitem:a884f5154578695213815fd45b007dd83 inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="a884f5154578695213815fd45b007dd83" name="a884f5154578695213815fd45b007dd83"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>sendSensorData</b> ()</td></tr>
 <tr class="separator:a884f5154578695213815fd45b007dd83 inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d47fffff6db21f3539ee6ce315a9298 inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="a4d47fffff6db21f3539ee6ce315a9298" name="a4d47fffff6db21f3539ee6ce315a9298"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>beginPortal</b> (const char *ssid=NULL, const char *password=NULL)</td></tr>
+<tr class="separator:a4d47fffff6db21f3539ee6ce315a9298 inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a404e69944b1ae62a92a6a70219a1ab inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="a9a404e69944b1ae62a92a6a70219a1ab" name="a9a404e69944b1ae62a92a6a70219a1ab"></a>
 String&#160;</td><td class="memItemRight" valign="bottom"><b>onHandleAuthToken</b> (AutoConnectAux &amp;page, PageArgument &amp;args)</td></tr>
 <tr class="separator:a9a404e69944b1ae62a92a6a70219a1ab inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,10 +120,13 @@ String&#160;</td><td class="memItemRight" valign="bottom"><b>onLoadAuthPage</b> 
 <tr class="memitem:af665b2e896eda1789584ea7d0068ec1f inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="af665b2e896eda1789584ea7d0068ec1f" name="af665b2e896eda1789584ea7d0068ec1f"></a>
 String&#160;</td><td class="memItemRight" valign="bottom"><b>getAuthenticationToken</b> ()</td></tr>
 <tr class="separator:af665b2e896eda1789584ea7d0068ec1f inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d90b8118fb7fded2f83d6140eb5769a inherit pub_methods_class_device"><td class="memItemLeft" align="right" valign="top"><a id="a1d90b8118fb7fded2f83d6140eb5769a" name="a1d90b8118fb7fded2f83d6140eb5769a"></a>
+std::vector&lt; <a class="el" href="class_sensor.html">Sensor</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getSensors</b> ()</td></tr>
+<tr class="separator:a1d90b8118fb7fded2f83d6140eb5769a inherit pub_methods_class_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>receiver/esp8266/src/<a class="el" href="_device_e_s_p8266_8h_source.html">DeviceESP8266.h</a></li>
-<li>receiver/esp8266/src/DeviceESP8266.cpp</li>
+<li>lib/deviceESP8266/<a class="el" href="_device_e_s_p8266_8h_source.html">DeviceESP8266.h</a></li>
+<li>lib/deviceESP8266/DeviceESP8266.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
