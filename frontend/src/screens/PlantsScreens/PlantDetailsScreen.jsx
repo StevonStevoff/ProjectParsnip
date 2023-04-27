@@ -56,12 +56,6 @@ function PlantDetailsScreen({ route, navigation }) {
     return isWithinRange;
   });
 
-  const days = filteredDataWithinRange.map((element) => {
-    const elementDate = new Date(element.timestamp);
-    const dayOfMonth = elementDate.getDate();
-    return dayOfMonth;
-  });
-
   function filterSensorDataByType(filteredData, dataIds) {
     return dataIds.reduce((acc, dataId) => {
       const values = filteredData.flatMap((plant) => plant.sensor_readings
@@ -75,8 +69,21 @@ function PlantDetailsScreen({ route, navigation }) {
     }, {});
   }
 
+  function filterDaysByType(filteredData, dataIds) {
+    return dataIds.reduce((acc, dataId) => {
+      const values = filteredData.flatMap((plant) => plant.sensor_readings
+        .filter((reading) => reading?.grow_property?.grow_property_type.id === dataId)
+        .map(() => (new Date(plant.timestamp)).getDate()));
+      return {
+        ...acc,
+        [dataId]: values,
+      };
+    }, {});
+  }
+
   const dataIds = [1, 2, 3, 4];
   const filteredDataByType = filterSensorDataByType(filteredDataWithinRange, dataIds);
+  const daysByType = filterDaysByType(filteredDataWithinRange, dataIds);
 
   if (isLoading) {
     return (
@@ -157,7 +164,7 @@ function PlantDetailsScreen({ route, navigation }) {
                 {filteredDataByType[beans.grow_property_type.id]
                   && filteredDataByType[beans.grow_property_type.id].length > 0 ? (
                     <GrowPropertyChart
-                      days={days}
+                      days={daysByType[beans.grow_property_type.id]}
                       tempretureValues={filteredDataByType[beans.grow_property_type.id]}
                     />
                   ) : <Text style={styles.errorText}>No data for this range</Text>}

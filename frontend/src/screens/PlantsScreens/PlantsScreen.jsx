@@ -89,6 +89,7 @@ function PlantsScreen({ navigation }) {
   // Get latest value for each grow property type for each plant
   useEffect(() => {
     const fetchLatestValues = async () => {
+      setIsLoading(true);
       try {
         const plantIds = plants.map((plant) => plant.id); // replace with your desired plant ids
         const growPropertyTypeIds = [1, 2, 3, 4];
@@ -121,7 +122,9 @@ function PlantsScreen({ navigation }) {
         }));
 
         setLatestValue(latestValues);
-      } catch (error) { /* empty */ }
+      } catch (error) { /* empty */ } finally {
+        setIsLoading(false);
+      }
     };
     fetchLatestValues();
   }, [plants]);
