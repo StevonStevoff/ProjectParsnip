@@ -1,48 +1,44 @@
-// #include "src/devices/DeviceESP32.h"
-
-// DeviceESP32 *device;
-
-// #define ESP8266
-// #define ESP32
-// Global Variables
-// #include "../../sensors/temperature/TemperatureSensorDHT.h"
+#include "Arduino.h"
+#include "DeviceESP32.h"
+#include "LightSensor.h"
+#include "LoraSensor.h"
+#include "MoistureSensor.h"
 #include "TemperatureSensorDHT.h"
 
-TemperatureSensorDHT *temperatureSensor = new TemperatureSensorDHT(1, 4, 11);
 
-#include "DeviceESP32.h"
-DeviceESP32 *device;
+//initalize device
+DeviceESP32* device;
+
 
 void setup()
 {
+    //initalize ESP32
+    device = new DeviceESP32();
     delay(1000);
 
     Serial.begin(9600);
     Serial.println();
     Serial.println(F("start"));
 
-    // ESP32
-    // device = new DeviceESP32();
-    // ESP8266
-    device = new DeviceESP32();
+    //initalize sensors
+    Wire.begin();
 
-    // add sensors
+    TemperatureSensorDHT* temperatureSensor = new TemperatureSensorDHT(1, 4, 11);
+    LightSensor* lightSensor = new LightSensor(2);
+    LoraSensor* loraSensor = new LoraSensor(4);
+    MoistureSensor* moistureSensor = new MoistureSensor(3);
+
+    device->addSensor(loraSensor);
     device->addSensor(temperatureSensor);
+    device->addSensor(lightSensor);
+    device->addSensor(moistureSensor);
 
-    // device->beginServer();
-    // Serial.println(F("Connected to wifi"));
 
-    // int loopTime = 0;
+    // begin server
+    device->beginServer();
 }
 
 void loop()
 {
-    delay(1000);
-    Serial.println(F("loop"));
-
-    device->readSensors();
-
     device->sendSensorData();
-
-    device->handleClientRequest();
 }

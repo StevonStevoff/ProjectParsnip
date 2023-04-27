@@ -8,8 +8,10 @@
 #include <string>
 
 #include "Sensor.h"
+#include "LoraSensor.h"
 #include "DeviceServerInterface.h"
-
+#include <algorithm>
+#include <string>  
 #include <EEPROM.h>
 #include <AutoConnect.h>
 
@@ -20,7 +22,7 @@ public:
 
     // Concrete methods
     AutoConnect &getPortal();
-    std::map<std::string, float> readSensors();
+    void readSensors();
     void addSensor(Sensor *sensor);
     void removeSensor(int id);
     void handleClientRequest();
@@ -37,6 +39,8 @@ private:
     AutoConnect Portal;
     std::vector<Sensor *> sensors_;
     DeviceServerInterface *deviceServerInterface;
+    unsigned long lastSendTime;
+    std::map<std::string, float> lastSensorRead;
 };
 
 #endif

@@ -3,8 +3,14 @@
 
 #include "Device.h"
 
-#include "WiFi.h"
+// #define ESP32
+// #define DHTTYPE DHT11
+// #define DHTPIN 4
+
+// #ifdef ESP32      // Check if using ESP32 board
+#include "WiFi.h" //wifi library
 #include "WebServer.h"
+// #endif
 
 class DeviceESP32 : public Device
 {

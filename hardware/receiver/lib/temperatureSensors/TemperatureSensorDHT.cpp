@@ -8,7 +8,7 @@ TemperatureSensorDHT::TemperatureSensorDHT(int id, int pin, u_int8_t dhtType) : 
     // initialize the sensor
     this->dht = new DHT(this->temperatureSensorPin, this->dhtType);
     this->dht->begin();
-
+ 
 }
 
 int TemperatureSensorDHT::getId() const
