@@ -290,7 +290,7 @@ function PlantsScreen({ navigation }) {
                     {/* To be Changed to handleEdit */}
                     <TouchableOpacity
                       style={styles.detailsButton}
-                      onPress={() => {setIsWarningDialogOpen(true);setPlantDeletedId(plant.id);}}
+                      onPress={() => { setIsWarningDialogOpen(true); setPlantDeletedId(plant.id); }}
                     >
                       <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
                     </TouchableOpacity>

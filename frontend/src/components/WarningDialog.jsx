@@ -2,7 +2,7 @@ import React from 'react';
 import { AlertDialog, Button } from 'native-base';
 
 function WarningDialog({
-  isOpen, onClose, onConfirm, warningMessage, actionBtnText,headerMessage
+  isOpen, onClose, onConfirm, warningMessage, actionBtnText, headerMessage,
 }) {
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
