@@ -10,9 +10,7 @@
 DeviceESP8266 *device;
 
 void setup()
-{
-    //initalize sensors
-    Wire.begin();
+{ 
 
     TemperatureSensorAHTX* temperatureSensor = new TemperatureSensorAHTX(1, 4);
     LightSensor* lightSensor = new LightSensor(2);
@@ -29,7 +27,7 @@ void setup()
 
     //reads and transmits sensors
     loraSensor->transmit(device->readSensors());
-    ESP.deepSleep(3e6); // 30mins is 1800
+    ESP.deepSleep(1800e6); // 30mins is 1800
 }
 
 void loop()

@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include "Arduino.h"
 
 #include "../SensorBase/Sensor.h"
 

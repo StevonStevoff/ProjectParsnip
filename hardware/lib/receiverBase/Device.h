@@ -14,6 +14,7 @@
 #include <string>  
 #include <EEPROM.h>
 #include <AutoConnect.h>
+#include "Arduino.h"
 
 class Device
 {

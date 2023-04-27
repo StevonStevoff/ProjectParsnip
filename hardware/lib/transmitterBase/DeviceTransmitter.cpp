@@ -3,6 +3,8 @@
 DeviceTransmitter::DeviceTransmitter() : sensors_()
 {
     //code on device initalisation can go here
+    //initalize reading sensors
+    Wire.begin();
 }
 
 void DeviceTransmitter::addSensor(Sensor *sensor)
