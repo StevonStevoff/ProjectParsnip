@@ -456,7 +456,7 @@ const API = {
 
     return response;
   },
-  
+
   async getAllPlantProfilesCreated(cancel = false) {
     const response = await api.request({
       url: '/plant_profiles/me',
