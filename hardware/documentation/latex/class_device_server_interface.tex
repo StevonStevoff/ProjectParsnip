@@ -1,29 +1,85 @@
 \hypertarget{class_device_server_interface}{}\doxysection{Device\+Server\+Interface Class Reference}
 \label{class_device_server_interface}\index{DeviceServerInterface@{DeviceServerInterface}}
+
+
+{\ttfamily \#include $<$Device\+Server\+Interface.\+h$>$}
+
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{class_device_server_interface_af93aeca84d7dfc43714f1aac138c632e}\label{class_device_server_interface_af93aeca84d7dfc43714f1aac138c632e}} 
-{\bfseries Device\+Server\+Interface} (String base\+Url)
+\mbox{\hyperlink{class_device_server_interface_af93aeca84d7dfc43714f1aac138c632e}{Device\+Server\+Interface}} (String base\+Url)
 \item 
-\mbox{\Hypertarget{class_device_server_interface_ac4b258e43baebf3705523523df796ffc}\label{class_device_server_interface_ac4b258e43baebf3705523523df796ffc}} 
-void {\bfseries set\+Authentication\+Token} (String auth\+Token)
+void \mbox{\hyperlink{class_device_server_interface_a4c60347dc891757201250aa56fe08136}{set\+Authentication\+Token}} (string auth\+Token)
 \item 
-\mbox{\Hypertarget{class_device_server_interface_a9ce488341330a8047b5ac1f2dbdd5aa5}\label{class_device_server_interface_a9ce488341330a8047b5ac1f2dbdd5aa5}} 
-int {\bfseries send\+Plant\+Data} (String payload)
+int \mbox{\hyperlink{class_device_server_interface_a1c263c223fe54ff4346429fd53e6ea56}{send\+Plant\+Data}} (string payload)
 \item 
-\mbox{\Hypertarget{class_device_server_interface_a9a5d0f918a6834d3966f554466b6b05a}\label{class_device_server_interface_a9a5d0f918a6834d3966f554466b6b05a}} 
-String {\bfseries get\+Authentication\+Token} ()
+string \mbox{\hyperlink{class_device_server_interface_ac395187058553a0fb180df55d8684317}{get\+Authentication\+Token}} ()
 \item 
-\mbox{\Hypertarget{class_device_server_interface_adfd7c99d96410eba144040e8976a6883}\label{class_device_server_interface_adfd7c99d96410eba144040e8976a6883}} 
-String {\bfseries get\+Device\+Sensor\+Ids} ()
+string \mbox{\hyperlink{class_device_server_interface_ae3d62253863d9a5d56cf4ad4ec473262}{get\+Device\+Sensor\+Ids}} ()
 \item 
-\mbox{\Hypertarget{class_device_server_interface_a0e9b7a7254980f63e4fa885fb708e4e8}\label{class_device_server_interface_a0e9b7a7254980f63e4fa885fb708e4e8}} 
-void {\bfseries set\+Http\+Url} (String url)
+void \mbox{\hyperlink{class_device_server_interface_ad87e8b00e76cb8de3a1779985f0d406e}{set\+Http\+Url}} (string url)
+\item 
+int \mbox{\hyperlink{class_device_server_interface_a5b12564990be6d1506a8baf864b44a83}{get\+Device\+Info}} ()
+\item 
+void \mbox{\hyperlink{class_device_server_interface_a2c377eff6a0717b2ddca16ab3dd2d7d4}{set\+Auth\+Header}} ()
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_device_server_interface_af93aeca84d7dfc43714f1aac138c632e}\label{class_device_server_interface_af93aeca84d7dfc43714f1aac138c632e}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!DeviceServerInterface@{DeviceServerInterface}}
+\index{DeviceServerInterface@{DeviceServerInterface}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{DeviceServerInterface()}{DeviceServerInterface()}}
+{\footnotesize\ttfamily Device\+Server\+Interface\+::\+Device\+Server\+Interface (\begin{DoxyParamCaption}\item[{String}]{base\+Url }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_device_server_interface_ac395187058553a0fb180df55d8684317}\label{class_device_server_interface_ac395187058553a0fb180df55d8684317}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!getAuthenticationToken@{getAuthenticationToken}}
+\index{getAuthenticationToken@{getAuthenticationToken}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{getAuthenticationToken()}{getAuthenticationToken()}}
+{\footnotesize\ttfamily string Device\+Server\+Interface\+::get\+Authentication\+Token (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_server_interface_a5b12564990be6d1506a8baf864b44a83}\label{class_device_server_interface_a5b12564990be6d1506a8baf864b44a83}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!getDeviceInfo@{getDeviceInfo}}
+\index{getDeviceInfo@{getDeviceInfo}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{getDeviceInfo()}{getDeviceInfo()}}
+{\footnotesize\ttfamily int Device\+Server\+Interface\+::get\+Device\+Info (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_server_interface_ae3d62253863d9a5d56cf4ad4ec473262}\label{class_device_server_interface_ae3d62253863d9a5d56cf4ad4ec473262}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!getDeviceSensorIds@{getDeviceSensorIds}}
+\index{getDeviceSensorIds@{getDeviceSensorIds}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{getDeviceSensorIds()}{getDeviceSensorIds()}}
+{\footnotesize\ttfamily string Device\+Server\+Interface\+::get\+Device\+Sensor\+Ids (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_server_interface_a1c263c223fe54ff4346429fd53e6ea56}\label{class_device_server_interface_a1c263c223fe54ff4346429fd53e6ea56}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!sendPlantData@{sendPlantData}}
+\index{sendPlantData@{sendPlantData}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{sendPlantData()}{sendPlantData()}}
+{\footnotesize\ttfamily int Device\+Server\+Interface\+::send\+Plant\+Data (\begin{DoxyParamCaption}\item[{string}]{payload }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_server_interface_a4c60347dc891757201250aa56fe08136}\label{class_device_server_interface_a4c60347dc891757201250aa56fe08136}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!setAuthenticationToken@{setAuthenticationToken}}
+\index{setAuthenticationToken@{setAuthenticationToken}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{setAuthenticationToken()}{setAuthenticationToken()}}
+{\footnotesize\ttfamily void Device\+Server\+Interface\+::set\+Authentication\+Token (\begin{DoxyParamCaption}\item[{string}]{auth\+Token }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_server_interface_a2c377eff6a0717b2ddca16ab3dd2d7d4}\label{class_device_server_interface_a2c377eff6a0717b2ddca16ab3dd2d7d4}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!setAuthHeader@{setAuthHeader}}
+\index{setAuthHeader@{setAuthHeader}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{setAuthHeader()}{setAuthHeader()}}
+{\footnotesize\ttfamily void Device\+Server\+Interface\+::set\+Auth\+Header (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_server_interface_ad87e8b00e76cb8de3a1779985f0d406e}\label{class_device_server_interface_ad87e8b00e76cb8de3a1779985f0d406e}} 
+\index{DeviceServerInterface@{DeviceServerInterface}!setHttpUrl@{setHttpUrl}}
+\index{setHttpUrl@{setHttpUrl}!DeviceServerInterface@{DeviceServerInterface}}
+\doxysubsubsection{\texorpdfstring{setHttpUrl()}{setHttpUrl()}}
+{\footnotesize\ttfamily void Device\+Server\+Interface\+::set\+Http\+Url (\begin{DoxyParamCaption}\item[{string}]{url }\end{DoxyParamCaption})}
+
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-lib/device\+Server\+Interface/Device\+Server\+Interface.\+h\item 
-lib/device\+Server\+Interface/Device\+Server\+Interface.\+cpp\end{DoxyCompactItemize}
+lib/device\+Server\+Interface/\mbox{\hyperlink{_device_server_interface_8h}{Device\+Server\+Interface.\+h}}\item 
+lib/device\+Server\+Interface/\mbox{\hyperlink{_device_server_interface_8cpp}{Device\+Server\+Interface.\+cpp}}\end{DoxyCompactItemize}

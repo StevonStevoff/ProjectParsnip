@@ -1,6 +1,6 @@
 \hypertarget{_temperature_sensor_d_h_t_8h_source}{}\doxysection{Temperature\+Sensor\+DHT.\+h}
 \label{_temperature_sensor_d_h_t_8h_source}\index{lib/temperatureSensors/TemperatureSensorDHT.h@{lib/temperatureSensors/TemperatureSensorDHT.h}}
-
+\mbox{\hyperlink{_temperature_sensor_d_h_t_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef TemperatureSensorDHT\_h}}
 \DoxyCodeLine{2 \textcolor{preprocessor}{\#define TemperatureSensorDHT\_h}}
@@ -13,12 +13,12 @@
 \DoxyCodeLine{9 \textcolor{keyword}{class }\mbox{\hyperlink{class_temperature_sensor_d_h_t}{TemperatureSensorDHT}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_sensor}{Sensor}}}
 \DoxyCodeLine{10 \{}
 \DoxyCodeLine{11 \textcolor{keyword}{public}:}
-\DoxyCodeLine{12     \mbox{\hyperlink{class_temperature_sensor_d_h_t}{TemperatureSensorDHT}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id}, \textcolor{keywordtype}{int} temperatureSensorPin, u\_int8\_t dhtType);}
-\DoxyCodeLine{13     \textcolor{keywordtype}{int} getId() \textcolor{keyword}{const override};}
-\DoxyCodeLine{14     std::map<std::string, float> read() \textcolor{keyword}{const override};}
+\DoxyCodeLine{12     \mbox{\hyperlink{class_temperature_sensor_d_h_t_a5ebcc97f147b6873508454d809f1a145}{TemperatureSensorDHT}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id}, \textcolor{keywordtype}{int} temperatureSensorPin, u\_int8\_t dhtType);}
+\DoxyCodeLine{13     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_temperature_sensor_d_h_t_a445ca4ff8ccebb2d26d61ff93b872a61}{getId}}() \textcolor{keyword}{const override};}
+\DoxyCodeLine{14     std::map<std::string, float> \mbox{\hyperlink{class_temperature_sensor_d_h_t_a6fc46d70175752904cae4cad1c8179fa}{read}}() \textcolor{keyword}{const override};}
 \DoxyCodeLine{15 }
-\DoxyCodeLine{16     \textcolor{keywordtype}{float} getTemperature() \textcolor{keyword}{const};}
-\DoxyCodeLine{17     \textcolor{keywordtype}{float} getHumidity() \textcolor{keyword}{const};}
+\DoxyCodeLine{16     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_temperature_sensor_d_h_t_a26772721fec0693628c848fe6a0093fa}{getTemperature}}() \textcolor{keyword}{const};}
+\DoxyCodeLine{17     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_temperature_sensor_d_h_t_abad9648042352c4861a355b8ab1c3b3c}{getHumidity}}() \textcolor{keyword}{const};}
 \DoxyCodeLine{18 }
 \DoxyCodeLine{19 \textcolor{keyword}{private}:}
 \DoxyCodeLine{20     DHT *dht;}

@@ -1,6 +1,6 @@
 \hypertarget{_light_sensor_8h_source}{}\doxysection{Light\+Sensor.\+h}
 \label{_light_sensor_8h_source}\index{lib/lightSensors/LightSensor.h@{lib/lightSensors/LightSensor.h}}
-
+\mbox{\hyperlink{_light_sensor_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef LightSensor\_h}}
 \DoxyCodeLine{2 \textcolor{preprocessor}{\#define LightSensor\_h}}
@@ -13,11 +13,11 @@
 \DoxyCodeLine{9 \textcolor{keyword}{class }\mbox{\hyperlink{class_light_sensor}{LightSensor}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_sensor}{Sensor}}}
 \DoxyCodeLine{10 \{}
 \DoxyCodeLine{11 \textcolor{keyword}{public}:}
-\DoxyCodeLine{12     \mbox{\hyperlink{class_light_sensor}{LightSensor}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
-\DoxyCodeLine{13     \textcolor{keywordtype}{int} getId() \textcolor{keyword}{const override};}
-\DoxyCodeLine{14     std::map<std::string, float> read() \textcolor{keyword}{const override};}
+\DoxyCodeLine{12     \mbox{\hyperlink{class_light_sensor_adc4312e7ccb93db68d7e5927979dee40}{LightSensor}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
+\DoxyCodeLine{13     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_light_sensor_ad630a3ca5f7ea746a1335632b972b5df}{getId}}() \textcolor{keyword}{const override};}
+\DoxyCodeLine{14     std::map<std::string, float> \mbox{\hyperlink{class_light_sensor_ae685729b23c0b3a24cc6cf2c7ac70383}{read}}() \textcolor{keyword}{const override};}
 \DoxyCodeLine{15 }
-\DoxyCodeLine{16     \textcolor{keywordtype}{float} getLight() \textcolor{keyword}{const};}
+\DoxyCodeLine{16     \textcolor{keywordtype}{float} \mbox{\hyperlink{class_light_sensor_ae13e764e13161e5a176c218eba53d814}{getLight}}() \textcolor{keyword}{const};}
 \DoxyCodeLine{17 }
 \DoxyCodeLine{18 \textcolor{keyword}{private}:}
 \DoxyCodeLine{19     BH1750 *bh1750;}

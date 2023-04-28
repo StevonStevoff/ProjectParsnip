@@ -1,5 +1,9 @@
 \hypertarget{class_device}{}\doxysection{Device Class Reference}
 \label{class_device}\index{Device@{Device}}
+
+
+{\ttfamily \#include $<$Device.\+h$>$}
+
 Inheritance diagram for Device\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -9,48 +13,127 @@ Inheritance diagram for Device\+:\begin{figure}[H]
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{class_device_a3b0797c3fa7475efe311e5db6d37a34b}\label{class_device_a3b0797c3fa7475efe311e5db6d37a34b}} 
-{\bfseries Device} (String device\+Server\+Address=\char`\"{}https\+://parsnipbackend.\+azurewebsites.\+net\char`\"{})
+\mbox{\hyperlink{class_device_a3b0797c3fa7475efe311e5db6d37a34b}{Device}} (String device\+Server\+Address=\char`\"{}https\+://parsnipbackend.\+azurewebsites.\+net\char`\"{})
 \item 
-\mbox{\Hypertarget{class_device_ad318f4f54aa3becf74eea9b381bf7d09}\label{class_device_ad318f4f54aa3becf74eea9b381bf7d09}} 
-Auto\+Connect \& {\bfseries get\+Portal} ()
+Auto\+Connect \& \mbox{\hyperlink{class_device_ad318f4f54aa3becf74eea9b381bf7d09}{get\+Portal}} ()
 \item 
-\mbox{\Hypertarget{class_device_add6eb62ac67be5ea339485fe6a992180}\label{class_device_add6eb62ac67be5ea339485fe6a992180}} 
-void {\bfseries read\+Sensors} ()
+void \mbox{\hyperlink{class_device_add6eb62ac67be5ea339485fe6a992180}{read\+Sensors}} ()
 \item 
-\mbox{\Hypertarget{class_device_a57639ae35493dc92532dee17feac5485}\label{class_device_a57639ae35493dc92532dee17feac5485}} 
-void {\bfseries add\+Sensor} (\mbox{\hyperlink{class_sensor}{Sensor}} $\ast$sensor)
+void \mbox{\hyperlink{class_device_a57639ae35493dc92532dee17feac5485}{add\+Sensor}} (\mbox{\hyperlink{class_sensor}{Sensor}} $\ast$sensor)
 \item 
-\mbox{\Hypertarget{class_device_aa9908f7545b5ee49a65c1cb0d1099978}\label{class_device_aa9908f7545b5ee49a65c1cb0d1099978}} 
-void {\bfseries remove\+Sensor} (int id)
+void \mbox{\hyperlink{class_device_aa9908f7545b5ee49a65c1cb0d1099978}{remove\+Sensor}} (int id)
 \item 
-\mbox{\Hypertarget{class_device_a05936cde52afde8e160467818dbc307e}\label{class_device_a05936cde52afde8e160467818dbc307e}} 
-void {\bfseries handle\+Client\+Request} ()
+void \mbox{\hyperlink{class_device_a05936cde52afde8e160467818dbc307e}{handle\+Client\+Request}} ()
 \item 
-\mbox{\Hypertarget{class_device_ad1f495438bed35a84427ce711e409755}\label{class_device_ad1f495438bed35a84427ce711e409755}} 
-void {\bfseries begin\+Server} ()
+void \mbox{\hyperlink{class_device_ad1f495438bed35a84427ce711e409755}{begin\+Server}} ()
 \item 
-\mbox{\Hypertarget{class_device_a884f5154578695213815fd45b007dd83}\label{class_device_a884f5154578695213815fd45b007dd83}} 
-void {\bfseries send\+Sensor\+Data} ()
+void \mbox{\hyperlink{class_device_a884f5154578695213815fd45b007dd83}{send\+Sensor\+Data}} ()
 \item 
-\mbox{\Hypertarget{class_device_a4d47fffff6db21f3539ee6ce315a9298}\label{class_device_a4d47fffff6db21f3539ee6ce315a9298}} 
-void {\bfseries begin\+Portal} (const char $\ast$ssid=NULL, const char $\ast$password=NULL)
+void \mbox{\hyperlink{class_device_a4d47fffff6db21f3539ee6ce315a9298}{begin\+Portal}} (const char $\ast$ssid=NULL, const char $\ast$password=NULL)
 \item 
-\mbox{\Hypertarget{class_device_a9a404e69944b1ae62a92a6a70219a1ab}\label{class_device_a9a404e69944b1ae62a92a6a70219a1ab}} 
-String {\bfseries on\+Handle\+Auth\+Token} (Auto\+Connect\+Aux \&page, Page\+Argument \&args)
+void \mbox{\hyperlink{class_device_a569631c8c67a028ae0cbb075a755cd8c}{get\+Info}} ()
 \item 
-\mbox{\Hypertarget{class_device_a1646409eabee2d30e5c6aab43ea351e0}\label{class_device_a1646409eabee2d30e5c6aab43ea351e0}} 
-String {\bfseries on\+Load\+Auth\+Page} (Auto\+Connect\+Aux \&page, Page\+Argument \&args)
+String \mbox{\hyperlink{class_device_a9a404e69944b1ae62a92a6a70219a1ab}{on\+Handle\+Auth\+Token}} (Auto\+Connect\+Aux \&page, Page\+Argument \&args)
 \item 
-\mbox{\Hypertarget{class_device_af665b2e896eda1789584ea7d0068ec1f}\label{class_device_af665b2e896eda1789584ea7d0068ec1f}} 
-String {\bfseries get\+Authentication\+Token} ()
+String \mbox{\hyperlink{class_device_a1646409eabee2d30e5c6aab43ea351e0}{on\+Load\+Auth\+Page}} (Auto\+Connect\+Aux \&page, Page\+Argument \&args)
 \item 
-\mbox{\Hypertarget{class_device_a1d90b8118fb7fded2f83d6140eb5769a}\label{class_device_a1d90b8118fb7fded2f83d6140eb5769a}} 
-std\+::vector$<$ \mbox{\hyperlink{class_sensor}{Sensor}} $\ast$ $>$ {\bfseries get\+Sensors} ()
+String \mbox{\hyperlink{class_device_af665b2e896eda1789584ea7d0068ec1f}{get\+Authentication\+Token}} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_sensor}{Sensor}} $\ast$ $>$ \mbox{\hyperlink{class_device_a1d90b8118fb7fded2f83d6140eb5769a}{get\+Sensors}} ()
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_device_a3b0797c3fa7475efe311e5db6d37a34b}\label{class_device_a3b0797c3fa7475efe311e5db6d37a34b}} 
+\index{Device@{Device}!Device@{Device}}
+\index{Device@{Device}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{Device()}{Device()}}
+{\footnotesize\ttfamily Device\+::\+Device (\begin{DoxyParamCaption}\item[{String}]{device\+Server\+Address = {\ttfamily \char`\"{}https\+://parsnipbackend.azurewebsites.net\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_device_a57639ae35493dc92532dee17feac5485}\label{class_device_a57639ae35493dc92532dee17feac5485}} 
+\index{Device@{Device}!addSensor@{addSensor}}
+\index{addSensor@{addSensor}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{addSensor()}{addSensor()}}
+{\footnotesize\ttfamily void Device\+::add\+Sensor (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_sensor}{Sensor}} $\ast$}]{sensor }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_a4d47fffff6db21f3539ee6ce315a9298}\label{class_device_a4d47fffff6db21f3539ee6ce315a9298}} 
+\index{Device@{Device}!beginPortal@{beginPortal}}
+\index{beginPortal@{beginPortal}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{beginPortal()}{beginPortal()}}
+{\footnotesize\ttfamily void Device\+::begin\+Portal (\begin{DoxyParamCaption}\item[{const char $\ast$}]{ssid = {\ttfamily NULL},  }\item[{const char $\ast$}]{password = {\ttfamily NULL} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_ad1f495438bed35a84427ce711e409755}\label{class_device_ad1f495438bed35a84427ce711e409755}} 
+\index{Device@{Device}!beginServer@{beginServer}}
+\index{beginServer@{beginServer}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{beginServer()}{beginServer()}}
+{\footnotesize\ttfamily void Device\+::begin\+Server (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_af665b2e896eda1789584ea7d0068ec1f}\label{class_device_af665b2e896eda1789584ea7d0068ec1f}} 
+\index{Device@{Device}!getAuthenticationToken@{getAuthenticationToken}}
+\index{getAuthenticationToken@{getAuthenticationToken}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{getAuthenticationToken()}{getAuthenticationToken()}}
+{\footnotesize\ttfamily String Device\+::get\+Authentication\+Token (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_a569631c8c67a028ae0cbb075a755cd8c}\label{class_device_a569631c8c67a028ae0cbb075a755cd8c}} 
+\index{Device@{Device}!getInfo@{getInfo}}
+\index{getInfo@{getInfo}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{getInfo()}{getInfo()}}
+{\footnotesize\ttfamily void Device\+::get\+Info (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_ad318f4f54aa3becf74eea9b381bf7d09}\label{class_device_ad318f4f54aa3becf74eea9b381bf7d09}} 
+\index{Device@{Device}!getPortal@{getPortal}}
+\index{getPortal@{getPortal}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{getPortal()}{getPortal()}}
+{\footnotesize\ttfamily Auto\+Connect \& Device\+::get\+Portal (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_a1d90b8118fb7fded2f83d6140eb5769a}\label{class_device_a1d90b8118fb7fded2f83d6140eb5769a}} 
+\index{Device@{Device}!getSensors@{getSensors}}
+\index{getSensors@{getSensors}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{getSensors()}{getSensors()}}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{class_sensor}{Sensor}} $\ast$ $>$ Device\+::get\+Sensors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_a05936cde52afde8e160467818dbc307e}\label{class_device_a05936cde52afde8e160467818dbc307e}} 
+\index{Device@{Device}!handleClientRequest@{handleClientRequest}}
+\index{handleClientRequest@{handleClientRequest}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{handleClientRequest()}{handleClientRequest()}}
+{\footnotesize\ttfamily void Device\+::handle\+Client\+Request (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_a9a404e69944b1ae62a92a6a70219a1ab}\label{class_device_a9a404e69944b1ae62a92a6a70219a1ab}} 
+\index{Device@{Device}!onHandleAuthToken@{onHandleAuthToken}}
+\index{onHandleAuthToken@{onHandleAuthToken}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{onHandleAuthToken()}{onHandleAuthToken()}}
+{\footnotesize\ttfamily String Device\+::on\+Handle\+Auth\+Token (\begin{DoxyParamCaption}\item[{Auto\+Connect\+Aux \&}]{page,  }\item[{Page\+Argument \&}]{args }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_a1646409eabee2d30e5c6aab43ea351e0}\label{class_device_a1646409eabee2d30e5c6aab43ea351e0}} 
+\index{Device@{Device}!onLoadAuthPage@{onLoadAuthPage}}
+\index{onLoadAuthPage@{onLoadAuthPage}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{onLoadAuthPage()}{onLoadAuthPage()}}
+{\footnotesize\ttfamily String Device\+::on\+Load\+Auth\+Page (\begin{DoxyParamCaption}\item[{Auto\+Connect\+Aux \&}]{page,  }\item[{Page\+Argument \&}]{args }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_add6eb62ac67be5ea339485fe6a992180}\label{class_device_add6eb62ac67be5ea339485fe6a992180}} 
+\index{Device@{Device}!readSensors@{readSensors}}
+\index{readSensors@{readSensors}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{readSensors()}{readSensors()}}
+{\footnotesize\ttfamily void Device\+::read\+Sensors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_aa9908f7545b5ee49a65c1cb0d1099978}\label{class_device_aa9908f7545b5ee49a65c1cb0d1099978}} 
+\index{Device@{Device}!removeSensor@{removeSensor}}
+\index{removeSensor@{removeSensor}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{removeSensor()}{removeSensor()}}
+{\footnotesize\ttfamily void Device\+::remove\+Sensor (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_device_a884f5154578695213815fd45b007dd83}\label{class_device_a884f5154578695213815fd45b007dd83}} 
+\index{Device@{Device}!sendSensorData@{sendSensorData}}
+\index{sendSensorData@{sendSensorData}!Device@{Device}}
+\doxysubsubsection{\texorpdfstring{sendSensorData()}{sendSensorData()}}
+{\footnotesize\ttfamily void Device\+::send\+Sensor\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-lib/receiver\+Base/Device.\+h\item 
-lib/receiver\+Base/Device.\+cpp\end{DoxyCompactItemize}
+lib/receiver\+Base/\mbox{\hyperlink{_device_8h}{Device.\+h}}\item 
+lib/receiver\+Base/\mbox{\hyperlink{_device_8cpp}{Device.\+cpp}}\end{DoxyCompactItemize}

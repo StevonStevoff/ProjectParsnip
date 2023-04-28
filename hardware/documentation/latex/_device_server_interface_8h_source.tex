@@ -1,6 +1,6 @@
 \hypertarget{_device_server_interface_8h_source}{}\doxysection{Device\+Server\+Interface.\+h}
 \label{_device_server_interface_8h_source}\index{lib/deviceServerInterface/DeviceServerInterface.h@{lib/deviceServerInterface/DeviceServerInterface.h}}
-
+\mbox{\hyperlink{_device_server_interface_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef DeviceServerInterface\_h}}
 \DoxyCodeLine{2 \textcolor{preprocessor}{\#define DeviceServerInterface\_h}}
@@ -13,26 +13,30 @@
 \DoxyCodeLine{9 \textcolor{preprocessor}{\#include <ESP8266HTTPClient.h>}}
 \DoxyCodeLine{10 \textcolor{preprocessor}{\#endif}}
 \DoxyCodeLine{11 }
-\DoxyCodeLine{12 \textcolor{comment}{// \#include <string>}}
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#include <string>}}
 \DoxyCodeLine{13 \textcolor{preprocessor}{\#include "{}Arduino.h"{}}}
 \DoxyCodeLine{14 \textcolor{preprocessor}{\#include <map>}}
 \DoxyCodeLine{15 }
-\DoxyCodeLine{16 \textcolor{keyword}{class }\mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}}}
-\DoxyCodeLine{17 \{}
-\DoxyCodeLine{18 \textcolor{keyword}{public}:}
-\DoxyCodeLine{19     \mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}}(String baseUrl);}
-\DoxyCodeLine{20     \textcolor{keywordtype}{void} setAuthenticationToken(String authToken);}
-\DoxyCodeLine{21     \textcolor{keywordtype}{int} sendPlantData(String payload);}
-\DoxyCodeLine{22     String getAuthenticationToken();}
-\DoxyCodeLine{23     String getDeviceSensorIds();}
-\DoxyCodeLine{24     \textcolor{keywordtype}{void} setHttpUrl(String url);}
-\DoxyCodeLine{25 }
-\DoxyCodeLine{26 \textcolor{keyword}{private}:}
-\DoxyCodeLine{27     HTTPClient http;}
-\DoxyCodeLine{28     String baseUrl;}
-\DoxyCodeLine{29     String authToken;}
-\DoxyCodeLine{30 \};}
-\DoxyCodeLine{31 }
-\DoxyCodeLine{32 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{16 \textcolor{keyword}{using namespace }std;}
+\DoxyCodeLine{17 }
+\DoxyCodeLine{18 \textcolor{keyword}{class }\mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}}}
+\DoxyCodeLine{19 \{}
+\DoxyCodeLine{20 \textcolor{keyword}{public}:}
+\DoxyCodeLine{21     \mbox{\hyperlink{class_device_server_interface_af93aeca84d7dfc43714f1aac138c632e}{DeviceServerInterface}}(String baseUrl);}
+\DoxyCodeLine{22     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_server_interface_a4c60347dc891757201250aa56fe08136}{setAuthenticationToken}}(\textcolor{keywordtype}{string} authToken);}
+\DoxyCodeLine{23     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_device_server_interface_a1c263c223fe54ff4346429fd53e6ea56}{sendPlantData}}(\textcolor{keywordtype}{string} payload);}
+\DoxyCodeLine{24     \textcolor{keywordtype}{string} \mbox{\hyperlink{class_device_server_interface_ac395187058553a0fb180df55d8684317}{getAuthenticationToken}}();}
+\DoxyCodeLine{25     \textcolor{keywordtype}{string} \mbox{\hyperlink{class_device_server_interface_ae3d62253863d9a5d56cf4ad4ec473262}{getDeviceSensorIds}}();}
+\DoxyCodeLine{26     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_server_interface_ad87e8b00e76cb8de3a1779985f0d406e}{setHttpUrl}}(\textcolor{keywordtype}{string} url);}
+\DoxyCodeLine{27     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_device_server_interface_a5b12564990be6d1506a8baf864b44a83}{getDeviceInfo}}();}
+\DoxyCodeLine{28     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_server_interface_a2c377eff6a0717b2ddca16ab3dd2d7d4}{setAuthHeader}}();}
+\DoxyCodeLine{29 }
+\DoxyCodeLine{30 \textcolor{keyword}{private}:}
+\DoxyCodeLine{31     HTTPClient http;}
+\DoxyCodeLine{32     \textcolor{keywordtype}{string} baseUrl;}
+\DoxyCodeLine{33     \textcolor{keywordtype}{string} authToken;}
+\DoxyCodeLine{34 \};}
+\DoxyCodeLine{35 }
+\DoxyCodeLine{36 \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

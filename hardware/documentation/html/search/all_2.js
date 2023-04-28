@@ -1,6 +1,23 @@
 var searchData=
 [
-  ['lightsensor_0',['LightSensor',['../class_light_sensor.html',1,'']]],
-  ['lorasensor_1',['LoraSensor',['../class_lora_sensor.html',1,'']]],
-  ['lorasensortransmitter_2',['LoraSensorTransmitter',['../class_lora_sensor_transmitter.html',1,'']]]
+  ['derivedlorasensor_0',['DerivedLoraSensor',['../class_derived_lora_sensor.html',1,'DerivedLoraSensor'],['../class_derived_lora_sensor.html#a3d9fc3c7b89a5da1ed7a702b694897b5',1,'DerivedLoraSensor::DerivedLoraSensor()']]],
+  ['derivedlorasensor_2ecpp_1',['DerivedLoraSensor.cpp',['../_derived_lora_sensor_8cpp.html',1,'']]],
+  ['derivedlorasensor_2eh_2',['DerivedLoraSensor.h',['../_derived_lora_sensor_8h.html',1,'']]],
+  ['device_3',['Device',['../class_device.html',1,'Device'],['../class_device.html#a3b0797c3fa7475efe311e5db6d37a34b',1,'Device::Device()']]],
+  ['device_4',['device',['../test__onboard_8cpp.html#ac7f4dfe42c84fff8313154ba5d240112',1,'device():&#160;test_onboard.cpp'],['../test__mylib_8cpp.html#aab5721a80a0db6d55599097ad8231fb0',1,'device():&#160;test_mylib.cpp']]],
+  ['device_2ecpp_5',['Device.cpp',['../_device_8cpp.html',1,'']]],
+  ['device_2eh_6',['Device.h',['../_device_8h.html',1,'']]],
+  ['deviceesp32_7',['DeviceESP32',['../class_device_e_s_p32.html',1,'DeviceESP32'],['../class_device_e_s_p32.html#a035f17e4431c92ac8a68a84c77a0d175',1,'DeviceESP32::DeviceESP32()']]],
+  ['deviceesp32_2ecpp_8',['DeviceESP32.cpp',['../_device_e_s_p32_8cpp.html',1,'']]],
+  ['deviceesp32_2eh_9',['DeviceESP32.h',['../_device_e_s_p32_8h.html',1,'']]],
+  ['deviceesp8266_10',['DeviceESP8266',['../class_device_e_s_p8266.html',1,'DeviceESP8266'],['../class_device_e_s_p8266.html#a324692a6019195d8227cc729ac64efc6',1,'DeviceESP8266::DeviceESP8266()']]],
+  ['deviceesp8266_2ecpp_11',['DeviceESP8266.cpp',['../_device_e_s_p8266_8cpp.html',1,'']]],
+  ['deviceesp8266_2eh_12',['DeviceESP8266.h',['../_device_e_s_p8266_8h.html',1,'']]],
+  ['deviceserverinterface_13',['DeviceServerInterface',['../class_device_server_interface.html',1,'DeviceServerInterface'],['../class_device_server_interface.html#af93aeca84d7dfc43714f1aac138c632e',1,'DeviceServerInterface::DeviceServerInterface()']]],
+  ['deviceserverinterface_2ecpp_14',['DeviceServerInterface.cpp',['../_device_server_interface_8cpp.html',1,'']]],
+  ['deviceserverinterface_2eh_15',['DeviceServerInterface.h',['../_device_server_interface_8h.html',1,'']]],
+  ['devicetransmitter_16',['DeviceTransmitter',['../class_device_transmitter.html',1,'DeviceTransmitter'],['../class_device_transmitter.html#aa0c83bcf878945d127b779a20e995ba6',1,'DeviceTransmitter::DeviceTransmitter()']]],
+  ['devicetransmitter_2ecpp_17',['DeviceTransmitter.cpp',['../_device_transmitter_8cpp.html',1,'']]],
+  ['devicetransmitter_2eh_18',['DeviceTransmitter.h',['../_device_transmitter_8h.html',1,'']]],
+  ['dio0_19',['dio0',['../_lora_sensor_8h.html#a1ae4bf629eab3a2e99cb98bc2d805688',1,'dio0():&#160;LoraSensor.h'],['../_lora_sensor_transmitter_8h.html#a1ae4bf629eab3a2e99cb98bc2d805688',1,'dio0():&#160;LoraSensorTransmitter.h']]]
 ];

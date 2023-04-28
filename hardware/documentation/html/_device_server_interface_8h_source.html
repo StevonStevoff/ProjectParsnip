@@ -69,7 +69,7 @@ $(function() {
   <div class="headertitle"><div class="title">DeviceServerInterface.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef DeviceServerInterface_h</span></div>
+<a href="_device_server_interface_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef DeviceServerInterface_h</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define DeviceServerInterface_h</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifdef ESP32</span></div>
@@ -80,28 +80,40 @@ $(function() {
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;ESP8266HTTPClient.h&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">// #include &lt;string&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;Arduino.h&quot;</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;map&gt;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="class_device_server_interface.html">   16</a></span><span class="keyword">class </span><a class="code hl_class" href="class_device_server_interface.html">DeviceServerInterface</a></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>{</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <a class="code hl_class" href="class_device_server_interface.html">DeviceServerInterface</a>(String baseUrl);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordtype">void</span> setAuthenticationToken(String authToken);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keywordtype">int</span> sendPlantData(String payload);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    String getAuthenticationToken();</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    String getDeviceSensorIds();</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">void</span> setHttpUrl(String url);</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    HTTPClient http;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    String baseUrl;</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    String authToken;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>};</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclass_device_server_interface_html"><div class="ttname"><a href="class_device_server_interface.html">DeviceServerInterface</a></div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.h:17</div></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="class_device_server_interface.html">   18</a></span><span class="keyword">class </span><a class="code hl_class" href="class_device_server_interface.html">DeviceServerInterface</a></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>{</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <a class="code hl_function" href="class_device_server_interface.html#af93aeca84d7dfc43714f1aac138c632e">DeviceServerInterface</a>(String baseUrl);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_device_server_interface.html#a4c60347dc891757201250aa56fe08136">setAuthenticationToken</a>(<span class="keywordtype">string</span> authToken);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="class_device_server_interface.html#a1c263c223fe54ff4346429fd53e6ea56">sendPlantData</a>(<span class="keywordtype">string</span> payload);</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">string</span> <a class="code hl_function" href="class_device_server_interface.html#ac395187058553a0fb180df55d8684317">getAuthenticationToken</a>();</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordtype">string</span> <a class="code hl_function" href="class_device_server_interface.html#ae3d62253863d9a5d56cf4ad4ec473262">getDeviceSensorIds</a>();</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_device_server_interface.html#ad87e8b00e76cb8de3a1779985f0d406e">setHttpUrl</a>(<span class="keywordtype">string</span> url);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="class_device_server_interface.html#a5b12564990be6d1506a8baf864b44a83">getDeviceInfo</a>();</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_device_server_interface.html#a2c377eff6a0717b2ddca16ab3dd2d7d4">setAuthHeader</a>();</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    HTTPClient http;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordtype">string</span> baseUrl;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordtype">string</span> authToken;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>};</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclass_device_server_interface_html"><div class="ttname"><a href="class_device_server_interface.html">DeviceServerInterface</a></div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.h:19</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_a1c263c223fe54ff4346429fd53e6ea56"><div class="ttname"><a href="class_device_server_interface.html#a1c263c223fe54ff4346429fd53e6ea56">DeviceServerInterface::sendPlantData</a></div><div class="ttdeci">int sendPlantData(string payload)</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:38</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_a2c377eff6a0717b2ddca16ab3dd2d7d4"><div class="ttname"><a href="class_device_server_interface.html#a2c377eff6a0717b2ddca16ab3dd2d7d4">DeviceServerInterface::setAuthHeader</a></div><div class="ttdeci">void setAuthHeader()</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:77</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_a4c60347dc891757201250aa56fe08136"><div class="ttname"><a href="class_device_server_interface.html#a4c60347dc891757201250aa56fe08136">DeviceServerInterface::setAuthenticationToken</a></div><div class="ttdeci">void setAuthenticationToken(string authToken)</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:8</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_a5b12564990be6d1506a8baf864b44a83"><div class="ttname"><a href="class_device_server_interface.html#a5b12564990be6d1506a8baf864b44a83">DeviceServerInterface::getDeviceInfo</a></div><div class="ttdeci">int getDeviceInfo()</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:60</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_ac395187058553a0fb180df55d8684317"><div class="ttname"><a href="class_device_server_interface.html#ac395187058553a0fb180df55d8684317">DeviceServerInterface::getAuthenticationToken</a></div><div class="ttdeci">string getAuthenticationToken()</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:24</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_ad87e8b00e76cb8de3a1779985f0d406e"><div class="ttname"><a href="class_device_server_interface.html#ad87e8b00e76cb8de3a1779985f0d406e">DeviceServerInterface::setHttpUrl</a></div><div class="ttdeci">void setHttpUrl(string url)</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:13</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_ae3d62253863d9a5d56cf4ad4ec473262"><div class="ttname"><a href="class_device_server_interface.html#ae3d62253863d9a5d56cf4ad4ec473262">DeviceServerInterface::getDeviceSensorIds</a></div><div class="ttdeci">string getDeviceSensorIds()</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:50</div></div>
+<div class="ttc" id="aclass_device_server_interface_html_af93aeca84d7dfc43714f1aac138c632e"><div class="ttname"><a href="class_device_server_interface.html#af93aeca84d7dfc43714f1aac138c632e">DeviceServerInterface::DeviceServerInterface</a></div><div class="ttdeci">DeviceServerInterface(String baseUrl)</div><div class="ttdef"><b>Definition:</b> DeviceServerInterface.cpp:3</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

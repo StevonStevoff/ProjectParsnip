@@ -1,5 +1,9 @@
 \hypertarget{class_sensor}{}\doxysection{Sensor Class Reference}
 \label{class_sensor}\index{Sensor@{Sensor}}
+
+
+{\ttfamily \#include $<$Sensor.\+h$>$}
+
 Inheritance diagram for Sensor\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -9,14 +13,35 @@ Inheritance diagram for Sensor\+:\begin{figure}[H]
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{class_sensor_a9b4ee63a8c388972f5aa4be663929875}\label{class_sensor_a9b4ee63a8c388972f5aa4be663929875}} 
-virtual int {\bfseries get\+Id} () const =0
+virtual int \mbox{\hyperlink{class_sensor_a9b4ee63a8c388972f5aa4be663929875}{get\+Id}} () const =0
 \item 
-\mbox{\Hypertarget{class_sensor_aaf9b51a594ee339e5492a88adf5aa852}\label{class_sensor_aaf9b51a594ee339e5492a88adf5aa852}} 
-virtual std\+::map$<$ std\+::string, float $>$ {\bfseries read} () const =0
+virtual std\+::map$<$ std\+::string, float $>$ \mbox{\hyperlink{class_sensor_aaf9b51a594ee339e5492a88adf5aa852}{read}} () const =0
 \end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_sensor_a9b4ee63a8c388972f5aa4be663929875}\label{class_sensor_a9b4ee63a8c388972f5aa4be663929875}} 
+\index{Sensor@{Sensor}!getId@{getId}}
+\index{getId@{getId}!Sensor@{Sensor}}
+\doxysubsubsection{\texorpdfstring{getId()}{getId()}}
+{\footnotesize\ttfamily virtual int Sensor\+::get\+Id (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_light_sensor_ad630a3ca5f7ea746a1335632b972b5df}{Light\+Sensor}}, \mbox{\hyperlink{class_lora_sensor_ab611df41ee441bc592cb34fba3e3e6a9}{Lora\+Sensor}}, \mbox{\hyperlink{class_moisture_sensor_acab619e6a447cefc88c0e1f003edd9b6}{Moisture\+Sensor}}, \mbox{\hyperlink{class_temperature_sensor_a_h_t_x_a5bc21e1ddc628544cc8e2b94c873ebf4}{Temperature\+Sensor\+AHTX}}, and \mbox{\hyperlink{class_temperature_sensor_d_h_t_a445ca4ff8ccebb2d26d61ff93b872a61}{Temperature\+Sensor\+DHT}}.
+
+\mbox{\Hypertarget{class_sensor_aaf9b51a594ee339e5492a88adf5aa852}\label{class_sensor_aaf9b51a594ee339e5492a88adf5aa852}} 
+\index{Sensor@{Sensor}!read@{read}}
+\index{read@{read}!Sensor@{Sensor}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily virtual std\+::map$<$ std\+::string, float $>$ Sensor\+::read (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \mbox{\hyperlink{class_light_sensor_ae685729b23c0b3a24cc6cf2c7ac70383}{Light\+Sensor}}, \mbox{\hyperlink{class_lora_sensor_a06d6931594493d31f7dafa6239d7b28c}{Lora\+Sensor}}, \mbox{\hyperlink{class_moisture_sensor_a6c13e47311e49a15027f0f49f128eb7d}{Moisture\+Sensor}}, \mbox{\hyperlink{class_temperature_sensor_a_h_t_x_ad58156eaedfed8e30f9b84ec3e70ba64}{Temperature\+Sensor\+AHTX}}, and \mbox{\hyperlink{class_temperature_sensor_d_h_t_a6fc46d70175752904cae4cad1c8179fa}{Temperature\+Sensor\+DHT}}.
+
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-lib/sensor\+Base/Sensor.\+h\end{DoxyCompactItemize}
+lib/sensor\+Base/\mbox{\hyperlink{_sensor_8h}{Sensor.\+h}}\end{DoxyCompactItemize}

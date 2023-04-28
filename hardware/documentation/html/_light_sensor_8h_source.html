@@ -69,7 +69,7 @@ $(function() {
   <div class="headertitle"><div class="title">LightSensor.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef LightSensor_h</span></div>
+<a href="_light_sensor_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef LightSensor_h</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define LightSensor_h</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;../SensorBase/Sensor.h&quot;</span></div>
@@ -80,11 +80,11 @@ $(function() {
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="class_light_sensor.html">    9</a></span><span class="keyword">class </span><a class="code hl_class" href="class_light_sensor.html">LightSensor</a> : <span class="keyword">public</span> <a class="code hl_class" href="class_sensor.html">Sensor</a></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>{</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <a class="code hl_class" href="class_light_sensor.html">LightSensor</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordtype">int</span> getId() <span class="keyword">const override</span>;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    std::map&lt;std::string, float&gt; read() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <a class="code hl_function" href="class_light_sensor.html#adc4312e7ccb93db68d7e5927979dee40">LightSensor</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="class_light_sensor.html#ad630a3ca5f7ea746a1335632b972b5df">getId</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    std::map&lt;std::string, float&gt; <a class="code hl_function" href="class_light_sensor.html#ae685729b23c0b3a24cc6cf2c7ac70383">read</a>() <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">float</span> getLight() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">float</span> <a class="code hl_function" href="class_light_sensor.html#ae13e764e13161e5a176c218eba53d814">getLight</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    BH1750 *bh1750;</div>
@@ -94,6 +94,10 @@ $(function() {
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_light_sensor_html"><div class="ttname"><a href="class_light_sensor.html">LightSensor</a></div><div class="ttdef"><b>Definition:</b> LightSensor.h:10</div></div>
+<div class="ttc" id="aclass_light_sensor_html_ad630a3ca5f7ea746a1335632b972b5df"><div class="ttname"><a href="class_light_sensor.html#ad630a3ca5f7ea746a1335632b972b5df">LightSensor::getId</a></div><div class="ttdeci">int getId() const override</div><div class="ttdef"><b>Definition:</b> LightSensor.cpp:18</div></div>
+<div class="ttc" id="aclass_light_sensor_html_adc4312e7ccb93db68d7e5927979dee40"><div class="ttname"><a href="class_light_sensor.html#adc4312e7ccb93db68d7e5927979dee40">LightSensor::LightSensor</a></div><div class="ttdeci">LightSensor(int id)</div><div class="ttdef"><b>Definition:</b> LightSensor.cpp:3</div></div>
+<div class="ttc" id="aclass_light_sensor_html_ae13e764e13161e5a176c218eba53d814"><div class="ttname"><a href="class_light_sensor.html#ae13e764e13161e5a176c218eba53d814">LightSensor::getLight</a></div><div class="ttdeci">float getLight() const</div><div class="ttdef"><b>Definition:</b> LightSensor.cpp:23</div></div>
+<div class="ttc" id="aclass_light_sensor_html_ae685729b23c0b3a24cc6cf2c7ac70383"><div class="ttname"><a href="class_light_sensor.html#ae685729b23c0b3a24cc6cf2c7ac70383">LightSensor::read</a></div><div class="ttdeci">std::map&lt; std::string, float &gt; read() const override</div><div class="ttdef"><b>Definition:</b> LightSensor.cpp:31</div></div>
 <div class="ttc" id="aclass_sensor_html"><div class="ttname"><a href="class_sensor.html">Sensor</a></div><div class="ttdef"><b>Definition:</b> Sensor.h:10</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

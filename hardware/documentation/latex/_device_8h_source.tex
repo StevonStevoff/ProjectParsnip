@@ -1,6 +1,6 @@
 \hypertarget{_device_8h_source}{}\doxysection{Device.\+h}
 \label{_device_8h_source}\index{lib/receiverBase/Device.h@{lib/receiverBase/Device.h}}
-
+\mbox{\hyperlink{_device_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef Device\_h}}
 \DoxyCodeLine{2 \textcolor{preprocessor}{\#define Device\_h}}
@@ -8,12 +8,12 @@
 \DoxyCodeLine{4 \textcolor{preprocessor}{\#include <vector>}}
 \DoxyCodeLine{5 \textcolor{preprocessor}{\#include <map>}}
 \DoxyCodeLine{6 }
-\DoxyCodeLine{7 \textcolor{preprocessor}{\#include "{}Sensor.h"{}}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_sensor_8h}{Sensor.h}}"{}}}
 \DoxyCodeLine{8 }
-\DoxyCodeLine{9 \textcolor{preprocessor}{\#include "{}LoraSensor.h"{}}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_lora_sensor_8h}{LoraSensor.h}}"{}}}
 \DoxyCodeLine{10 \textcolor{preprocessor}{\#include "{}Wire.h"{}}}
 \DoxyCodeLine{11 }
-\DoxyCodeLine{12 \textcolor{preprocessor}{\#include "{}DeviceServerInterface.h"{}}}
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_device_server_interface_8h}{DeviceServerInterface.h}}"{}}}
 \DoxyCodeLine{13 \textcolor{preprocessor}{\#include <algorithm>}}
 \DoxyCodeLine{14 \textcolor{preprocessor}{\#include <EEPROM.h>}}
 \DoxyCodeLine{15 \textcolor{preprocessor}{\#include <AutoConnect.h>}}
@@ -21,34 +21,35 @@
 \DoxyCodeLine{17 \textcolor{keyword}{class }\mbox{\hyperlink{class_device}{Device}}}
 \DoxyCodeLine{18 \{}
 \DoxyCodeLine{19 \textcolor{keyword}{public}:}
-\DoxyCodeLine{20     \mbox{\hyperlink{class_device}{Device}}(String deviceServerAddress = \textcolor{stringliteral}{"{}https://parsnipbackend.azurewebsites.net"{}});}
+\DoxyCodeLine{20     \mbox{\hyperlink{class_device_a3b0797c3fa7475efe311e5db6d37a34b}{Device}}(String deviceServerAddress = \textcolor{stringliteral}{"{}https://parsnipbackend.azurewebsites.net"{}});}
 \DoxyCodeLine{21 }
 \DoxyCodeLine{22     \textcolor{comment}{// Concrete methods}}
-\DoxyCodeLine{23     AutoConnect \&getPortal();}
-\DoxyCodeLine{24     \textcolor{keywordtype}{void} readSensors();}
-\DoxyCodeLine{25     \textcolor{keywordtype}{void} addSensor(\mbox{\hyperlink{class_sensor}{Sensor}} *sensor);}
-\DoxyCodeLine{26     \textcolor{keywordtype}{void} removeSensor(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
-\DoxyCodeLine{27     \textcolor{keywordtype}{void} handleClientRequest();}
-\DoxyCodeLine{28     \textcolor{keywordtype}{void} beginServer();}
-\DoxyCodeLine{29     \textcolor{keywordtype}{void} sendSensorData();}
-\DoxyCodeLine{30     \textcolor{keywordtype}{void} beginPortal(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *ssid = NULL, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *password = NULL);}
-\DoxyCodeLine{31 }
-\DoxyCodeLine{32     String onHandleAuthToken(AutoConnectAux \&page, PageArgument \&args);}
-\DoxyCodeLine{33     String onLoadAuthPage(AutoConnectAux \&page, PageArgument \&args);}
-\DoxyCodeLine{34 }
-\DoxyCodeLine{35     String getAuthenticationToken();}
-\DoxyCodeLine{36 }
-\DoxyCodeLine{37     std::vector<Sensor *> getSensors();}
-\DoxyCodeLine{38 }
-\DoxyCodeLine{39 \textcolor{keyword}{private}:}
-\DoxyCodeLine{40     WebServer server;}
-\DoxyCodeLine{41     AutoConnect Portal;}
-\DoxyCodeLine{42     std::vector<Sensor *> sensors\_;}
-\DoxyCodeLine{43     \mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}} *deviceServerInterface;}
-\DoxyCodeLine{44     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} lastSendTime;}
-\DoxyCodeLine{45     std::map<std::string, float> lastSensorRead;}
-\DoxyCodeLine{46 \};}
-\DoxyCodeLine{47 }
-\DoxyCodeLine{48 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{23     AutoConnect \&\mbox{\hyperlink{class_device_ad318f4f54aa3becf74eea9b381bf7d09}{getPortal}}();}
+\DoxyCodeLine{24     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_add6eb62ac67be5ea339485fe6a992180}{readSensors}}();}
+\DoxyCodeLine{25     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_a57639ae35493dc92532dee17feac5485}{addSensor}}(\mbox{\hyperlink{class_sensor}{Sensor}} *sensor);}
+\DoxyCodeLine{26     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_aa9908f7545b5ee49a65c1cb0d1099978}{removeSensor}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
+\DoxyCodeLine{27     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_a05936cde52afde8e160467818dbc307e}{handleClientRequest}}();}
+\DoxyCodeLine{28     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_ad1f495438bed35a84427ce711e409755}{beginServer}}();}
+\DoxyCodeLine{29     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_a884f5154578695213815fd45b007dd83}{sendSensorData}}();}
+\DoxyCodeLine{30     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_a4d47fffff6db21f3539ee6ce315a9298}{beginPortal}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *ssid = NULL, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *password = NULL);}
+\DoxyCodeLine{31     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_device_a569631c8c67a028ae0cbb075a755cd8c}{getInfo}}();}
+\DoxyCodeLine{32 }
+\DoxyCodeLine{33     String \mbox{\hyperlink{class_device_a9a404e69944b1ae62a92a6a70219a1ab}{onHandleAuthToken}}(AutoConnectAux \&page, PageArgument \&args);}
+\DoxyCodeLine{34     String \mbox{\hyperlink{class_device_a1646409eabee2d30e5c6aab43ea351e0}{onLoadAuthPage}}(AutoConnectAux \&page, PageArgument \&args);}
+\DoxyCodeLine{35 }
+\DoxyCodeLine{36     String \mbox{\hyperlink{class_device_af665b2e896eda1789584ea7d0068ec1f}{getAuthenticationToken}}();}
+\DoxyCodeLine{37 }
+\DoxyCodeLine{38     std::vector<Sensor *> \mbox{\hyperlink{class_device_a1d90b8118fb7fded2f83d6140eb5769a}{getSensors}}();}
+\DoxyCodeLine{39 }
+\DoxyCodeLine{40 \textcolor{keyword}{private}:}
+\DoxyCodeLine{41     WebServer server;}
+\DoxyCodeLine{42     AutoConnect Portal;}
+\DoxyCodeLine{43     std::vector<Sensor *> sensors\_;}
+\DoxyCodeLine{44     \mbox{\hyperlink{class_device_server_interface}{DeviceServerInterface}} *deviceServerInterface;}
+\DoxyCodeLine{45     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} lastSendTime;}
+\DoxyCodeLine{46     std::map<std::string, float> lastSensorRead;}
+\DoxyCodeLine{47 \};}
+\DoxyCodeLine{48 }
+\DoxyCodeLine{49 \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

@@ -69,24 +69,24 @@ $(function() {
   <div class="headertitle"><div class="title">MoistureSensor.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef MoistureSensor_h</span></div>
+<a href="_moisture_sensor_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef MoistureSensor_h</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define MoistureSensor_h</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;../SensorBase/Sensor.h&quot;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;limits&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;Arduino.h&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;tuple&gt;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#define air_moist 380</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#define water_moist 45</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="_moisture_sensor_8h.html#aab5746993a64a01e60df040799773d8f">    8</a></span><span class="preprocessor">#define air_moist 380</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="_moisture_sensor_8h.html#a46e80a431b773bddda26a5ad7dae334a">    9</a></span><span class="preprocessor">#define water_moist 45</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="class_moisture_sensor.html">   11</a></span><span class="keyword">class </span><a class="code hl_class" href="class_moisture_sensor.html">MoistureSensor</a> : <span class="keyword">public</span> <a class="code hl_class" href="class_sensor.html">Sensor</a></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>{</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <a class="code hl_class" href="class_moisture_sensor.html">MoistureSensor</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordtype">int</span> getId() <span class="keyword">const override</span>;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    std::map&lt;std::string, float&gt; read() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <a class="code hl_function" href="class_moisture_sensor.html#ac48b75e4ddb4a5af91780a46c0cf01d3">MoistureSensor</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="class_moisture_sensor.html#acab619e6a447cefc88c0e1f003edd9b6">getId</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    std::map&lt;std::string, float&gt; <a class="code hl_function" href="class_moisture_sensor.html#a6c13e47311e49a15027f0f49f128eb7d">read</a>() <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keywordtype">float</span> getMoist() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keywordtype">float</span> <a class="code hl_function" href="class_moisture_sensor.html#a52735a007df62a3864b9409ef92d6809">getMoist</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">const</span> uint8_t MoistureSensorPin = A0;</div>
@@ -96,6 +96,10 @@ $(function() {
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_moisture_sensor_html"><div class="ttname"><a href="class_moisture_sensor.html">MoistureSensor</a></div><div class="ttdef"><b>Definition:</b> MoistureSensor.h:12</div></div>
+<div class="ttc" id="aclass_moisture_sensor_html_a52735a007df62a3864b9409ef92d6809"><div class="ttname"><a href="class_moisture_sensor.html#a52735a007df62a3864b9409ef92d6809">MoistureSensor::getMoist</a></div><div class="ttdeci">float getMoist() const</div><div class="ttdef"><b>Definition:</b> MoistureSensor.cpp:21</div></div>
+<div class="ttc" id="aclass_moisture_sensor_html_a6c13e47311e49a15027f0f49f128eb7d"><div class="ttname"><a href="class_moisture_sensor.html#a6c13e47311e49a15027f0f49f128eb7d">MoistureSensor::read</a></div><div class="ttdeci">std::map&lt; std::string, float &gt; read() const override</div><div class="ttdef"><b>Definition:</b> MoistureSensor.cpp:32</div></div>
+<div class="ttc" id="aclass_moisture_sensor_html_ac48b75e4ddb4a5af91780a46c0cf01d3"><div class="ttname"><a href="class_moisture_sensor.html#ac48b75e4ddb4a5af91780a46c0cf01d3">MoistureSensor::MoistureSensor</a></div><div class="ttdeci">MoistureSensor(int id)</div><div class="ttdef"><b>Definition:</b> MoistureSensor.cpp:3</div></div>
+<div class="ttc" id="aclass_moisture_sensor_html_acab619e6a447cefc88c0e1f003edd9b6"><div class="ttname"><a href="class_moisture_sensor.html#acab619e6a447cefc88c0e1f003edd9b6">MoistureSensor::getId</a></div><div class="ttdeci">int getId() const override</div><div class="ttdef"><b>Definition:</b> MoistureSensor.cpp:16</div></div>
 <div class="ttc" id="aclass_sensor_html"><div class="ttname"><a href="class_sensor.html">Sensor</a></div><div class="ttdef"><b>Definition:</b> Sensor.h:10</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

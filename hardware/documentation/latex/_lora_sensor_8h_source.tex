@@ -1,13 +1,13 @@
 \hypertarget{_lora_sensor_8h_source}{}\doxysection{Lora\+Sensor.\+h}
 \label{_lora_sensor_8h_source}\index{lib/lora/LoraSensor.h@{lib/lora/LoraSensor.h}}
-
+\mbox{\hyperlink{_lora_sensor_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef LoraSensor\_h}}
 \DoxyCodeLine{2 \textcolor{preprocessor}{\#define LoraSensor\_h}}
 \DoxyCodeLine{3 }
 \DoxyCodeLine{4 \textcolor{preprocessor}{\#include <LoRa.h>}}
 \DoxyCodeLine{5 }
-\DoxyCodeLine{6 \textcolor{preprocessor}{\#include "{}Sensor.h"{}}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{_sensor_8h}{Sensor.h}}"{}}}
 \DoxyCodeLine{7 }
 \DoxyCodeLine{8 \textcolor{preprocessor}{\#include <map>}}
 \DoxyCodeLine{9 \textcolor{preprocessor}{\#include <tuple>}}
@@ -19,16 +19,16 @@
 \DoxyCodeLine{15 \textcolor{keyword}{class }\mbox{\hyperlink{class_lora_sensor}{LoraSensor}} : \textcolor{keyword}{public} \mbox{\hyperlink{class_sensor}{Sensor}}}
 \DoxyCodeLine{16 \{}
 \DoxyCodeLine{17 \textcolor{keyword}{public}:}
-\DoxyCodeLine{18     \mbox{\hyperlink{class_lora_sensor}{LoraSensor}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
-\DoxyCodeLine{19     \textcolor{keywordtype}{int} getId() \textcolor{keyword}{const override};}
+\DoxyCodeLine{18     \mbox{\hyperlink{class_lora_sensor_a8498ab42c850cfd18ddc7fed84ef22ae}{LoraSensor}}(\textcolor{keywordtype}{int} \textcolor{keywordtype}{id});}
+\DoxyCodeLine{19     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_lora_sensor_ab611df41ee441bc592cb34fba3e3e6a9}{getId}}() \textcolor{keyword}{const override};}
 \DoxyCodeLine{20     \textcolor{comment}{// creates read method for recieving data}}
-\DoxyCodeLine{21     std::map<std::string, float> read() \textcolor{keyword}{const override};}
+\DoxyCodeLine{21     std::map<std::string, float> \mbox{\hyperlink{class_lora_sensor_a06d6931594493d31f7dafa6239d7b28c}{read}}() \textcolor{keyword}{const override};}
 \DoxyCodeLine{22     \textcolor{comment}{// creates a boolean to denote whether or not data has been recieved}}
-\DoxyCodeLine{23     \textcolor{keyword}{mutable} \textcolor{keywordtype}{bool} recieved = \textcolor{keyword}{false};}
+\DoxyCodeLine{23     \textcolor{keyword}{mutable} \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_lora_sensor_a290cd2decc8828d4b645349451ccf368}{recieved}} = \textcolor{keyword}{false};}
 \DoxyCodeLine{24 }
 \DoxyCodeLine{25 \textcolor{keyword}{protected}:}
-\DoxyCodeLine{26     \textcolor{keywordtype}{int} id\_;}
-\DoxyCodeLine{27     \textcolor{keywordtype}{bool} sensorWorking;}
+\DoxyCodeLine{26     \textcolor{keywordtype}{int} \mbox{\hyperlink{class_lora_sensor_a1e04e2616bf0637b6093468118d070bb}{id\_}};}
+\DoxyCodeLine{27     \textcolor{keywordtype}{bool} \mbox{\hyperlink{class_lora_sensor_a3bf04b0a04615571082b9f01b5297cb4}{sensorWorking}};}
 \DoxyCodeLine{28 \};}
 \DoxyCodeLine{29 }
 \DoxyCodeLine{30 \textcolor{preprocessor}{\#endif}}
