@@ -9,24 +9,28 @@
 #include <ESP8266HTTPClient.h>
 #endif
 
-// #include <string>
+#include <string>
 #include "Arduino.h"
 #include <map>
+
+using namespace std;
 
 class DeviceServerInterface
 {
 public:
     DeviceServerInterface(String baseUrl);
-    void setAuthenticationToken(String authToken);
-    int sendPlantData(String payload);
-    String getAuthenticationToken();
-    String getDeviceSensorIds();
-    void setHttpUrl(String url);
+    void setAuthenticationToken(string authToken);
+    int sendPlantData(string payload);
+    string getAuthenticationToken();
+    string getDeviceSensorIds();
+    void setHttpUrl(string url);
+    int getDeviceInfo();
+    void setAuthHeader();
 
 private:
     HTTPClient http;
-    String baseUrl;
-    String authToken;
+    string baseUrl;
+    string authToken;
 };
 
 #endif

@@ -28,6 +28,7 @@ public:
     void beginServer();
     void sendSensorData();
     void beginPortal(const char *ssid = NULL, const char *password = NULL);
+    void getInfo();
 
     String onHandleAuthToken(AutoConnectAux &page, PageArgument &args);
     String onLoadAuthPage(AutoConnectAux &page, PageArgument &args);

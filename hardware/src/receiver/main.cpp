@@ -36,7 +36,6 @@ void setup()
     device->addSensor(lightSensor);
     device->addSensor(moistureSensor);
 
-    device->beginPortal();
     // begin server
     device->beginServer();
 }
@@ -46,7 +45,9 @@ void loop()
     delay(1000);
     device->readSensors();
 
-    device->sendSensorData();
+    // device->sendSensorData();
 
     device->handleClientRequest();
+
+    device->getInfo();
 }

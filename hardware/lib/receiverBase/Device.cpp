@@ -56,6 +56,7 @@ Device::Device(String deviceServerAddress) : Portal(server), sensors_()
     auxHandleToken.on(std::bind(&Device::onHandleAuthToken, this, std::placeholders::_1, std::placeholders::_2));
 
     this->Portal.join({auxInputToken, auxHandleToken});
+    this->beginPortal();
 }
 
 void Device::beginPortal(const char *ssid, const char *password)
@@ -144,11 +145,18 @@ void Device::readSensors()
     this->lastSensorRead = sensor_readings;
 }
 
+void Device::getInfo()
+{
+    this->deviceServerInterface->getDeviceInfo();
+}
+
 // make a method that packages the data and sends it to the backend using the http client
 void Device::sendSensorData()
 {
+    // this->deviceServerInterface->getDeviceInfo();
+    return;
     readSensors();
-    this->deviceServerInterface->setAuthenticationToken(this->getAuthenticationToken());
+    // this->deviceServerInterface->setAuthenticationToken(this->getAuthenticationToken());
 
     // checks whether it's time to send data
     if (millis() - this->lastSendTime > 3600000) // 3600000 is 60mins

@@ -2,52 +2,44 @@
 
 DeviceServerInterface::DeviceServerInterface(String baseUrl)
 {
-    this->baseUrl = baseUrl;
+    this->baseUrl = baseUrl.c_str();
 }
 
-void DeviceServerInterface::setAuthenticationToken(String authToken)
+void DeviceServerInterface::setAuthenticationToken(string authToken)
 {
-    this->authToken = authToken;
+    this->authToken = authToken.c_str();
 }
 
-void DeviceServerInterface::setHttpUrl(String url)
+void DeviceServerInterface::setHttpUrl(string url)
 {
 #ifdef ESP32
-    this->http.begin(url);
+    this->http.begin(url.c_str());
 #endif
 #ifdef ESP8266
     WiFiClient client;
-    this->http.begin(client, url);
+    this->http.begin(client, url.c_str());
 #endif
 }
 
-String DeviceServerInterface::getAuthenticationToken()
+string DeviceServerInterface::getAuthenticationToken()
 {
-    if (this->authToken == NULL)
-        return "NULL";
+    // if (this->authToken == NULL)
+    //     return "NULL";
 
-    if (this->authToken == "")
-        return "NULL";
+    // if (this->authToken == "")
+    //     return "NULL";
 
-    if (this->authToken.length() > 256)
-        return "NULL";
+    // if (this->authToken.length() > 256)
+    //     return "NULL";
 
     return this->authToken;
 }
 
-int DeviceServerInterface::sendPlantData(String payload)
+int DeviceServerInterface::sendPlantData(string payload)
 {
 
-    String address = this->baseUrl + "/plant_data";
+    string address = this->baseUrl + "/plant_data";
     this->setHttpUrl(address);
-
-    // creates headers for the payload
-    this->http.addHeader("Content-Type", "application/json");
-
-    this->http.setAuthorization("admin", "string");
-
-    // set the authentication token
-    http.addHeader("Authorization", "Bearer " + authToken);
 
     // send the POST request with the payload
     int statusCode = this->http.POST((uint8_t *)payload.c_str(), payload.length());
@@ -55,12 +47,34 @@ int DeviceServerInterface::sendPlantData(String payload)
     return statusCode;
 }
 
-String DeviceServerInterface::getDeviceSensorIds()
+string DeviceServerInterface::getDeviceSensorIds()
 {
-    String address = this->baseUrl + "/sensors";
+    string address = this->baseUrl + "/sensors";
     this->setHttpUrl(address);
     this->http.addHeader("Content-Type", "application/json");
 
     int statusCode = this->http.GET();
-    return http.getString();
+    return http.getString().c_str();
+}
+
+int DeviceServerInterface::getDeviceInfo()
+{
+    string address = this->baseUrl + "/devices/identify/";
+    this->setHttpUrl(address);
+    // // test token
+    this->setAuthenticationToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOjEsInRva2VuX3V1aWQiOiJjNTM1ZTJjNDhkZTI0MjhlYWFjNjM3Y2FiZWQxNWVkMCJ9.igd7yZLeC2TyKNB3q9d1z4YB9KFT24skqclr375YALk");
+
+    this->setAuthHeader();
+
+    int statusCode = this->http.GET();
+
+    Serial.println(F("yes"));
+    Serial.println(http.getString());
+
+    return statusCode;
+}
+
+void DeviceServerInterface::setAuthHeader()
+{
+    this->http.addHeader("X-SECRET-DEVICE", this->getAuthenticationToken().c_str());
 }
