@@ -369,6 +369,26 @@ const API = {
 
     return response;
   },
+
+  async registerPushToken({ token }, cancel = false) {
+    const response = await api.request({
+      url: '/users/setPushToken',
+      method: 'POST',
+      data: {
+        token,
+      },
+      headers: {
+        'Content-type': 'application/json',
+      },
+      signal: cancel
+        ? cancelApiObject[this.getPaginated.name].handleRequestCancellation()
+          .signal
+        : undefined,
+    });
+
+    return response;
+  },
+
   async uploadProfileImage(image, cancel = false) {
     const formData = new FormData();
     formData.append('image', image);
@@ -424,6 +444,17 @@ const API = {
     });
 
     return response.data;
+  },
+
+  async getUsersNotifications(cancel = false) {
+    const response = await api.request({
+      url: '/notifications/me',
+      method: 'GET',
+      signal: cancel ? cancelApiObject[this.getPaginated.name].handleRequestCancellation().signal
+        : undefined,
+    });
+
+    return response;
   },
 
   async getAllPlantProfilesCreated(cancel = false) {

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from exponent_server_sdk import DeviceNotRegisteredError, PushClient, PushMessage
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -123,3 +124,26 @@ async def create_user_notification(
         user.notifications.append(notification)
 
     await session.commit()
+
+    await send_push_notification(notification, session)
+
+
+async def send_push_notification(notification: Notification, session: AsyncSession):
+    for user in notification.users:
+        if not user.push_token:
+            continue
+
+        response = PushClient().publish(
+            PushMessage(
+                to=user.push_token,
+                title="Project Parsnip",
+                body=notification.text,
+                data={"plant_id": notification.plant_id},
+            )
+        )
+
+        try:
+            response.validate_response()
+        except DeviceNotRegisteredError:
+            user.push_token = None
+            session.commit()

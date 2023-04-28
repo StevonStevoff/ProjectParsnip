@@ -4,7 +4,7 @@ import {
   NavigationContainer, DefaultTheme,
 } from '@react-navigation/native';
 import { Center, useColorModeValue } from 'native-base';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Platform } from 'react-native';
 import * as Device from 'expo-device';
 import Navigation from './BottomTabNavigation';
 import ProfileScreen from '../screens/AuthScreens/ProfileScreen';
@@ -13,7 +13,39 @@ import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import ForgotPasswordScreen from '../screens/AuthScreens/ForgotPasswordScreen';
 import AuthUtils from '../api/utils/AuthUtils';
 import { loadState, saveState } from '../utils/localStorage'; // Import the utility functions
+import API from '../api/API';
+import * as Notifications from 'expo-notifications';
 import { setNavigationRef } from '../api/utils/AuthErrorHandler';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+    console.log('existingStatus', existingStatus);
+  }
+  if (finalStatus !== 'granted') {
+    alert('Failed to get push token for push notification!');
+    console.log('finalStatus', finalStatus);
+    return;
+  }
+  token = (await Notifications.getExpoPushTokenAsync()).data;
+  console.log(token);
+
+  return token;
+}
 
 const Stack = createStackNavigator();
 function NavigationRoot() {
@@ -73,11 +105,40 @@ function NavigationRoot() {
     },
   };
 
+  //const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
   useEffect(() => {
     AuthUtils.isUserAuthenticated().then((isLoggedIn) => {
       setIsUserLoggedIn(isLoggedIn);
       setIsLoading(false);
     });
+
+    if ((Platform.OS !== 'web') && (isUserLoggedIn)) {
+      registerForPushNotificationsAsync().then((token) => {
+        API.registerPushToken({ token });
+      });
+
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+          navigationRef.current.navigate('Notifications');
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
   }, []);
 
   if (isLoading) {

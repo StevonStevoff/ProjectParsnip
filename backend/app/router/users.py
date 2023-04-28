@@ -7,7 +7,7 @@ import app.router.imgutils as imgutils
 from app.database import get_async_session
 from app.models import User
 from app.router.utils import get_object_or_404, model_list_to_schema
-from app.schemas import UserRead, UserUpdate
+from app.schemas import PushToken, UserRead, UserUpdate
 from app.users import current_active_user, fastapi_users
 
 router = APIRouter()
@@ -117,3 +117,33 @@ async def update_user_profile_picture(
 
     await imgutils.save_as_user_pfp(newimg, current_user)
     return {"size": imgsize}
+
+
+@router.post(
+    "/setPushToken",
+    name="users:set_push_notification_token",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserRead,
+    dependencies=[Depends(current_active_user)],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Missing token or inactive user.",
+        },
+    },
+)
+async def set_push_notification_token(
+    push_token: PushToken,
+    current_user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    current_user.push_token = push_token.token
+    await session.commit()
+    await session.refresh(current_user)
+
+    updated_user = await session.get(
+        User,
+        current_user.id,
+        populate_existing=True,
+    )
+
+    return UserRead.from_orm(updated_user)
