@@ -210,6 +210,7 @@ function PlantProfileScreen({ navigation }) {
       </NativeBaseProvider>
     );
   }
+
   return (
     <ScrollView style={styles.scrollView}>
 
@@ -311,7 +312,7 @@ function PlantProfileScreen({ navigation }) {
                 <View style={{ flexDirection: 'row', padding: 10, width: '100%' }}>
                   <Heading
                     style={{
-                      fontSize: 20, color: '#4da705', flex: 3, fontWeight: 'bold',
+                      fontSize: Platform.OS === 'web' ? 20 : 14, color: '#4da705', flex: 3, fontWeight: 'bold',
                     }}
                     key={plantProfile.id}
                   >
@@ -373,7 +374,7 @@ function PlantProfileScreen({ navigation }) {
 
                 </View>
 
-                <VStack space={plantProfile.grow_properties.length} w="90%">
+                <VStack space={4} w="90%">
                   {plantProfile.grow_properties.map((property) => (
                     <HStack key={property.id} justifyContent="space-between">
                       <View w="30%">
@@ -393,12 +394,30 @@ function PlantProfileScreen({ navigation }) {
                       </Text>
                     </HStack>
                   ))}
+                  {
+                  // eslint-disable-next-line no-unused-vars
+                  Array.from(Array(4 - plantProfile.grow_properties.length)).map((_, i) => (
+                    <HStack key={i} justifyContent="space-between">
+                      <Text w="10%"> </Text>
+                      <Text w="20%" opacity={10}>
+                        NOT  SET
+                      </Text>
+                      <Text w="10%"> </Text>
+                    </HStack>
+                  ))
+}
                 </VStack>
 
               </View>
             </TouchableOpacity>
 
           ))}
+          {filterPlantProfiles(searchPTTerm).length === 0
+          && (
+          <Center>
+            <Heading opacity={10} paddingTop={10}>No Plant Profiles Found!</Heading>
+          </Center>
+          )}
         </View>
 
       </View>
@@ -454,6 +473,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+    height: 40,
+    width: 40,
   },
   createText: {
     color: '#fff',

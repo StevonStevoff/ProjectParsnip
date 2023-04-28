@@ -62,6 +62,7 @@ function DevicesDetailsSensors({ sensors, handleSensorUpdate }) {
         onClose={handleDeleteClose}
         onConfirm={handleRemoveSensorConfirm}
         warningMessage={`Are you sure you want to remove ${sensorToDelete?.name}?`}
+        headerMessage="Remove item from device"
         actionBtnText="Remove"
       />
     </VStack>

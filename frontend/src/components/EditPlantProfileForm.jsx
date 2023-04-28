@@ -3,7 +3,6 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   Platform,
 } from 'react-native';
 import { Formik } from 'formik';
@@ -16,7 +15,6 @@ import {
   IconButton,
   CloseIcon,
   Input,
-  Pressable,
   Text,
   Switch,
   Divider,
@@ -28,6 +26,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import EditPlantProfileSchema from '../utils/validationSchema/EditPlantProfileSchema';
 import API from '../api/API';
+import CustomSearchDropdown from './CustomSearchDropdown';
 
 function EditPlantProfileForm({ plantTypes, plantProfile, navigation }) {
   const statusArray = [{
@@ -46,11 +45,6 @@ function EditPlantProfileForm({ plantTypes, plantProfile, navigation }) {
   const [showTypeButtons, setShowTypeButtons] = useState(false);
 
   const [event, setEvent] = useState('');
-
-  const [showPTDropdown, setShowPTDropdown] = useState(false);
-  const [searchPTTerm, setSearchPTTerm] = useState('');
-  const [selectedPlantType, setSelectedPlantType] = useState(plantProfile.plant_type.name);
-  const [foundPTLength, setfoundPTLength] = useState('');
 
   // eslint-disable-next-line no-unused-vars
   const dataObject = Object.entries(plantProfile.grow_properties).reduce((acc, [key, value]) => {
@@ -196,17 +190,6 @@ function EditPlantProfileForm({ plantTypes, plantProfile, navigation }) {
     }
   };
 
-  const filterPlantTypes = (aSearchTerm) => {
-    if (aSearchTerm === '') {
-      return plantTypes;
-    }
-    const filtered = plantTypes.filter(
-      (plantT) => plantT.name.toLowerCase().includes(aSearchTerm.toLowerCase()),
-    );
-    setfoundPTLength(filtered.length);
-    return filtered;
-  };
-
   // Filter out already selected types from the list of types
   const availableTypes = types.filter((type) => !selectedTypes.includes(type));
 
@@ -302,59 +285,12 @@ function EditPlantProfileForm({ plantTypes, plantProfile, navigation }) {
             <FormControl isRequired isInvalid={errors.plant_type_id && touched.plant_type_id}>
               <FormControl.Label>Plant Type</FormControl.Label>
               <View style={{ width: '100%' }}>
-
-                <View style={{ flexDirection: 'row' }}>
-                  <Input
-                    placeholder={showPTDropdown ? 'Search for a plant type' : selectedPlantType}
-                    value={searchPTTerm}
-                    onChangeText={(text) => {
-                      setSearchPTTerm(text);
-                    }}
-                    style={{ flex: 1, padding: 10 }}
-                    w="100%"
-                    size="2xl"
-                    marginBottom="2%"
-                    InputLeftElement={showPTDropdown ? <Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" /> : null}
-                    InputRightElement={(
-                      <Pressable onPress={() => { setSearchPTTerm(''); setShowPTDropdown(!showPTDropdown); }}>
-                        <Icon as={MaterialIcons} name={showPTDropdown ? 'arrow-drop-up' : 'arrow-drop-down'} color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={8} />
-                      </Pressable>
-                )}
-                    isDisabled={showPTDropdown === false}
-                  />
-                </View>
-                {showPTDropdown && (
-                <ScrollView style={{ maxHeight: 100 }}>
-                  {
-                  filterPlantTypes(searchPTTerm).map((plantType) => (
-                    <View
-                      key={plantType.id}
-                      style={{
-                        flexDirection: 'row', width: '100%', borderBottomWidth: 1, padding: 5,
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => {
-                          values.plant_type_id = plantType.id;
-                          setSelectedPlantType(plantType.name);
-                          setSearchPTTerm(plantType.name);
-                          setShowPTDropdown(false);
-                        }}
-                        style={{ flex: 9 }}
-                      >
-                        <Text fontSize={16} style={{ width: '100%' }}>{plantType.name}</Text>
-                      </TouchableOpacity>
-                      {selectedPlantType === plantType.name && <Icon as={MaterialIcons} name="check" color="coolGray.800" _dark={{ color: 'warmGray.50' }} size={6} />}
-                    </View>
-                  ))
-                }
-                </ScrollView>
-                )}
-                {searchPTTerm.length > 0
-              && foundPTLength < 1
-              && showPTDropdown
-              && <Text style={styles.error}>No results found</Text>}
-
+                <CustomSearchDropdown
+                  data={plantTypes}
+                  setReturnItemId={(id) => (values.plant_type_id = id)}
+                  choosePlaceholder={plantProfile.plant_type.name}
+                  searchPlaceholder="plant type"
+                />
               </View>
               <FormControl.ErrorMessage>
                 {errors.plant_type_id}
@@ -513,12 +449,6 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     height: '100%',
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    paddingTop: 10,
   },
   error: {
     color: 'red',

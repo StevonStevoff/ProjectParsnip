@@ -56,12 +56,6 @@ function PlantDetailsScreen({ route, navigation }) {
     return isWithinRange;
   });
 
-  const days = filteredDataWithinRange.map((element) => {
-    const elementDate = new Date(element.timestamp);
-    const dayOfMonth = elementDate.getDate();
-    return dayOfMonth;
-  });
-
   function filterSensorDataByType(filteredData, dataIds) {
     return dataIds.reduce((acc, dataId) => {
       const values = filteredData.flatMap((plant) => plant.sensor_readings
@@ -75,8 +69,21 @@ function PlantDetailsScreen({ route, navigation }) {
     }, {});
   }
 
+  function filterDaysByType(filteredData, dataIds) {
+    return dataIds.reduce((acc, dataId) => {
+      const values = filteredData.flatMap((plant) => plant.sensor_readings
+        .filter((reading) => reading?.grow_property?.grow_property_type.id === dataId)
+        .map(() => (new Date(plant.timestamp)).getDate()));
+      return {
+        ...acc,
+        [dataId]: values,
+      };
+    }, {});
+  }
+
   const dataIds = [1, 2, 3, 4];
   const filteredDataByType = filterSensorDataByType(filteredDataWithinRange, dataIds);
+  const daysByType = filterDaysByType(filteredDataWithinRange, dataIds);
 
   if (isLoading) {
     return (
@@ -89,6 +96,16 @@ function PlantDetailsScreen({ route, navigation }) {
   if (plantsData.length === 0) {
     return (
       <Center flex={1}>
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+        >
+          <CloseBtn navigation={navigation} />
+        </View>
         <Text>No plants data has been record yet.</Text>
       </Center>
     );
@@ -147,7 +164,7 @@ function PlantDetailsScreen({ route, navigation }) {
                 {filteredDataByType[beans.grow_property_type.id]
                   && filteredDataByType[beans.grow_property_type.id].length > 0 ? (
                     <GrowPropertyChart
-                      days={days}
+                      days={daysByType[beans.grow_property_type.id]}
                       tempretureValues={filteredDataByType[beans.grow_property_type.id]}
                     />
                   ) : <Text style={styles.errorText}>No data for this range</Text>}
@@ -182,19 +199,6 @@ function PlantDetailsScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  createPlantButton: {
-    marginRight: 10,
-    marginLeft: 120,
-    marginTop: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 15,
-    paddingLeft: 15,
-    backgroundColor: '#1E6738',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
   detailsButton: {
     marginRight: 5,
     marginLeft: 5,
@@ -226,11 +230,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     fontWeight: 'bold',
-  },
-  scrollView: {
-    marginHorizontal: 40,
-    width: '100%',
-    left: -40,
   },
 });
 

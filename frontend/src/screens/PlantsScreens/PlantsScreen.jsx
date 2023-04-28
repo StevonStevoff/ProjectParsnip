@@ -7,7 +7,7 @@ import {
   Appearance,
   Platform,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Icon,
   Heading,
@@ -18,12 +18,14 @@ import {
   CloseIcon,
   Text,
   Divider,
+  Center,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import PlantUtils from '../../api/utils/PlantUtils';
 import API from '../../api/API';
 import getIconComponent from '../../utils/SensorIcons';
+import WarningDialog from '../../components/WarningDialog';
 
 function PlantsScreen({ navigation }) {
   const colorScheme = Appearance.getColorScheme();
@@ -34,6 +36,9 @@ function PlantsScreen({ navigation }) {
   const [devices, setDevices] = useState([]);
   const [plantProfiles, setPlantProfiles] = useState([]);
   const [latestValue, setLatestValue] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
+  const [plantDeletedId, setPlantDeletedId] = useState(0);
 
   const statusArray = [{
     status: 'success',
@@ -50,6 +55,10 @@ function PlantsScreen({ navigation }) {
     setEvent('');
   };
 
+  const handleDeleteClose = () => {
+    setIsWarningDialogOpen(false);
+  };
+
   useEffect(() => {
     PlantUtils.getAuthenticatedUserData().then((email) => {
       setUserEmail(email);
@@ -59,10 +68,13 @@ function PlantsScreen({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       const fetchPlants = async () => {
+        setIsLoading(true);
         try {
           const response = await API.getCurrentUsersPlants();
           setPlants(response.data);
-        } catch (error) { /* empty */ }
+        } catch (error) { /* empty */ } finally {
+          setIsLoading(false);
+        }
       };
       fetchPlants();
 
@@ -82,8 +94,9 @@ function PlantsScreen({ navigation }) {
   }, []);
 
   // Get latest value for each grow property type for each plant
-  useEffect(() => {
+  useMemo(() => {
     const fetchLatestValues = async () => {
+      setIsLoading(true);
       try {
         const plantIds = plants.map((plant) => plant.id); // replace with your desired plant ids
         const growPropertyTypeIds = [1, 2, 3, 4];
@@ -116,20 +129,27 @@ function PlantsScreen({ navigation }) {
         }));
 
         setLatestValue(latestValues);
-      } catch (error) { /* empty */ }
+      } catch (error) { /* empty */ } finally {
+        setIsLoading(false);
+      }
     };
     fetchLatestValues();
   }, [plants]);
 
-  useEffect(() => {
-    const fetchPlantsProfiles = async () => {
-      try {
-        const response = await API.getAllPlantProfiles();
-        setPlantProfiles(response.data);
-      } catch (error) { /* empty */ }
-    };
-    fetchPlantsProfiles();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPlantsProfiles = async () => {
+        try {
+          const response = await API.getAllPlantProfiles();
+          setPlantProfiles(response.data);
+        } catch (error) { /* empty */ }
+      };
+      fetchPlantsProfiles();
+
+      return () => { /* empty */
+      };
+    }, []),
+  );
 
   useEffect(() => {
     const fetchDevices = async () => {
@@ -147,10 +167,11 @@ function PlantsScreen({ navigation }) {
     );
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    setIsWarningDialogOpen(false);
     try {
-      await API.deletePlant(id).then(() => {
-        setPlants(plants.filter((plant) => plant.id !== id));
+      await API.deletePlant(plantDeletedId).then(() => {
+        setPlants(plants.filter((plant) => plant.id !== plantDeletedId));
         setEvent('success');
       });
     } catch (error) { setEvent('error'); }
@@ -165,6 +186,14 @@ function PlantsScreen({ navigation }) {
     latestValue?.[plantIdValue]?.[growPropertyTypeId] === -999
   || latestValue?.[plantIdValue]?.[growPropertyTypeId] === undefined);
 
+  if (isLoading) {
+    return (
+      <Center flex={1}>
+        <ActivityIndicator size="large" color="#00ff00" />
+      </Center>
+    );
+  }
+
   return (
     <ScrollView style={styles.scrollView}>
 
@@ -177,6 +206,14 @@ function PlantsScreen({ navigation }) {
         }}
       >
 
+        <WarningDialog
+          isOpen={isWarningDialogOpen}
+          onClose={handleDeleteClose}
+          onConfirm={handleDelete}
+          warningMessage="Are you sure you want to delete this plant? This action cannot be undone."
+          headerMessage="Delete Plant"
+          actionBtnText="Delete"
+        />
         {filteredStatusArray.length !== 0 && (
           <View style={{ padding: 5, width: '90%' }}>
             <Alert w="100%" status={filteredStatusArray[0].status}>
@@ -253,13 +290,13 @@ function PlantsScreen({ navigation }) {
                     {/* To be Changed to handleEdit */}
                     <TouchableOpacity
                       style={styles.detailsButton}
-                      onPress={() => handleDelete(plant.id)}
+                      onPress={() => { setIsWarningDialogOpen(true); setPlantDeletedId(plant.id); }}
                     >
                       <Icon as={MaterialIcons} name="delete" color="white" _dark={{ color: 'white' }} />
                     </TouchableOpacity>
                   </View>
 
-                  <HStack w="100%" h={Platform.OS === 'web' ? 180 : null}>
+                  <HStack w="100%" h={Platform.OS === 'web' ? 220 : null}>
                     <VStack w="50%" style={styles.plantDetailsContianer} paddingRight={1}>
                       <Text fontSize={Platform.OS === 'web' ? 18 : 15} style={styles.plantContainerText}>
                         {' '}
@@ -279,9 +316,21 @@ function PlantsScreen({ navigation }) {
                     </VStack>
                     <Divider my={1} orientation="vertical" />
                     <VStack space={plant.plant_profile.grow_properties.length} w="40%" paddingLeft={1}>
+                      <HStack justifyContent="space-between">
+                        <Text w="19%" />
+                        <Text fontSize={11}>
+                          Min
+                        </Text>
+                        <Text fontSize={12}>
+                          Current
+                        </Text>
+                        <Text fontSize={11}>
+                          Max
+                        </Text>
+                      </HStack>
                       {plant.plant_profile.grow_properties.map((property) => (
                         <HStack key={property.id} justifyContent="space-between">
-                          <View w="20%" marginBottom={10}>
+                          <View w="20%">
                             {(() => getIconComponent(property.grow_property_type.description))()}
                           </View>
 
@@ -297,7 +346,7 @@ function PlantsScreen({ navigation }) {
                             )
                               ? (
                                 <>
-                                  <Text fontSize={Platform.OS === 'web' ? 18 : 13} style={{ color: 'red', fontWeight: 'bold', marginTop: 1 }}>
+                                  <Text fontSize={Platform.OS === 'web' ? 18 : 13} style={{ color: 'red', fontWeight: 'bold', marginTop: -3 }}>
                                     {isAValue(plant.id, property.grow_property_type.id)
                                       ? 'N/A'
                                       : latestValue?.[plant.id]?.[property.grow_property_type.id]}
@@ -368,7 +417,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     alignItems: 'center',
-    height: Platform.OS === 'web' ? 280 : null,
+    height: Platform.OS === 'web' ? 310 : null,
   },
   detailsButton: {
     marginRight: 5,
@@ -418,14 +467,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     width: '100%',
     left: -40,
-  },
-  propertyTypesConatiner: {
-    width: '100%',
-    padding: 20,
-    borderColor: 'grey',
-    textAlign: 'center',
-    justifyContent: 'left',
-    alignItems: 'center',
   },
 });
 

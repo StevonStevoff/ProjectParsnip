@@ -2,13 +2,13 @@ import React from 'react';
 import { AlertDialog, Button } from 'native-base';
 
 function WarningDialog({
-  isOpen, onClose, onConfirm, warningMessage, actionBtnText,
+  isOpen, onClose, onConfirm, warningMessage, actionBtnText, headerMessage,
 }) {
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
       <AlertDialog.Content>
         <AlertDialog.Header fontSize="lg" fontWeight="bold">
-          Remove item from device
+          {headerMessage}
         </AlertDialog.Header>
         <AlertDialog.Body>
           {warningMessage}

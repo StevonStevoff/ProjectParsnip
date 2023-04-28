@@ -1,5 +1,5 @@
 import {
-  View,
+  View, Platform,
 } from 'react-native';
 import React from 'react';
 import { LineChart } from 'react-native-chart-kit';
@@ -16,8 +16,8 @@ function GrowPropertyChart(props) {
             data: tempretureValues,
           }],
         }}
-        width={400} // from react-native
-        height={400}
+        width={Platform.OS === 'ios' ? 370 : 400} // from react-native
+        height={Platform.OS === 'ios' ? 370 : 400}
         yAxisLabel=""
         yAxisSuffix=""
         yAxisInterval={1} // optional, defaults to 1
