@@ -124,3 +124,19 @@ async def test_login_superuser_by_username(setup_db, client):
     )
 
     assert response.status_code == 200
+
+
+@pytest.mark.asyncio(scope="session")
+async def test_refresh_user_token(setup_db, client, user_access_token):
+    headers = {"Authorization": f"Bearer {user_access_token}"}
+    response = await client.post("/auth/jwt/refresh", headers=headers)
+
+    assert response.status_code == 200
+    json_response = response.json()
+
+    # logout with new token
+    new_token = json_response["access_token"]
+    headers = {"Authorization": f"Bearer {new_token}"}
+    response = await client.post("/auth/jwt/logout", headers=headers)
+
+    assert response.status_code == 200

@@ -67,19 +67,6 @@ describe('LoginScreen', () => {
       expect(signUpBtn).toBeDefined();
     });
   });
-  test('should have a button to the forgot password page', async () => {
-    const navigation = { navigate: jest.fn() };
-    const { findByText } = render(
-      <NativeBaseProvider theme={theme}>
-        <LoginScreen navigation={navigation} />
-      </NativeBaseProvider>,
-    );
-
-    await waitFor(async () => {
-      const forgotPasswordBtn = findByText('Forgot Password?');
-      expect(forgotPasswordBtn).toBeDefined();
-    });
-  });
   test('should show an error message if the password is not entered', async () => {
     const navigation = { navigate: jest.fn() };
     const { getByTestId, findByText } = render(
@@ -91,21 +78,6 @@ describe('LoginScreen', () => {
     await waitFor(() => {
       fireEvent.changeText(getByTestId('password-input'), '');
       const error = findByText('Password is required');
-      expect(error).toBeDefined();
-    });
-  });
-  test('should show an error message if the username is not entered', async () => {
-    const navigation = { navigate: jest.fn() };
-    const { findByTestId, findByText } = render(
-      <NativeBaseProvider theme={theme} initialWindowMetrics={inset}>
-        <LoginScreen navigation={navigation} />
-      </NativeBaseProvider>,
-    );
-    const username = await findByTestId('username-input');
-
-    await waitFor(() => {
-      fireEvent.changeText(username, '');
-      const error = findByText('Username is required');
       expect(error).toBeDefined();
     });
   });

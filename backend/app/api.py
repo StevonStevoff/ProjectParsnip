@@ -3,9 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import User
 from app.router import (
+    authentication,
     devices,
     grow_properties,
     grow_property_types,
+    notifications,
     plant_data,
     plant_profiles,
     plant_types,
@@ -27,6 +29,11 @@ app = FastAPI(title="ProjectParsnip", description=description, version="0.0.1")
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
+    tags=["auth"],
+)
+# This route was created by project, placed here for ordering in swagger docs
+app.include_router(
+    authentication.router,
     tags=["auth"],
 )
 app.include_router(
@@ -60,6 +67,11 @@ app.include_router(
     grow_property_types.router,
     prefix="/grow_property_types",
     tags=["grow_property_types"],
+)
+app.include_router(
+    notifications.router,
+    prefix="/notifications",
+    tags=["notifications"],
 )
 app.include_router(
     plants.router,

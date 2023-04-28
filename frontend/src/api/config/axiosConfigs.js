@@ -1,11 +1,16 @@
 import axios from 'axios';
 import { notification } from 'antd';
 import { Platform } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import * as Device from 'expo-device';
+// eslint-disable-next-line import/no-cycle
+import { handle401Error, reset401Errors } from '../utils/AuthErrorHandler';
+import { saveState } from '../../utils/localStorage';
 
-const androidDevUrl = 'http://10.43.204.119:8000';
+const mobileUrl = 'http://10.43.200.227:8000';
 
 const api = axios.create({
-  baseURL: Platform.OS === 'android' ? androidDevUrl : 'http://localhost:8000',
+  baseURL: Platform.OS !== 'web' ? mobileUrl : 'http://localhost:8000',
 });
 
 // defining a custom error handler for all APIs
@@ -20,9 +25,19 @@ const errorHandler = (error) => {
     return Promise.resolve();
   }
 
-  // logging only errors that are not 401
+  if (statusCode === 401) {
+    handle401Error();
+    saveState('navState', null);
+    if (Device.brand != null) {
+      SecureStore.deleteItemAsync('token');
+    } else {
+      window.localStorage.removeItem('token');
+    }
+  } else {
+    reset401Errors();
+  }
+
   if (statusCode && statusCode > 202) {
-    // eslint-disable-next-line no-console
     console.error(error);
   }
 

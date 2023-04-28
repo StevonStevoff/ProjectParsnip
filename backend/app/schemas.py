@@ -75,6 +75,7 @@ class DeviceBase(BaseModel):
 
 class DeviceRead(BaseRead, DeviceBase):
     owner: UserRead
+    auth_token: Optional[str]
     users: list[UserRead]
     sensors: list[SensorRead]
 
@@ -89,6 +90,10 @@ class DeviceUpdate(DeviceBase):
     sensor_ids: Optional[list[int]]
     new_owner_id: Optional[int]
     user_ids: Optional[list[int]]
+
+
+class DeviceToken(BaseModel):
+    token: str
 
 
 class PlantTypeBase(BaseModel):
@@ -219,7 +224,6 @@ class PlantUpdate(PlantBase):
 
 
 class PlantDataBase(BaseModel):
-    plant_id: int
     timestamp: datetime
 
 
@@ -229,4 +233,19 @@ class PlantDataCreate(PlantDataBase):
 
 
 class PlantDataRead(BaseRead, PlantDataBase):
+    plant_id: int
     sensor_readings: list[SensorReadingRead]
+
+
+class NotificationBase(BaseModel):
+    text: str
+    resolved: bool
+    timestamp: datetime
+
+
+class NotificationRead(BaseRead, NotificationBase):
+    plant: PlantRead
+
+
+class PushToken(BaseModel):
+    token: str

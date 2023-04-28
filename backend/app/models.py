@@ -29,6 +29,14 @@ UserDevice = Table(
     Column("device_id", Integer, ForeignKey("devices.id")),
 )
 
+UserNotifications = Table(
+    "user_notifications",
+    Base.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("notification_id", Integer, ForeignKey("notifications.id")),
+)
+
 DeviceSensors = Table(
     "device_sensors",
     Base.metadata,
@@ -44,6 +52,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     # email and hashed password created by fastapi_users parent class
     username = Column(String)
     name = Column(String)
+    push_token = Column(String)
 
     plant_profiles = relationship(
         "PlantProfile",
@@ -56,6 +65,12 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         back_populates="users",
         lazy="selectin",
     )
+    notifications = relationship(
+        "Notification",
+        secondary=UserNotifications,
+        back_populates="users",
+        lazy="selectin",
+    )
 
 
 class Device(Base):
@@ -63,6 +78,8 @@ class Device(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     model_name = Column(String)
+    auth_token = Column(String)
+    token_uuid = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", lazy="selectin")
@@ -78,10 +95,7 @@ class Device(Base):
         lazy="selectin",
     )
     sensors = relationship(
-        "Sensor",
-        secondary=DeviceSensors,
-        back_populates="devices",
-        lazy="selectin",
+        "Sensor", secondary=DeviceSensors, back_populates="devices", lazy="selectin"
     )
 
 
@@ -121,8 +135,14 @@ class Plant(Base):
         back_populates="plants",
         lazy="selectin",
     )
-    plant_data = relationship("PlantData", back_populates="plant")
-    plant_profile = relationship("PlantProfile", lazy="selectin")
+    plant_data = relationship(
+        "PlantData",
+        back_populates="plant",
+    )
+    plant_profile = relationship(
+        "PlantProfile",
+        lazy="selectin",
+    )
     plant_type = relationship(
         "PlantType",
         lazy="selectin",
@@ -233,5 +253,22 @@ class SensorReading(Base):
     )
     grow_property = relationship(
         "GrowPropertyRange",
+        lazy="selectin",
+    )
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+    id = Column(Integer, primary_key=True, nullable=False)
+    text = Column(String)
+    resolved = Column(Boolean)
+    timestamp = Column(DateTime(timezone=True))
+    plant_id = Column(Integer, ForeignKey("plants.id"))
+
+    plant = relationship("Plant", lazy="selectin")
+    users = relationship(
+        "User",
+        secondary=UserNotifications,
+        back_populates="notifications",
         lazy="selectin",
     )

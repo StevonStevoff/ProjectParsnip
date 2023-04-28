@@ -15,6 +15,7 @@ from sqlalchemy import func, select
 
 import app.settings as settings
 from app.database import get_async_session, get_user_db
+from app.email import send_forgot_password_email, send_verification_email
 from app.models import User
 from app.schemas import UserCreate
 
@@ -74,11 +75,13 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.username} has registered.")
+        # await send_verification_email([user.email], user)
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
         print(f"User {user.username} has forgot their password. Reset token: {token}")
+        await send_forgot_password_email([user.email], token)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
@@ -87,6 +90,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
             f"Verification requested for user {user.username}. Verification token:"
             f" {token}"
         )
+        await send_verification_email([user.email], token)
 
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):

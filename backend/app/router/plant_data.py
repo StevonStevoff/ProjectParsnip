@@ -1,9 +1,15 @@
-from fastapi import APIRouter, Depends, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from datetime import timezone
 
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Security, status
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
+from app.authentication import device_auth_header, verify_device_token
 from app.database import get_async_session
 from app.models import Device, Plant, PlantData, PlantProfile, Sensor, SensorReading
-from app.router.utils import get_object_or_404
+from app.notifications import check_plant_properties
+from app.router.utils import get_object_or_404, model_list_to_schema
 from app.schemas import PlantDataCreate, PlantDataRead, SensorReadingCreate
 
 router = APIRouter()
@@ -12,7 +18,8 @@ router = APIRouter()
 @router.post(
     "/",
     name="plant_data:send_plant_data",
-    response_model=PlantDataRead,
+    response_model=list[PlantDataRead],
+    status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_404_NOT_FOUND: {
             "description": "The plant/device does not exist",
@@ -21,34 +28,47 @@ router = APIRouter()
 )
 async def create_plant_data(
     plant_data_create: PlantDataCreate,
+    background_tasks: BackgroundTasks,
+    device_token: str = Security(device_auth_header),
     session: AsyncSession = Depends(get_async_session),
-) -> PlantDataRead:
-    await get_object_or_404(
-        plant_data_create.device_id, Device, session, "The device does not exist."
+) -> list[PlantDataRead]:
+    await verify_device_token(device_token, session)
+    # Grab device and associated plants
+    device_query = await session.execute(
+        select(Device)
+        .where(Device.id == plant_data_create.device_id)
+        .options(selectinload(Device.plants))
     )
-    plant_data = PlantData()
-    plant_data.timestamp = plant_data_create.timestamp
+    device = device_query.scalars().first()
+    if device is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The device does not exist.")
 
-    plant = await get_object_or_404(
-        plant_data_create.plant_id, Plant, session, "The plant does not exist."
+    plant_data_list = []
+    for plant in device.plants:
+        plant_data = PlantData()
+
+        utc_timestamp = plant_data_create.timestamp.astimezone(timezone.utc)
+        plant_data.timestamp = utc_timestamp
+        plant_data.plant_id = plant.id
+
+        session.add(plant_data)
+        await session.flush()
+
+        await add_sensor_readings(
+            plant_data, plant_data_create.sensor_readings, plant, session
+        )
+        await session.commit()
+        await session.refresh(plant_data)
+        await session.refresh(device)
+
+        background_tasks.add_task(
+            check_plant_properties, device, plant, plant_data, session
+        )
+        plant_data_list.append(plant_data)
+
+    return await model_list_to_schema(
+        plant_data_list, PlantDataRead, "No plant data found.", session
     )
-    plant_data.plant_id = plant_data_create.plant_id
-
-    session.add(plant_data)
-
-    await session.commit()
-    await session.refresh(plant_data)
-
-    await add_sensor_readings(
-        plant_data, plant_data_create.sensor_readings, plant, session
-    )
-
-    await session.commit()
-
-    created_plant_data = await session.get(
-        PlantData, plant_data.id, populate_existing=True
-    )
-    return PlantDataRead.from_orm(created_plant_data)
 
 
 async def add_sensor_readings(
@@ -57,19 +77,22 @@ async def add_sensor_readings(
     plant: Plant,
     session: AsyncSession,
 ) -> None:
-    ids_dictionary = await map_sensors_to_properties(plant.plant_profile_id, session)
+    sensor_to_property = await map_sensors_to_properties(
+        plant.plant_profile_id, session
+    )
 
     for reading in sensor_readings:
         created_reading = await create_sensor_reading(
-            plant_data.id, reading, ids_dictionary, session
+            plant_data.id, reading, sensor_to_property, session
         )
         session.add(created_reading)
+        await session.flush()
 
 
 async def create_sensor_reading(
     plant_data_id: int,
     sensor_reading: SensorReadingCreate,
-    ids_dictionary: dict,
+    sensor_to_property: dict,
     session: AsyncSession,
 ) -> SensorReading:
     await get_object_or_404(
@@ -81,7 +104,7 @@ async def create_sensor_reading(
     reading.sensor_id = sensor_reading.sensor_id
     reading.plant_data_id = plant_data_id
 
-    property_id = ids_dictionary.get(sensor_reading.sensor_id)
+    property_id = sensor_to_property.get(sensor_reading.sensor_id)
     if property_id:
         reading.grow_property_id = property_id
 

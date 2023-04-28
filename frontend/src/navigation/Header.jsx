@@ -1,29 +1,13 @@
 import {
-  View, TouchableOpacity, Image, useWindowDimensions, useColorScheme, StyleSheet,
+  View, TouchableOpacity, useWindowDimensions,
 } from 'react-native';
 import React from 'react';
-import { Text } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
-import Avatar from '../../assets/avatar.png';
+import { Text, Avatar } from 'native-base';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AuthUtils from '../api/utils/AuthUtils';
 
-const headerStyles = StyleSheet.create({
-  profilePicMobile: {
-    width: 37,
-    height: 37,
-    marginRight: 7,
-    overflow: 'hidden',
-    borderRadius: 20,
-  },
-  profilePicWeb: {
-    width: 40,
-    height: 40,
-    marginRight: 5,
-    borderRadius: '50%',
-  },
-});
-
 function Header() {
+  const isFocused = useIsFocused();
   const dimensions = useWindowDimensions();
   const isLargeScreen = dimensions.width >= 768;
   const navigation = useNavigation();
@@ -35,6 +19,12 @@ function Header() {
     });
   }, []);
 
+  React.useEffect(() => {
+    AuthUtils.getUserInfo().then((userDetails) => {
+      setUser(userDetails);
+    });
+  }, [isFocused]);
+
   return (
     <View
       style={{
@@ -42,6 +32,7 @@ function Header() {
         justifyContent: 'space-between',
         minWidth: '100%',
         width: isLargeScreen ? dimensions.width - 100 : dimensions.width - 30,
+        paddingBottom: 3,
         /* eslint-disable no-constant-condition */
       }}
     >
@@ -54,22 +45,27 @@ function Header() {
         <View
           style={{
             flexDirection: 'row',
+            alignItems: 'center',
           }}
         >
-          <Image
-            source={Avatar}
-            borderRadius={20}
-            style={isLargeScreen ? headerStyles.profilePicWeb : headerStyles.profilePicMobile}
-          />
           <Text
             style={{
-              marginTop: '8%',
               fontSize: 20,
               fontWeight: '450',
+              marginRight: 10,
             }}
           >
             {user.name}
           </Text>
+          <Avatar
+            bg="primary.600"
+            alignSelf="center"
+            size="sm"
+            marginRight="2"
+            source={{
+              uri: user.profile_picture_URL,
+            }}
+          />
         </View>
       </TouchableOpacity>
     </View>
