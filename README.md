@@ -1,3 +1,6 @@
+![Deployment](https://github.com/StevonStevoff/ProjectParsnip/actions/workflows/docker-image.yml/badge.svg)
+![Backend Tests](https://github.com/StevonStevoff/ProjectParsnip/actions/workflows/python-tests.yml/badge.svg)![Frontend Tests](https://github.com/StevonStevoff/ProjectParsnip/actions/workflows/react-tests.yml/badge.svg)
+
 ## Smart Farming IoT
 
 Group Project for University of Leeds MEng Computer Science
