@@ -62,14 +62,6 @@ function NavigationRoot() {
 
   const initialState = loadState('navState');
 
-  useEffect(() => {
-    setNavigationRef(navigationRef);
-    AuthUtils.isUserAuthenticated().then((isLoggedIn) => {
-      setIsUserLoggedIn(isLoggedIn);
-      setIsLoading(false);
-    });
-  }, []);
-
   const linking = {
     prefixes: ['myapp://', 'https://myapp.com'],
     config: {
